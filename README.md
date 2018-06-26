@@ -7,5 +7,5 @@ The repository and the Wiki pages are under construction. Please feel free to le
 
 E-mail: mpcm.evolution@gmail.com
 
-<a href="https://www.facebook.com/mpcm.evolution">Facebook</a><br>
-<a href="https://twitter.com/MPCMevol">Twitter</a>
+<a href="https://www.facebook.com/mpcm.evolution" target="_blank">Facebook</a><br>
+<a href="https://twitter.com/MPCMevol" target="_blank">Twitter</a>
