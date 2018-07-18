@@ -1,4 +1,4 @@
-<font color="red"><i>Under development</i></font>
+<b><i>Under development</i></b>
 
 # MPCMArchive
 This is the archive repository for the 'Online Practical Materials' for the book of 'Modern Phylogenetic Comparative Methods' (ed. Garamszegi, 2014). <i>The available content here is a copy of the material on</i> http://www.mpcm-evolution.com.
