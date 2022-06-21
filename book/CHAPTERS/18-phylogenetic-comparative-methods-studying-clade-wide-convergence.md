@@ -1,0 +1,10 @@
+---
+title: "<strong>Chapter 18:</strong> Phylogenetic Comparative Methods for Studying Clade-Wide Convergence"
+date: "2014-06-12"
+---
+
+by **D. Luke Mahler** and **Travis Ingram**
+
+**Abstract**
+
+A recurring question in ecology and evolutionary biology is whether deterministic evolutionary convergence ever occurs among large sets of species, such as ecological communities or entire evolutionary radiations. Questions about large-scale convergence have featured prominently in discussions of the nature of community assembly, and in debates about the relative roles of contingency versus determinism in macroevolution. Until recently, however, there have been relatively few attempts to use a phylogenetic comparative approach to answer questions about clade-level convergence. This is beginning to change with the development of new and more flexible comparative techniques for studying macroevolutionary convergence. In this chapter, we discuss ecological and evolutionary questions that have motivated interest in convergence at large spatial and phylogenetic scales. We review the statistical approaches that have been used to investigate clade-wide convergence, and then describe SURFACE, a recently developed method for objectively studying convergence using macroevolutionary adaptive landscape models. We introduce new features within this framework for testing hypotheses about the biogeography of large-scale convergence, and for visualizing the relative contributions of different traits to multidimensional convergence, and demonstrate these features using convergent Caribbean _Anolis_ lizard faunas. We conclude by discussing the limitations of current approaches for studying clade-wide convergence, and highlighting some directions for future research.

@@ -1,0 +1,10 @@
+---
+title: "<strong>Chapter 19:</strong> Metrics and Models of Community Phylogenetics"
+date: "2014-06-12"
+---
+
+by **William D. Pearse**, **Andy Purvis**, **Jeannine Cavender-Bares** and **Matthew R. Helmus**
+
+**Abstract**
+
+Community phylogenetics combines ideas from community ecology and evolutionary biology, using species’ phylogeny to explore the processes underlying ecological community assembly. Here we describe the development of the field's comparative methods and their roots in conservation biology, biodiversity quantification, and macroevolution. Next, we review the multitude of community phylogenetic structure metrics and place each into one of four classes: shape, evenness, dispersion, and dissimilarity. Shape metrics examine the structure of an assemblage phylogeny, while evenness metrics incorporate species’ abundances. Dispersion metrics examine assemblages given a phylogeny of species that could occupy that assemblage (the source pool), while dissimilarity metrics compare phylogenetic structure between assemblages. We then examine how metrics perform in simulated communities that vary in their phylogenetic structure. We provide an example of model-based approaches, and argue that they are a promising area of future research in community phylogenetics. Code to reproduce all these analyses is available in the Online Practical Material. We conclude by discussing future research directions for the field as a whole.

@@ -1,0 +1,10 @@
+---
+title: "<strong>Chapter 9:</strong> Phylogenetic Logistic Regression for Binary Dependent Variables"
+date: "2014-06-12"
+---
+
+by **Anthony R. Ives** and **Theodore Garland Jr.**
+
+**Abstract**
+
+We compare three methods for phylogenetic regression analyses designed for binary dependent variables (traits with two discrete states) both with each other and with "standard" methods that either ignore phylogenetic relationships or ignore the binary character of the dependent variable. In simulations designed to reveal statistical problems arising in different methods, PLogReg performed better than PGLMM and MCMCglmm to identify phylogenetic signal in the absence of independent variables; PLogReg also outperformed a standard method for detecting phylogenetic signal in binary data, ancestral character estimation. All three phylogenetic methods performed similarly for identifying relationships with a continuously valued independent variable x, with all methods having at most moderately inflated Type I error rates, and MCMCglmm having slightly greater power. In contrast, standard logistic regression that ignores phylogeny had seriously inflated Type I errors when x had phylogenetic signal. Perhaps surprisingly, phylogenetic regression that ignored the binary nature of the dependent variable, RegOU, performed as well or better than the other methods, at least for larger sample sizes (≥64 species), although this approach does not result in a model that can be used to simulate data (e.g., for bootstrapping). We also apply the methods to a data set describing whether antelopes fight or flee versus hide from predators as a function of their group size. We end with rough guidelines for analyzing binary dependent variables, with the main recommendation being that multiple methods and simulations should be used to give confidence in the statistical results.
