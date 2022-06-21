@@ -1,0 +1,10 @@
+---
+title: "<strong>Chapter 8:</strong> An Introduction to Phylogenetic Path Analysis"
+date: "2014-06-12"
+---
+
+by **Alejandro Gonzalez-Voyer** and **Achaz von Hardenberg**
+
+**Abstract**
+
+The questions addressed by macroevolutionary biologists are often impervious to experimental approaches and alternative methods have to be adopted. The phylogenetic comparative approach is a very powerful one since it combines a large number of species and thus spans long periods of evolutionary change. However, there are limits to the inferences that can be drawn from the results, in part due to the limitations of the most commonly employed analytical methods. In this chapter we show how confirmatory path analysis can be undertaken explicitly controlling for non-independence due to shared ancestry. The phylogenetic path analysis method we present allows researchers to move beyond the estimation of direct effects and analyze the relative importance of alternative causal models including direct and indirect paths of influence among variables. We begin the chapter with a general introduction to path analysis and then present a step-by-step guide to phylogenetic path analysis using the d-sep method. We also show how the known statistical problems associated with non-independence of data points due to shared ancestry become compounded in path analysis. We finish with a discussion about the potential effects of collinearity and measurement error, and a look towards possible future developments.
