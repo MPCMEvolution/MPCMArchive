@@ -1,0 +1,10 @@
+---
+title: "<strong>Chapter 16:</strong> Hidden Markov Models for Studying the Evolution of Binary Morphological Characters"
+date: "2014-06-12"
+---
+
+by **Jeremy M. Beaulieu** and **Brian C. O’Meara**
+
+**Abstract**
+
+Biologists now have the capability of building large phylogenetic trees consisting of tens of thousands of species, from which important comparative questions can be addressed. However, to the extent that biologists have applied these large trees to comparative data, it is clear that current methods, such as those that deal with the evolution of binary morphological characters, make unrealistic assumptions about how these characters are modeled. As phylogenies increase both in size and scope it is likely that the lability of a binary character will differ significantly among lineages. In this chapter we describe how a new generalized model, which we refer to as the "hidden rates model" (HRM), can be used to identify different rates of evolution in a discrete binary character along different branches of a phylogeny. The HRM is part of a class of models that are more broadly known as Hidden Markov models because it presupposes that unobserved "hidden" rate classes underlie each observed state, and that each rate class represents potentially different transition rates to and from these observed states. As we discuss, the recognition and accommodation of this heterogeneity can provide a robust picture of binary character evolution.

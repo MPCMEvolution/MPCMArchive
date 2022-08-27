@@ -1,0 +1,10 @@
+---
+title: "<strong>Chapter 21:</strong> Phylogenetic Prediction to Identify “Evolutionary Singularities”"
+date: "2014-06-12"
+---
+
+by **Charles L. Nunn** and **Li Zhu**
+
+****Abstract****
+
+Understanding adaptive patterns is especially difficult in the case of “evolutionary singularities,” i.e. traits that evolved in only one lineage in the clade of interest.  New methods are needed to integrate our understanding of general phenotypic correlations and convergence within a clade when examining a single lineage in that clade.  Here, we develop and apply a new method to investigate change along a single branch of an evolutionary tree; this method can be applied to any branch on a phylogeny, typically focusing on an _a priori_ hypothesis for “exceptional evolution” along particular branches, for example in humans relative to other primates.  Specifically, we use phylogenetic methods to predict trait values for a tip on the phylogeny based on a statistical (regression) model, phylogenetic signal (l), and evolutionary relationships among species in the clade.  We can then evaluate whether the observed value departs from the predicted value.  We provide two worked examples in human evolution using original R scripts that implement this concept in a Bayesian framework.  We also provide simulations that investigate the statistical validity of the approach.  While multiple approaches can and should be used to investigate singularities in an evolutionary context – including studies of the rate of phenotypic change along a branch – our Bayesian approach provides a way to place confidence on the predicted values in light of uncertainty about the underlying evolutionary and statistical parameters.

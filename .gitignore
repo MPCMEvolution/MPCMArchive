@@ -37,3 +37,5 @@ rsconnect/
 
 # Nova editors files
 .nova
+/.DS_Store
+.DS_Store

@@ -1,0 +1,213 @@
+#NEXUS
+[R-package APE, Sun Aug 25 11:05:25 2013]
+
+BEGIN TAXA;
+	DIMENSIONS NTAX = 100;
+	TAXLABELS
+		Sucehtipocrec_siralugobla
+		Sucehtipocrec_suhpec
+		Sucehtipocrec_itseohl
+		Sucehtipocrec_anom
+		Sucehtipocrec_atsiruatep
+		Sucehtipocrec_issuerp
+		Subecorolhc_surhtyregyp
+		Subecorolhc_sulatnat
+		Sucehtipoim_niopalat
+		Subecolla_sitohcirt
+		Rumeloeahcra_irojam
+		Ihava_reginal
+		Ihava_silatnedicco
+		Suelagoriehc_iyelssorc
+		Suelagoriehc_rojam
+		Suelagoriehc_suidem
+		Ainotnebuad_sisneiracsagadam
+		Rumelue_retnevirbur
+		Rumelapah_sumis
+		Irdni_irdni
+		Rumelipel_silceea
+		Rumelipel_suniletsum
+		Rumelipel_ilosanairdnar
+		Rumelipel_sutaduacifur
+		Rumelipel_silanoirtnetpes
+		Subecorcim_eahtreb
+		Subecorcim_sisnevalognob
+		Subecorcim_sufuroesirg
+		Subecorcim_eaylloj
+		Subecorcim_sunixoym
+		Subecorcim_isnommis
+		Renahp_reficruf
+		Sucehtiporp_ilereuqoc
+		Sucehtiporp_illasrettat
+		Sucehtiporp_ixuaerrev
+		Aicerav_arbur
+		Attauola_ayarac
+		Attauola_ataillap
+		Seleta_specicsuf
+		Seleta_sucsinap
+		Seletyhcarb_sedionhcara
+		Xirhtogal_ahcirtogal
+		Sutoa_sutalufni
+		Sutoa_specirgin
+		Xirhtillac_eailime
+		Xirhtillac_atallicinep
+		Xirhtillac_aeamgyp
+		Subec_snorfibla
+		Suniugas_xatsym
+		Suniugas_supideo
+		Suniugas_sutitrapirt
+		Irimias_sisneivilob
+		Sirol_sunairekkedyl
+		Sirol_sudargidrat
+		Subecitcyn_sisnelagneb
+		Subecitcyn_gnacuoc
+		Subecitcyn_sucinavaj
+		Subecitcyn_sisneganem
+		Omoh_sneipas
+		Setabolyh_irelleum
+		Sucsamon_ealleirbag
+		Sucsamon_sutusan
+		Sucsamon_ikis
+		Ognop_sueamgyp
+		Aicehtip_aicehtip
+		Acacam_sediotcra
+		Acacam_sipolcyc
+		Acacam_siralucicsaf
+		Acacam_ikceh
+		Acacam_attalum
+		Acacam_anirtsemen
+		Acacam_snecsergin
+		Acacam_sunelis
+		Acacam_sunavlys
+		Acacam_anaeknot
+		Oipap_sibuna
+		Oipap_sulahpeconyc
+		Oipap_sayrdamah
+		Oipap_sunisru
+		Subecewgnur_ijnupik
+		Suboloc_sisnelogna
+		Suboloc_susorellev
+		Subolocoilip_muronodrog
+		Subolocoilip_issuerp
+		Subolocoilip_sutartimofur
+		Subolocorp_surev
+		Xirhtagyp_aerenic
+		Xirhtagyp_sueamen
+		Sucehtiponihr_sulucnuva
+		Sucehtiponihr_ihcilerb
+		Sucehtipyhcart_iruocaled
+		Sucehtipyhcart_isiocnarf
+		Sucehtipyhcart_mutoal
+		Sucehtipyhcart_ieryahp
+		Sucitoue_sulutnagele
+		Ogalag_ieihcstam
+		Ogalag_sisnelagenes
+		Rumeloto_sutaduacissarc
+		Rumeloto_iittenrag
+		Suisrat_sunacnab
+	;
+END;
+BEGIN TREES;
+	TRANSLATE
+		1	Sucehtipocrec_siralugobla,
+		2	Sucehtipocrec_suhpec,
+		3	Sucehtipocrec_itseohl,
+		4	Sucehtipocrec_anom,
+		5	Sucehtipocrec_atsiruatep,
+		6	Sucehtipocrec_issuerp,
+		7	Subecorolhc_surhtyregyp,
+		8	Subecorolhc_sulatnat,
+		9	Sucehtipoim_niopalat,
+		10	Subecolla_sitohcirt,
+		11	Rumeloeahcra_irojam,
+		12	Ihava_reginal,
+		13	Ihava_silatnedicco,
+		14	Suelagoriehc_iyelssorc,
+		15	Suelagoriehc_rojam,
+		16	Suelagoriehc_suidem,
+		17	Ainotnebuad_sisneiracsagadam,
+		18	Rumelue_retnevirbur,
+		19	Rumelapah_sumis,
+		20	Irdni_irdni,
+		21	Rumelipel_silceea,
+		22	Rumelipel_suniletsum,
+		23	Rumelipel_ilosanairdnar,
+		24	Rumelipel_sutaduacifur,
+		25	Rumelipel_silanoirtnetpes,
+		26	Subecorcim_eahtreb,
+		27	Subecorcim_sisnevalognob,
+		28	Subecorcim_sufuroesirg,
+		29	Subecorcim_eaylloj,
+		30	Subecorcim_sunixoym,
+		31	Subecorcim_isnommis,
+		32	Renahp_reficruf,
+		33	Sucehtiporp_ilereuqoc,
+		34	Sucehtiporp_illasrettat,
+		35	Sucehtiporp_ixuaerrev,
+		36	Aicerav_arbur,
+		37	Attauola_ayarac,
+		38	Attauola_ataillap,
+		39	Seleta_specicsuf,
+		40	Seleta_sucsinap,
+		41	Seletyhcarb_sedionhcara,
+		42	Xirhtogal_ahcirtogal,
+		43	Sutoa_sutalufni,
+		44	Sutoa_specirgin,
+		45	Xirhtillac_eailime,
+		46	Xirhtillac_atallicinep,
+		47	Xirhtillac_aeamgyp,
+		48	Subec_snorfibla,
+		49	Suniugas_xatsym,
+		50	Suniugas_supideo,
+		51	Suniugas_sutitrapirt,
+		52	Irimias_sisneivilob,
+		53	Sirol_sunairekkedyl,
+		54	Sirol_sudargidrat,
+		55	Subecitcyn_sisnelagneb,
+		56	Subecitcyn_gnacuoc,
+		57	Subecitcyn_sucinavaj,
+		58	Subecitcyn_sisneganem,
+		59	Omoh_sneipas,
+		60	Setabolyh_irelleum,
+		61	Sucsamon_ealleirbag,
+		62	Sucsamon_sutusan,
+		63	Sucsamon_ikis,
+		64	Ognop_sueamgyp,
+		65	Aicehtip_aicehtip,
+		66	Acacam_sediotcra,
+		67	Acacam_sipolcyc,
+		68	Acacam_siralucicsaf,
+		69	Acacam_ikceh,
+		70	Acacam_attalum,
+		71	Acacam_anirtsemen,
+		72	Acacam_snecsergin,
+		73	Acacam_sunelis,
+		74	Acacam_sunavlys,
+		75	Acacam_anaeknot,
+		76	Oipap_sibuna,
+		77	Oipap_sulahpeconyc,
+		78	Oipap_sayrdamah,
+		79	Oipap_sunisru,
+		80	Subecewgnur_ijnupik,
+		81	Suboloc_sisnelogna,
+		82	Suboloc_susorellev,
+		83	Subolocoilip_muronodrog,
+		84	Subolocoilip_issuerp,
+		85	Subolocoilip_sutartimofur,
+		86	Subolocorp_surev,
+		87	Xirhtagyp_aerenic,
+		88	Xirhtagyp_sueamen,
+		89	Sucehtiponihr_sulucnuva,
+		90	Sucehtiponihr_ihcilerb,
+		91	Sucehtipyhcart_iruocaled,
+		92	Sucehtipyhcart_isiocnarf,
+		93	Sucehtipyhcart_mutoal,
+		94	Sucehtipyhcart_ieryahp,
+		95	Sucitoue_sulutnagele,
+		96	Ogalag_ieihcstam,
+		97	Ogalag_sisnelagenes,
+		98	Rumeloto_sutaduacissarc,
+		99	Rumeloto_iittenrag,
+		100	Suisrat_sunacnab
+	;
+	TREE * UNTITLED = [&R] ((((((((((1:6.429209,(2:2.731637,5:2.731636):3.697573):1.461009,4:7.890217):1.957908,((3:2.759983,6:2.759983):5.867262,(8:1.880772,7:1.880772):6.746472):1.220881):1.644988,9:11.493113):3.382065,(((((76:1.277228,78:1.277228):0.781218,77:2.058446):0.619816,79:2.678262):1.23829,80:3.916553):8.935973,(((66:6.037065,(((75:3.279738,69:3.279738):0.221302,72:3.501041):0.766095,(73:3.610353,71:3.610353):0.656782):1.76993,67:6.037065):0.840931,(68:5.045978,70:5.045978):1.832017):1.782804,74:8.6608):4.191726):2.022653):6.535196,(((81:3.71468,82:3.714679):8.822773,((84:4.764086,(83:2.646772,85:2.646772):2.117314):5.883363,86:10.64745):1.890002):2.897705,(((87:0.368302,88:0.368302):10.106282,(89:2.976658,90:2.976658):7.497926):2.310063,(((91:1.757449,92:1.757449):0.509341,93:2.26679):1.756474,94:4.023264):8.761384):2.650511):5.975217):8.589626,((60:7.347898,((61:0.944453,63:0.944454):2.10043,62:3.044883):4.303015):12.258047,(59:15.132455,64:15.132455):4.473491):10.394055):16.811821,((((38:3.888217,37:3.888216):10.872024,((39:2.680475,40:2.680475):6.466916,(41:2.35377,42:2.35377):6.793621):5.612849):6.56106,(((43:1.285874,44:1.285874):18.201648,(((45:4.789812,47:4.789812):2.239318,46:7.02913):8.683121,((50:9.663472,49:9.663472):2.06267,51:11.726141):3.986111):3.775269):0.605006,(48:18.569905,52:18.569905):1.522623):1.228773):1.411478,65:22.732779):24.079043):22.028211,100:68.840033):4.162986,(((((((10:16.783441,(((26:4.062493,28:4.062493):1.117659,30:5.180153):0.802873,((27:4.415953,29:4.415952):0.272524,31:4.688477):1.29455):10.800415):5.779948,((14:7.65608,15:7.65608):3.732059,16:11.388139):11.17525):5.865706,(((((21:3.807468,23:3.807468):0.600221,24:4.407689):3.868415,25:8.276103):5.073249,22:13.349353):12.339671,32:25.689024):2.740071):2.51681,((11:16.886315,20:16.893615):4.015417,((13:6.25278,12:6.25278):10.24982,((33:0.720305,34:0.720305):2.972551,35:3.692856):12.809744):4.406432):10.036873):2.318811,((18:15.019596,19:15.019596):5.523206,36:20.542802):12.721914):17.859349,17:51.124065):11.612487,(((53:0.761888,54:0.761888):23.295639,(((55:0.416045,56:0.416045):1.807212,58:2.223257):0.731243,57:2.954499):21.103028):13.942473,(((95:2.512362,96:2.512362):2.872139,97:5.384501):7.979917,(98:0.833949,99:0.833949):12.530469):24.635583):24.736553):10.266465);
+END;

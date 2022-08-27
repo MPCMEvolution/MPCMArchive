@@ -1,0 +1,309 @@
+#NEXUS
+[R-package APE, Fri Sep 19 13:00:14 2014]
+
+BEGIN TAXA;
+	DIMENSIONS NTAX = 148;
+	TAXLABELS
+		Alectoris_rufa
+		Phasianus_colchicus
+		Perdix_perdix
+		Cygnus_cygnus
+		Cygnus_columbianus
+		Branta_bernicla
+		Aythya_fuligula
+		Tadorna_tadorna
+		Anas_crecca
+		Anas_platyrhynchos
+		Apus_apus
+		Larus_ridibundus
+		Larus_canus
+		Larus_argentatus
+		Larus_marinus
+		Larus_fuscus
+		Rissa_tridactyla
+		Numenius_arquata
+		Scolopax_rusticola
+		Gallinago_gallinago
+		Tringa_nebularia
+		Tringa_totanus
+		Arenaria_interpres
+		Calidris_canutus
+		Calidris_alba
+		Charadrius_hiaticula
+		Charadrius_dubius
+		Vanellus_vanellus
+		Himantopus_himantopus
+		Pluvialis_squatarola
+		Pluvialis_apricaria
+		Accipiter_nisus
+		Buteo_lagopus
+		Buteo_buteo
+		Milvus_migrans
+		Athene_noctua
+		Upupa_epops
+		Merops_apiaster
+		Alcedo_atthis
+		Picus_viridis
+		Dendrocopos_major
+		Falco_tinnunculus
+		Lanius_collurio
+		Lanius_senator
+		Lanius_excubitor
+		Pyrrhocorax_pyrrhocorax
+		Garrulus_glandarius
+		Corvus_monedula
+		Corvus_corone
+		Corvus_frugilegus
+		Corvus_corax
+		Pica_pica
+		Oriolus_oriolus
+		Remiz_pendulinus
+		Parus_caeruleus
+		Parus_cristatus
+		Parus_ater
+		Parus_major
+		Parus_palustris
+		Hippolais_icterina
+		Acrocephalus_schoenobaenus
+		Acrocephalus_scirpaceus
+		Acrocephalus_palustris
+		Locustella_naevia
+		Sylvia_borin
+		Sylvia_atricapilla
+		Sylvia_curruca
+		Sylvia_cantillans
+		Sylvia_melanocephala
+		Sylvia_undata
+		Sylvia_communis
+		Sylvia_conspicillata
+		Cisticola_juncidis
+		Riparia_riparia
+		Hirundo_daurica
+		Hirundo_rustica
+		Aegithalos_caudatus
+		Cettia_cetti
+		Phylloscopus_collybita
+		Phylloscopus_trochilus
+		Phylloscopus_bonelli
+		Galerida_cristata
+		Galerida_theklae
+		Alauda_arvensis
+		Lullula_arborea
+		Sturnus_unicolor
+		Sturnus_vulgaris
+		Turdus_philomelos
+		Turdus_viscivorus
+		Turdus_pilaris
+		Turdus_merula
+		Turdus_iliacus
+		Luscinia_megarhynchos
+		Luscinia_luscinia
+		Ficedula_hypoleuca
+		Monticola_saxatilis
+		Oenanthe_leucura
+		Oenanthe_oenanthe
+		Saxicola_rubetra
+		Phoenicurus_phoenicurus
+		Phoenicurus_ochruros
+		Erithacus_rubecula
+		Muscicapa_striata
+		Troglodytes_troglodytes
+		Certhia_brachydactyla
+		Certhia_familiaris
+		Sitta_europaea
+		Regulus_regulus
+		Amandava_amandava
+		Prunella_modularis
+		Passer_montanus
+		Passer_domesticus
+		Passer_hispaniolensis
+		Coccothraustes_coccothraustes
+		Pyrrhula_pyrrhula
+		Bucanetes_githagineus
+		Carduelis_carduelis
+		Carduelis_flammea
+		Loxia_curvirostra
+		Serinus_serinus
+		Carduelis_cannabina
+		Carduelis_spinus
+		Carduelis_chloris
+		Fringilla_coelebs
+		Emberiza_cirlus
+		Emberiza_citrinella
+		Emberiza_cia
+		Miliaria_calandra
+		Emberiza_schoeniclus
+		Anthus_trivialis
+		Anthus_spinoletta
+		Anthus_pratensis
+		Motacilla_cinerea
+		Motacilla_flava
+		Motacilla_alba
+		Ciconia_ciconia
+		Egretta_garzetta
+		Bubulcus_ibis
+		Ardea_cinerea
+		Ixobrychus_minutus
+		Phalacrocorax_carbo
+		Cuculus_canorus
+		Gallinula_chloropus
+		Fulica_atra
+		Grus_grus
+		Columba_palumbus
+		Columba_livia
+		Streptopelia_decaocto
+	;
+END;
+BEGIN TREES;
+	TRANSLATE
+		1	Alectoris_rufa,
+		2	Phasianus_colchicus,
+		3	Perdix_perdix,
+		4	Cygnus_cygnus,
+		5	Cygnus_columbianus,
+		6	Branta_bernicla,
+		7	Aythya_fuligula,
+		8	Tadorna_tadorna,
+		9	Anas_crecca,
+		10	Anas_platyrhynchos,
+		11	Apus_apus,
+		12	Larus_ridibundus,
+		13	Larus_canus,
+		14	Larus_argentatus,
+		15	Larus_marinus,
+		16	Larus_fuscus,
+		17	Rissa_tridactyla,
+		18	Numenius_arquata,
+		19	Scolopax_rusticola,
+		20	Gallinago_gallinago,
+		21	Tringa_nebularia,
+		22	Tringa_totanus,
+		23	Arenaria_interpres,
+		24	Calidris_canutus,
+		25	Calidris_alba,
+		26	Charadrius_hiaticula,
+		27	Charadrius_dubius,
+		28	Vanellus_vanellus,
+		29	Himantopus_himantopus,
+		30	Pluvialis_squatarola,
+		31	Pluvialis_apricaria,
+		32	Accipiter_nisus,
+		33	Buteo_lagopus,
+		34	Buteo_buteo,
+		35	Milvus_migrans,
+		36	Athene_noctua,
+		37	Upupa_epops,
+		38	Merops_apiaster,
+		39	Alcedo_atthis,
+		40	Picus_viridis,
+		41	Dendrocopos_major,
+		42	Falco_tinnunculus,
+		43	Lanius_collurio,
+		44	Lanius_senator,
+		45	Lanius_excubitor,
+		46	Pyrrhocorax_pyrrhocorax,
+		47	Garrulus_glandarius,
+		48	Corvus_monedula,
+		49	Corvus_corone,
+		50	Corvus_frugilegus,
+		51	Corvus_corax,
+		52	Pica_pica,
+		53	Oriolus_oriolus,
+		54	Remiz_pendulinus,
+		55	Parus_caeruleus,
+		56	Parus_cristatus,
+		57	Parus_ater,
+		58	Parus_major,
+		59	Parus_palustris,
+		60	Hippolais_icterina,
+		61	Acrocephalus_schoenobaenus,
+		62	Acrocephalus_scirpaceus,
+		63	Acrocephalus_palustris,
+		64	Locustella_naevia,
+		65	Sylvia_borin,
+		66	Sylvia_atricapilla,
+		67	Sylvia_curruca,
+		68	Sylvia_cantillans,
+		69	Sylvia_melanocephala,
+		70	Sylvia_undata,
+		71	Sylvia_communis,
+		72	Sylvia_conspicillata,
+		73	Cisticola_juncidis,
+		74	Riparia_riparia,
+		75	Hirundo_daurica,
+		76	Hirundo_rustica,
+		77	Aegithalos_caudatus,
+		78	Cettia_cetti,
+		79	Phylloscopus_collybita,
+		80	Phylloscopus_trochilus,
+		81	Phylloscopus_bonelli,
+		82	Galerida_cristata,
+		83	Galerida_theklae,
+		84	Alauda_arvensis,
+		85	Lullula_arborea,
+		86	Sturnus_unicolor,
+		87	Sturnus_vulgaris,
+		88	Turdus_philomelos,
+		89	Turdus_viscivorus,
+		90	Turdus_pilaris,
+		91	Turdus_merula,
+		92	Turdus_iliacus,
+		93	Luscinia_megarhynchos,
+		94	Luscinia_luscinia,
+		95	Ficedula_hypoleuca,
+		96	Monticola_saxatilis,
+		97	Oenanthe_leucura,
+		98	Oenanthe_oenanthe,
+		99	Saxicola_rubetra,
+		100	Phoenicurus_phoenicurus,
+		101	Phoenicurus_ochruros,
+		102	Erithacus_rubecula,
+		103	Muscicapa_striata,
+		104	Troglodytes_troglodytes,
+		105	Certhia_brachydactyla,
+		106	Certhia_familiaris,
+		107	Sitta_europaea,
+		108	Regulus_regulus,
+		109	Amandava_amandava,
+		110	Prunella_modularis,
+		111	Passer_montanus,
+		112	Passer_domesticus,
+		113	Passer_hispaniolensis,
+		114	Coccothraustes_coccothraustes,
+		115	Pyrrhula_pyrrhula,
+		116	Bucanetes_githagineus,
+		117	Carduelis_carduelis,
+		118	Carduelis_flammea,
+		119	Loxia_curvirostra,
+		120	Serinus_serinus,
+		121	Carduelis_cannabina,
+		122	Carduelis_spinus,
+		123	Carduelis_chloris,
+		124	Fringilla_coelebs,
+		125	Emberiza_cirlus,
+		126	Emberiza_citrinella,
+		127	Emberiza_cia,
+		128	Miliaria_calandra,
+		129	Emberiza_schoeniclus,
+		130	Anthus_trivialis,
+		131	Anthus_spinoletta,
+		132	Anthus_pratensis,
+		133	Motacilla_cinerea,
+		134	Motacilla_flava,
+		135	Motacilla_alba,
+		136	Ciconia_ciconia,
+		137	Egretta_garzetta,
+		138	Bubulcus_ibis,
+		139	Ardea_cinerea,
+		140	Ixobrychus_minutus,
+		141	Phalacrocorax_carbo,
+		142	Cuculus_canorus,
+		143	Gallinula_chloropus,
+		144	Fulica_atra,
+		145	Grus_grus,
+		146	Columba_palumbus,
+		147	Columba_livia,
+		148	Streptopelia_decaocto
+	;
+	TREE * UNTITLED = [&R] (((1:24.06811,(2:17.955103,3:17.955105):6.113006):48.260151,(((4:1.647783,5:1.647782):10.672243,6:12.320026):12.694368,((7:10.742863,8:10.742864):2.089429,(9:3.850713,10:3.850712):8.98158):12.182102):47.313866):22.094669,((11:77.51371,(((((12:4.268372,(13:1.414534,((14:0.538122,15:0.538122):0.288417,16:0.826539):0.587995):2.853838):1.71585,17:5.984223):56.327194,(18:43.50338,(((19:28.428574,20:28.428576):8.776073,(21:13.789018,22:13.789018):23.41563):0.451806,(23:31.66501,(24:20.205612,25:20.205612):11.459396):5.991444):5.846929):18.808041):5.298829,((((26:23.703518,27:23.703518):12.263243,28:35.966759):9.092833,29:45.059597):5.558562,(30:11.19698,31:11.19698):39.421177):16.992096):9.876282,(((32:27.69869,((33:2.535373,34:2.535373):20.469025,35:23.004396):4.694293):47.357368,(36:72.048874,(37:66.211105,((38:58.841469,39:58.841473):5.685457,(40:15.281939,41:15.281939):49.244987):1.684178):5.83777):3.007184):1.010806,(42:74.37825,(((((43:7.53155,44:7.53155):2.054895,45:9.586447):16.700153,(46:21.678457,(47:16.238865,((48:10.023493,(49:6.568226,(50:5.946553,51:5.946553):0.621672):3.455267):4.167608,52:14.1911):2.047765):5.439592):4.60814):5.457359,53:31.743958):14.347071,(((54:33.631645,(55:17.420908,((56:13.306068,57:13.306068):2.133347,(58:8.424759,59:8.424759):7.014656):1.981493):16.210737):6.83801,((((((60:8.531712,(61:6.42091,62:6.420911):2.110801):9.250889,(63:11.902853,64:11.902852):5.879748):2.368345,((65:9.549943,66:9.549944):3.284035,(67:9.144638,((68:3.466502,69:3.466502):3.4345,((70:4.299992,71:4.299992):0.120106,72:4.420098):2.480904):2.243635):3.689341):7.316967):2.340856,73:22.491802):9.146713,((74:17.323627,(75:14.560474,76:14.560474):2.763151):12.024446,(77:23.530258,(78:21.643457,((79:6.152563,80:6.152563):8.649563,81:14.802127):6.841331):1.886802):5.817812):2.290444):3.410937,(((82:2.907658,83:2.907658):4.318059,84:7.225718):0.36479,85:7.590507):27.458946):5.420203):1.701061,(((((86:0.125781,87:0.125781):30.143744,(((88:13.870779,89:13.870779):1.15006,(90:9.218369,(91:9.054901,92:9.054901):0.163466):5.802471):12.752509,((((93:3.364516,94:3.364516):12.1976,(95:14.577534,((96:12.505738,((97:9.440499,98:9.440499):2.605047,99:12.045546):0.460192):0.30528,(100:5.739,101:5.739):7.072018):1.766515):0.984584):0.163055,102:15.725172):1.576739,103:17.301912):10.471437):2.496177):8.372149,((104:27.457571,(105:6.39201,106:6.39201):21.065557):3.100957,107:30.558525):8.083147):2.759073,108:41.400742):0.130651,((109:31.284294,110:31.284292):2.717771,((111:7.840467,(112:2.404241,113:2.404241):5.436227):22.83239,((((114:21.343401,(115:17.968796,(116:17.443083,(((117:7.393439,(118:4.49121,119:4.49121):2.902229):0.275185,(120:7.560589,(121:7.089682,122:7.089682):0.470907):0.108036):2.7854,123:10.454024):6.989059):0.525712):3.374606):4.861048,124:26.204449):0.130191,((((125:5.075749,126:5.075749):4.663708,127:9.739457):0.31326,128:10.052717):3.521384,129:13.574102):12.76054):2.806456,((130:10.666142,(131:3.236176,132:3.236176):7.429966):8.405203,(133:4.470028,(134:3.247296,135:3.247296):1.222733):14.601316):10.069753):1.531762):3.329204):7.529333):0.63932):3.920311):28.287222):1.688617):1.419668):0.027167):0.09378,(((136:62.871307,(((137:31.021494,(138:13.890752,139:13.890752):17.130741):6.473998,140:37.495491):24.792488,141:62.287979):0.583327):7.105647,(142:68.036201,((143:20.918131,144:20.918133):28.451801,145:49.36993):18.666264):1.94076):0.830426,((146:10.296724,147:10.296724):5.935313,148:16.232037):54.575344):6.8001):16.815451):5.859712;
+END;

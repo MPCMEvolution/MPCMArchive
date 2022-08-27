@@ -1,0 +1,10 @@
+---
+title: "<strong>Chapter 4:</strong> Graphical Methods for Visualizing Comparative Data on Phylogenies"
+date: "2014-06-12"
+---
+
+by **Liam J. Revell**
+
+**Abstract**
+
+Phylogenies have emerged as central in evolutionary biology over the past three decades or more, and an extraordinary expansion in the breadth and sophistication of phylogenetic comparative methods has played a large role in this growth. In this chapter I focus on a somewhat neglected area: the use of graphical methods to simultaneously represent comparative data and trees. As this research area is theoretically very broad, I have concentrated on new methods developed by me, or techniques devised by others and implemented by me as part of my R phylogenetics package, phytools. I describe a variety of methods in this chapter, including approaches that can be used to map reconstructed discrete or continuous character evolution on trees; techniques for projecting phylogenetic trees into morphospace; and methods for visualizing phylogenies in the context of a global or regional geographic map. In this chapter my intention is not merely to showcase new methods that I have developed. Rather, I have also dedicated considerable attention to detailing the algorithms and computational techniques required for these approaches with the hope that this chapter will become a resource or jumping-off point for researchers interested in building new, more advanced approaches and methods in this area.

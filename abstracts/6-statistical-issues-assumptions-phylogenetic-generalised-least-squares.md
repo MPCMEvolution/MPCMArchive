@@ -1,0 +1,10 @@
+---
+title: "<strong>Chapter 6:</strong> Statistical Issues and Assumptions of Phylogenetic Generalised Least Squares"
+date: "2014-06-12"
+---
+
+by **Roger Mundry**
+
+**Abstract**
+
+Using Phylogenetic Generalised Least Squares (PGLS) means to fit a linear regression aiming to investigate the impact of one or several predictor variables on a single response variable while controlling for potential phylogenetic signal in the response (and, hence, non-independence of the residuals). The key difference between PGLS and standard (multiple) regression is that PGLS allows to control for residuals being potentially non-independent due to the phylogenetic history of the taxa investigated. While the assumptions of PGLS regarding the underlying processes of evolution and the correlation of the predictor and response variables with the phylogeny have received considerable attention, much less focus has been put on the checks of model reliability and stability commonly used in case of standard general linear models. However, several of these checks could be similarly applied in the context of PGLS as well. Here I describe how such checks of model stability and reliability could be applied in the context of a PGLS and what could be done in case they reveal potential problems. Besides treating general questions regarding the conceptual and technical validity of the model, I consider issues regarding the sample size, collinearity among the predictors, the distribution of the predictors and the residuals, model stability and drawing inference based on P-values. Finally, I emphasize the need for reporting checks of assumptions (and their results) in publications.

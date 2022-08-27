@@ -1,0 +1,10 @@
+---
+title: "<strong>Chapter 17:</strong> Detecting Phenotypic Selection by Approximate Bayesian Computation (ABC) in Phylogenetic Comparative Methods"
+date: "2014-06-12"
+---
+
+by **Nobuyuki Kutsukake** and **Hideki Innan**
+
+**Abstract**
+
+This chapter discusses the fundamental structure and advantages of the approximate Bayesian computation (ABC) algorithm in phylogenetic comparative methods (PCMs). ABC estimates unknown parameters as follows: (i) simulated data are generated under a suite of parameters randomly chosen from their prior distributions; (ii) the simulated data are compared with empirical data; (iii) parameters are accepted when the distance between the simulated and empirical data is small; and (iv) by repeating steps (i) to (iii), posterior distributions of parameters will be gained. Because ABC does not necessitate mathematical expression or analytic solution of a likelihood function, ABC is particularly useful when a maximum-likelihood estimation is difficult to conduct (a common situation when testing complex evolutionary models and/or models with many parameters in PCMs). As an application, we analysed trait evolution in which a specific species exhibits an extraordinary trait value relative to others. The ABC approach detected the occurrence of branch-specific directional selection and estimated ancestral states of internal nodes. As computational power increases, such likelihood-free approaches will become increasingly useful for PCMs, particularly for testing complex evolutionary models that deviate from the standard models based on the Brownian motion.
