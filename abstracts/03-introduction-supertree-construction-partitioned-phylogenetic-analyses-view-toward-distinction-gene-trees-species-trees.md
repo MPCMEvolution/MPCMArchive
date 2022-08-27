@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 3:</strong> An Introduction to Supertree Construction (and Partitioned Phylogenetic Analyses) with a View toward the Distinction between – Gene Trees and Species Trees"
-date: "2014-06-12"
----
+# <strong>Chapter 3:</strong> An Introduction to Supertree Construction (and Partitioned Phylogenetic Analyses) with a View toward the Distinction between – Gene Trees and Species Trees
 
 by **Olaf R. P. Bininda-Emonds**
 

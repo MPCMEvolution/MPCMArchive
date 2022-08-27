@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 9:</strong> Phylogenetic Logistic Regression for Binary Dependent Variables"
-date: "2014-06-12"
----
+# <strong>Chapter 9:</strong> Phylogenetic Logistic Regression for Binary Dependent Variables
 
 by **Anthony R. Ives** and **Theodore Garland Jr.**
 

@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 4:</strong> Graphical Methods for Visualizing Comparative Data on Phylogenies"
-date: "2014-06-12"
----
+# <strong>Chapter 4:</strong> Graphical Methods for Visualizing Comparative Data on Phylogenies
 
 by **Liam J. Revell**
 

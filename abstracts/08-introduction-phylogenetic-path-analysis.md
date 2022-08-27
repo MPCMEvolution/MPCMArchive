@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 8:</strong> An Introduction to Phylogenetic Path Analysis"
-date: "2014-06-12"
----
+# <strong>Chapter 8:</strong> An Introduction to Phylogenetic Path Analysis
 
 by **Alejandro Gonzalez-Voyer** and **Achaz von Hardenberg**
 

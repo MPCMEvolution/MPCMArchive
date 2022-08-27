@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 2:</strong> Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets"
-date: "2014-06-12"
----
+# <strong>Chapter 2:</strong> Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets
 
 by **László Zsolt Garamszegi** and **Alejandro Gonzalez-Voyer**
 

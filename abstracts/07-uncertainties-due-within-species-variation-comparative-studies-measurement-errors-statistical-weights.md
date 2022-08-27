@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 7:</strong> Uncertainties due to Within-Species Variation in Comparative Studies: Measurement Errors and Statistical Weights"
-date: "2014-06-12"
----
+# <strong>Chapter 7:</strong> Uncertainties due to Within-Species Variation in Comparative Studies: Measurement Errors and Statistical Weights
 
 by **László Zsolt Garamszegi**
 

@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 6:</strong> Statistical Issues and Assumptions of Phylogenetic Generalised Least Squares"
-date: "2014-06-12"
----
+# <strong>Chapter 6:</strong> Statistical Issues and Assumptions of Phylogenetic Generalised Least Squares
 
 by **Roger Mundry**
 

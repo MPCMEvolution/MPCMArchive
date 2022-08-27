@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 5:</strong> A Primer on Phylogenetic Generalised Least Squares"
-date: "2014-06-12"
----
+# <strong>Chapter 5:</strong> A Primer on Phylogenetic Generalised Least Squares
 
 by **Matthew R. E. Symonds** and **Simon P. Blomberg**
 

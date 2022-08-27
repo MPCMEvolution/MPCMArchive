@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 10:</strong> Keeping Yourself Updated: Bayesian Approaches in Phylogenetic Comparative Methods with a focus on Markov-chain models of Discrete Character Evolution"
-date: "2014-06-12"
----
+# <strong>Chapter 10:</strong> Keeping Yourself Updated: Bayesian Approaches in Phylogenetic Comparative Methods with a focus on Markov-chain models of Discrete Character Evolution
 
 by **Thomas E. Currie** and **Andrew Meade**
 
