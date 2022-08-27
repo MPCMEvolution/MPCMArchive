@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+
+<HEAD>
+<TITLE>An example of non-Gaussian trait using count data</TITLE>
+</HEAD>
+
+<BODY >
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+		<p style="padding-left: 30px;"><code>"MCMCglmm"</code> (Hadfield, 2010a) </p>
+
+	<h4>Data</h4>
+	<p style="padding-left: 30px;"><strong>Phenotypic count data</strong> (<code>"data_pois.txt"</code>), Data frame containing the Poisson count data</p>
+	<p style="padding-left: 30px;"><strong>Phylogeny</strong> (<code>"phylo.nex"</code>), Phylogeny file (NEXUS file)</p>
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+<P>
+Suppose we have to analyse a dataset alike the one in the OPM section
+<A HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/4_nongaussian.html#opm:simple_model">11.1</A>, but we are now interested in count data
+without multiple measurement:
+<div class="chunk" id="unnamed-chunk-19"><div class="rcode"><div class="source"><pre class="knitr r"> <span class="hl kwd">library</span><span class="hl std">(ape)</span>
+ <span class="hl kwd">library</span><span class="hl std">(MCMCglmm)</span>
+ <span class="hl std">phylo</span><span class="hl kwb">&lt;-</span><span class="hl kwd">read.nexus</span><span class="hl std">(</span><span class="hl str">&quot;phylo.nex&quot;</span><span class="hl std">)</span>
+ <span class="hl std">data</span><span class="hl kwb">&lt;-</span><span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;data_pois.txt&quot;</span><span class="hl std">,</span><span class="hl kwc">header</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+</pre></div>
+<div class="source"><pre class="knitr r"> <span class="hl kwd">head</span><span class="hl std">(data)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##        Zr  N phylo
+## 1 0.28918 13  sp_1
+## 2 0.02416 40  sp_2
+## 3 0.19514 39  sp_3
+## 4 0.09831 40  sp_4
+## 5 0.13780 66  sp_5
+## 6 0.13711 41  sp_6
+</pre></div>
+</div></div>
+Because we don't have multiple measurement, we can use the same prior and the 
+same
+model as in our first example in the OPM section <A HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/4_nongaussian.html#opm:simple_model">11.1</A>:
+<div class="chunk" id="unnamed-chunk-20"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">inv.phylo</span><span class="hl kwb">&lt;-</span><span class="hl kwd">inverseA</span><span class="hl std">(phylo,</span><span class="hl kwc">nodes</span><span class="hl std">=</span><span class="hl str">&quot;TIPS&quot;</span><span class="hl std">,</span><span class="hl kwc">scale</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">prior</span><span class="hl kwb">&lt;-</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G1</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl kwc">nu</span><span class="hl std">=</span><span class="hl num">0.02</span><span class="hl std">)),</span><span class="hl kwc">R</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl kwc">nu</span><span class="hl std">=</span><span class="hl num">0.02</span><span class="hl std">))</span>
+<span class="hl std">model_pois</span><span class="hl kwb">&lt;-</span><span class="hl kwd">MCMCglmm</span><span class="hl std">(phen_pois</span><span class="hl opt">~</span><span class="hl std">cofactor,</span><span class="hl kwc">random</span><span class="hl std">=</span><span class="hl opt">~</span><span class="hl std">phylo,</span>
+   <span class="hl kwc">family</span><span class="hl std">=</span><span class="hl str">&quot;poisson&quot;</span><span class="hl std">,</span><span class="hl kwc">ginverse</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">phylo</span><span class="hl std">=inv.phylo</span><span class="hl opt">$</span><span class="hl std">Ainv),</span>
+   <span class="hl kwc">prior</span><span class="hl std">=prior,</span><span class="hl kwc">data</span><span class="hl std">=data,</span><span class="hl kwc">nitt</span><span class="hl std">=</span><span class="hl num">5000000</span><span class="hl std">,</span><span class="hl kwc">burnin</span><span class="hl std">=</span><span class="hl num">1000</span><span class="hl std">,</span><span class="hl kwc">thin</span><span class="hl std">=</span><span class="hl num">500</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+Note that we are now using <TT>family="poisson"</TT>, which automatically assumes 
+the
+canonical logarithmic link function. We can now print the summary of the 
+results:
+<div class="chunk" id="unnamed-chunk-21"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">summary</span><span class="hl std">(model_pois)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+##  Iterations = 1001:4999501
+##  Thinning interval  = 500
+##  Sample size  = 9998 
+## 
+##  DIC: 690.3 
+## 
+##  G-structure:  ~animal
+## 
+##        post.mean l-95% CI u-95% CI eff.samp
+## animal    0.0403   0.0023    0.109     9998
+## 
+##  R-structure:  ~units
+## 
+##       post.mean l-95% CI u-95% CI eff.samp
+## units    0.0421  0.00264   0.0963     9482
+## 
+##  Location effects: phen_pois ~ cofactor 
+## 
+##             post.mean l-95% CI u-95% CI eff.samp  pMCMC    
+## (Intercept)    -2.085   -2.501   -1.693     9667 <1e-04 ***
+## cofactor        0.251    0.229    0.273     9998 <1e-04 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+</pre></div>
+</div></div>
+As we can observe, random effects variances and fixed effects values are low. 
+This is partly
+due to the assumed logarithmic link function which ``impose'' low values for the 
+latent trait <!-- MATH
+ $\mathbf{l}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="9" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img13.png"
+ ALT="$ \mathbf{l}$"></SPAN> (see Eqs. (14) and (15) in the main text). However, 
+the fixed effects are significantly different from zero (pMCMC<SPAN CLASS="MATH"><IMG
+ WIDTH="52" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
+ SRC="img14.png"
+ ALT="$ &lt;10^{-4}$"></SPAN>).
+<BR><P>
+Generally, fitting the generalised phylogenetic mixed model using an MCMC 
+algorithm is not much
+harder than fitting the Gaussian one. However one can encounter several issues. 
+First,
+the algorithm will be slower for non-Gaussian traits. Second, issues due to 
+auto-correlation might arise, so that one will be forced to run the algorithm 
+for longer. Third, as noted above, the overall expected variances can be much 
+smaller than for Gaussian traits (e.g. for binary
+and Poisson traits). In this case, issues related to the choice of the prior can 
+arise, especially for small datasets. This is due to the fact that most variance 
+priors (including those available in MCMCglmm) are a bit informative for small 
+variances (for an example of such issues, see <A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/biblio.html#de_villemereuil_comparing_2013">de&nbsp;Villemereuil et&nbsp;al, 2013</A>).
+
+</BODY>
+</HTML>

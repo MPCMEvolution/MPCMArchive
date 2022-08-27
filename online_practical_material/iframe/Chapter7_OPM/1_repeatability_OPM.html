@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+</head>
+
+	<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+		<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"lme4"</code> (Bates et al 2011) </p>
+		<p style="padding-left: 30px;"><code>"rptR"</code> (Nakagawa and Schielzeth 2010) </p>
+		<p style="padding-left: 30px;"><code>"MCMCglmm"</code> (Hadfield 2010) </p>
+	
+		<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>brain size and body size on primates</strong> 					(<code>"primate_ind.txt"</code>, a tab separated text file), with more than one observation for the 		majority of species, individual-specific data<p>
+	
+	<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+		<h4>Data input</h4>
+		<p>Import, transform and check individual specific data:<p>
+	
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r">data.ind = <span class="hl kwd">read.table</span>(<span class="hl str">&quot;primate_ind.txt&quot;</span>, sep = <span class="hl str">&quot;\t&quot;</span>, header = <span class="hl kwa">TRUE</span>)
+data.ind$lg_body = <span class="hl kwd">log</span>(data.ind$body)
+data.ind$lg_brain = <span class="hl kwd">log</span>(data.ind$brain)
+<span class="hl kwd">str</span>(data.ind)
+</pre></div>
+<div class="output"><pre class="knitr r">## 'data.frame':	894 obs. of  5 variables:
+##  $ species : Factor w/ 86 levels "Allenopithecus_nigroviridis",..: 1 2 3 3 3 3 3 3 3 3 ...
+##  $ body    : num  2920 826 777 2310 4309 ...
+##  $ brain   : num  57 45 42.5 52 54.2 ...
+##  $ lg_body : num  7.98 6.72 6.66 7.75 8.37 ...
+##  $ lg_brain: num  4.04 3.81 3.75 3.95 3.99 ...
+</pre></div>
+</div></div>
+
+	
+		<h4>rptR</h4>
+		<p>May not compatible with the most recent version of <strong>R</strong> (need earlier releases to 		run the scripts below) <p>
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span>(rptR, quietly = T)
+<span class="hl kwd">rpt</span>(data.ind$lg_brain, data.ind$species, datatype = <span class="hl str">&quot;Gaussian&quot;</span>, method = <span class="hl str">&quot;REML&quot;</span>)
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Repeatability calculation using the LMM.REML method
+## 
+## R  = 0.985
+## SE = 0.002
+## CI = [0.979, 0.989]
+## P  = 0 []
+##      0.001 []
+</pre></div>
+</div></div>
+
+		
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">rpt</span>(data.ind$lg_body, data.ind$species, datatype = <span class="hl str">&quot;Gaussian&quot;</span>, method = <span class="hl str">&quot;ANOVA&quot;</span>)
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Repeatability calculation using the ANOVA method
+## 
+## R  = 0.884
+## SE = 0.017
+## CI = [0.851, 0.917]
+## P  = 0 []
+##      0.001 []
+</pre></div>
+</div></div>
+
+		
+		<h4>lme4</h4>
+		<p>To estimate repeatability directly from a mixed model<p>
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span>(lme4, quietly = T)
+mod = <span class="hl kwd">lmer</span>(lg_brain ~ 1 + (1 | species), data.ind)
+<span class="hl kwd">attr</span>(lme4::<span class="hl kwd">VarCorr</span>(mod)$species, <span class="hl str">&quot;stddev&quot;</span>)^2/(<span class="hl kwd">attr</span>(lme4::<span class="hl kwd">VarCorr</span>(mod)$species, 
+    <span class="hl str">&quot;stddev&quot;</span>)^2 + <span class="hl kwd">attr</span>(lme4::<span class="hl kwd">VarCorr</span>(mod), <span class="hl str">&quot;sc&quot;</span>)^2)
+</pre></div>
+<div class="output"><pre class="knitr r">## (Intercept) 
+##      0.9854
+</pre></div>
+</div></div>
+
+		
+		<p>To obtain P value based on randomization<p>
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r">null = <span class="hl kwd">c</span>()
+<span class="hl kwd"><span class="hl kwa">for</span></span> (i <span class="hl kwa">in</span> 1:1000) {
+    species_random = <span class="hl kwd">sample</span>(data.ind$species, <span class="hl kwd">length</span>(data.ind$species))
+    null[i] = <span class="hl kwd">anova</span>(<span class="hl kwd">lmer</span>(lg_brain ~ 1 + (1 | species_random), data.ind), mod, 
+        test = <span class="hl str">&quot;Chisq&quot;</span>)$Pr[2]
+}
+<span class="hl kwd">sum</span>(null &gt; 0.05)/<span class="hl kwd">length</span>(null)
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0
+</pre></div>
+</div></div>
+
+		
+		<p>To get 95% confidence intervals based on parametric bootstrap<p>
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r">rvalues &lt;- <span class="hl kwd">numeric</span>()
+<span class="hl kwd"><span class="hl kwa">for</span></span> (i <span class="hl kwa">in</span> 1:1000) {
+    y = <span class="hl kwd">simulate</span>(mod)
+    mboot &lt;- <span class="hl kwd">lmer</span>(y[, 1] ~ 1 + (1 | species), data.ind)
+    rvalues[i] = <span class="hl kwd">attr</span>(lme4::<span class="hl kwd">VarCorr</span>(mboot)$species, <span class="hl str">&quot;stddev&quot;</span>)^2/(<span class="hl kwd">attr</span>(lme4::<span class="hl kwd">VarCorr</span>(mboot)$species, 
+        <span class="hl str">&quot;stddev&quot;</span>)^2 + <span class="hl kwd">attr</span>(lme4::<span class="hl kwd">VarCorr</span>(mboot), <span class="hl str">&quot;sc&quot;</span>)^2)
+}
+<span class="hl kwd">quantile</span>(rvalues, <span class="hl kwd">c</span>(0.025, 0.975))
+</pre></div>
+<div class="output"><pre class="knitr r">##   2.5%  97.5% 
+## 0.9798 0.9891
+</pre></div>
+</div></div>
+
+		
+		<h4>MCMCglmm</h4>
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span>(MCMCglmm, quietly = T)
+prior &lt;- <span class="hl kwd">list</span>(R = <span class="hl kwd">list</span>(V = 1, nu = 0.002), G = <span class="hl kwd">list</span>(G1 = <span class="hl kwd">list</span>(V = 1, nu = 0.002)))
+mod.mcmc = <span class="hl kwd">MCMCglmm</span>(lg_body ~ 1, random = ~species, data = data.ind, prior = prior, 
+    verbose = F)
+Rvalue = mod.mcmc$VCV[, 1]/(mod.mcmc$VCV[, 1] + mod.mcmc$VCV[, 2])
+<span class="hl kwd">mean</span>(Rvalue)
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.8513
+</pre></div>
+</div></div>
+
+		
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">quantile</span>(Rvalue, <span class="hl kwd">c</span>(0.025, 0.975))
+</pre></div>
+<div class="output"><pre class="knitr r">##   2.5%  97.5% 
+## 0.8086 0.8896
+</pre></div>
+</div></div>
+
+		
+	<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+		
+	<ul>
+	<li>Bates D, Maechler M, Bolker B (2011) lme4: Linear mixed-effects models using S4 classes. R package version 0.999375-42/r1414.</li>
+	<li>Hadfield JD (2010) MCMC methods for multi-response generalized linear mixed models: the MCMCglmm R package. Journal of Statistical Software 33: 1-22</li>
+	<li>Nakagawa S, Schielzeth H (2010) Repeatability for Gaussian and non-Gaussian data: a practical guide for biologists. Biological Reviews 85: 935-956</li>
+
+</ul>
+
+	
+		
+</body>
+</html>
+
+	

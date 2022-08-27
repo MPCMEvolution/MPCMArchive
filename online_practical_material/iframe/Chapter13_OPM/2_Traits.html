@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+
+<body>
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004)</p>
+		<p style="padding-left: 30px;"><code>"geiger"</code> (Harmon et al. 2008)</p>
+		
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>		
+
+<p><i>Example 1: simulating a single trait under Brownian motion</i></p>
+
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">x.bm</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rTraitCont</span><span class="hl std">(trbd2)</span>
+<span class="hl std">x.bm</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##       t1       t2       t3       t4       t5       t6       t7       t8 
+## -1.55583 -0.62867 -0.05259  0.18589  0.32598  1.05130  0.10769  0.28563 
+##       t9      t10      t11      t12      t13      t14      t15      t16 
+##  0.41660 -0.21336 -0.14154 -0.09060 -0.38945 -0.62948 -0.34706 -0.34775 
+##      t17      t18      t19      t20      t21      t22 
+## -0.43898 -1.52219 -0.54451 -0.38288 -0.51639 -1.25199
+</pre></div>
+</div></div>
+
+
+<p>The BM parameter is defined by default &sigma; = 0.1; note that this
+is &sigma;, not &sigma;<sup>2</sup>, so this value must be squared to
+calculate the expected variance with &sigma;<sup>2</sup><i>T</i> where <i>T</i> is the
+time of evolution (which is here the age of the root because the tree is
+ultrametric). The value of <i>T</i> can be extracted with the function
+<code>branching.times</code> whose first value is the age of the root
+and we check that this is close to the observed variance of the simulated trait:</p>
+
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl num">0.1</span><span class="hl opt">^</span><span class="hl num">2</span> <span class="hl opt">*</span> <span class="hl kwd">branching.times</span><span class="hl std">(trbd2)[</span><span class="hl num">1</span><span class="hl std">]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##  23 
+## 0.5
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">var</span><span class="hl std">(x.bm)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.3787
+</pre></div>
+</div></div>
+
+
+<p><i>Example 2: contrasting continuous- and discrete-time simulation</i></p>
+
+<p>In this exercise, we want to simulate a BM model outside a tree (which
+is equivalent to simulating a trait along a single branch). We will
+show that using a discrete-time or a continuous-time formulation give
+exactly the same results. We first look at the respective mathematical
+expressions, first in continuous time:</p>
+
+<dl>
+<dd><i>x<sub>T</sub></i> = <i>x</i><sub>0</sub> + &epsilon;<i><sub>T</sub></i>, with &epsilon;<i><sub>T</sub></i> ~ <i>N</i>(0, &sigma;<sup>2</sup><i>T</i>),
+</dl>
+
+<p>where <i>N</i> denotes the normal distribution, and in discrete time:</p>
+
+<dl>
+<dd> <i>x<sub>T</sub></i> = <i>x</i><sub>0</sub> + &Sigma;  &epsilon;<i><sub>t</sub></i>, with &epsilon;<i><sub>t</sub></i> ~ <i>N</i>(0, &sigma;<sup>2</sup>), and <i>t</i> = 1, ..., <i>T</i>.
+</dl>
+
+<p>So it's needed to generate only one random normal variate with the
+first formulation, while we need to generate <i>T</i> variates in the second one.
+We are going to compare the running times of these two solutions in
+R setting &sigma; = 0.1 (the function <code>rnorm</code> is
+paramerized with the standard-deviation &sigma; while the  usual
+mathematical notation uses the variance &sigma;<sup>2</sup>),
+<i>T</i> = 100, and replicating the simulation 10,000 times (i.e., generating
+10,000 values of <i>x<sub>T</sub></i>):</p>
+
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">system.time</span><span class="hl std">(Xcont</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rnorm</span><span class="hl std">(</span><span class="hl num">10000</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">))</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##    user  system elapsed 
+##   0.002   0.000   0.001
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">system.time</span><span class="hl std">(Xdisc</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">replicate</span><span class="hl std">(</span><span class="hl num">10000</span><span class="hl std">,</span> <span class="hl kwd">sum</span><span class="hl std">(</span><span class="hl kwd">rnorm</span><span class="hl std">(</span><span class="hl num">100</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl num">0.1</span><span class="hl std">))))</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##    user  system elapsed 
+##   0.175   0.000   0.175
+</pre></div>
+</div></div>
+
+
+<p>Without surprise, the continuous-time model is much faster to
+simulate, and, of course, this will be even worst for larger values of
+<i>T</i>. We refer to the book to compare the strengths and weaknesses of
+both approaches. We can test that they gave the same results by
+testing that the means and variances of both samples are not
+significantly different:</p>
+
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">t.test</span><span class="hl std">(Xcont, Xdisc)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## 	Welch Two Sample t-test
+## 
+## data:  Xcont and Xdisc
+## t = -0.0279, df = 19998, p-value = 0.9778
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.02818  0.02739
+## sample estimates:
+## mean of x mean of y 
+##  -0.01302  -0.01263
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">var.test</span><span class="hl std">(Xcont, Xdisc)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## 	F test to compare two variances
+## 
+## data:  Xcont and Xdisc
+## F = 1.006, num df = 9999, denom df = 9999, p-value = 0.7745
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  0.9671 1.0460
+## sample estimates:
+## ratio of variances 
+##              1.006
+</pre></div>
+</div></div>
+
+
+<p><i>Example 3: Brownian motion with variable rate</i></p>
+
+<p>We will take a model with random rates &sigma; for each branch of the
+tree. We use the fact that in <code>rTraitCont</code>, the argument
+<code>sigma</code> can be a vector with as many values than the number of
+branches of the tree. The values of &sigma; are drawn from a
+continuous distribution between 0 and 1.</p>
+
+<div class="chunk" id="unnamed-chunk-9"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">sigs</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">runif</span><span class="hl std">(</span><span class="hl kwd">Nedge</span><span class="hl std">(tr))</span>
+<span class="hl std">x</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rTraitCont</span><span class="hl std">(tr,</span> <span class="hl kwc">sigma</span> <span class="hl std">= sigs)</span>
+</pre></div>
+</div></div>
+
+
+<p><i>Example 4: Stasis with Brownian motion after speciation</i></p>
+
+<p>The punctational model of evolution assumes that phenotypic change
+occurs mainly during speciation events. We see here two ways to
+simulate traits under such a model. The first one is to build a
+function to be used as argument to <code>rTraitCont</code> (note that the
+second argument of <code>foo</code> is not used inside the function but must
+be present in its definition):</p>
+
+<div class="chunk" id="unnamed-chunk-10"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">foo</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">,</span> <span class="hl kwc">l</span><span class="hl std">) x</span> <span class="hl opt">+</span> <span class="hl kwd">rnorm</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl num">0.1</span><span class="hl std">)</span>
+<span class="hl std">x</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rTraitCont</span><span class="hl std">(tr, foo)</span>
+</pre></div>
+</div></div>
+
+
+<p>The second way is to transform all the branch lengths to one and then
+use <code>rTraitCont</code> in the usual way:</p>
+
+<div class="chunk" id="unnamed-chunk-11"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">tr2</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">compute.brlen</span><span class="hl std">(tr,</span> <span class="hl num">1</span><span class="hl std">)</span>
+<span class="hl std">x</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rTraitCont</span><span class="hl std">(tr2)</span>
+</pre></div>
+</div></div>
+
+
+<p>In both cases we used &sigma; = 0.1 and change was independent of time.</p>
+
+<p><i>Example 5: Ornstein&ndash;Uhlenbeck model with two optima</i></p>
+
+<p>One stength of the OU model is that the parameter &theta; can vary
+which makes possible to model variable optima in adaptive evolution. For
+simplicity, let's consider a fully balanced tree with <i>n</i> = 16 and its
+branch lengths set equal to one:</p>
+
+<div class="chunk" id="unnamed-chunk-12"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">ts</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">compute.brlen</span><span class="hl std">(</span><span class="hl kwd">stree</span><span class="hl std">(</span><span class="hl num">16</span><span class="hl std">,</span> <span class="hl str">&quot;b&quot;</span><span class="hl std">),</span> <span class="hl num">1</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+
+<p>We then need to specify the values of &theta; for each branch of the
+tree; we choose here &theta; = 1 for the first half of the tree and
+&theta; = 10 for the second half (see below on how to find the indices
+of the branches):</p>
+
+<div class="chunk" id="unnamed-chunk-13"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">theta</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwd">Nedge</span><span class="hl std">(tr))</span>
+<span class="hl std">theta[</span><span class="hl num">16</span><span class="hl opt">:</span><span class="hl num">30</span><span class="hl std">]</span> <span class="hl kwb">&lt;-</span> <span class="hl num">10</span>
+</pre></div>
+</div></div>
+
+
+<p>We can now call <code>rTraitCont</code> with the appropriate options; we
+also ask this function to output the values of the simulated trait at
+the nodes of the tree:</p>
+
+<div class="chunk" id="unnamed-chunk-14"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">xou2</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rTraitCont</span><span class="hl std">(ts,</span> <span class="hl str">&quot;OU&quot;</span><span class="hl std">,</span> <span class="hl kwc">theta</span> <span class="hl std">= theta,</span> <span class="hl kwc">ancestor</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">xou2</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##     t1     t2     t3     t4     t5     t6     t7     t8     t9    t10 
+##  9.787  9.809  9.787  9.776  9.726  9.794  4.094  9.968  1.346  1.262 
+##    t11    t12    t13    t14    t15    t16  Node1  Node2  Node3  Node4 
+##  1.250  1.229  1.154  1.221  1.390  1.320  0.000  6.335  8.656  9.508 
+##  Node5  Node6  Node7  Node8  Node9 Node10 Node11 Node12 Node13 Node14 
+##  9.435  8.553  9.509  9.649  6.298  2.894  1.785  1.719  3.061  1.675 
+## Node15 
+##  1.700
+</pre></div>
+</div></div>
+
+
+<p>Note that the trait value at the root (labeled Node1) is zero. We can
+represent these data in different ways, we choose here vertical bars
+after rescaling the trait values (dividing them by 10):</p>
+
+<div class="chunk" id="unnamed-chunk-15"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">plot</span><span class="hl std">(ts,</span> <span class="hl kwc">label.offset</span> <span class="hl std">=</span> <span class="hl num">0.2</span><span class="hl std">)</span>
+<span class="hl std">xs</span> <span class="hl kwb">&lt;-</span> <span class="hl std">xou2</span><span class="hl opt">/</span><span class="hl num">10</span>
+<span class="hl kwd">nodelabels</span><span class="hl std">(</span><span class="hl kwc">thermo</span> <span class="hl std">=</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwd">Nnode</span><span class="hl std">(ts)),</span> <span class="hl kwc">height</span> <span class="hl std">= xs[</span><span class="hl opt">-</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">16</span><span class="hl std">)],</span> <span class="hl kwc">width</span> <span class="hl std">=</span> <span class="hl num">0.05</span><span class="hl std">)</span>
+<span class="hl kwd">tiplabels</span><span class="hl std">(</span><span class="hl kwc">thermo</span> <span class="hl std">=</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwd">Ntip</span><span class="hl std">(ts)),</span> <span class="hl kwc">height</span> <span class="hl std">= xs[</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">16</span><span class="hl std">],</span> <span class="hl kwc">width</span> <span class="hl std">=</span> <span class="hl num">0.05</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-15.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" class="plot" /></div></div>
+
+
+<p>If one wants to change a specific value in the vector <code>theta</code>, it
+is possible to find the indices of all branches with a plot of the tree:</p>
+
+<div class="chunk" id="unnamed-chunk-16"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">plot</span><span class="hl std">(ts)</span>
+<span class="hl kwd">edgelabels</span><span class="hl std">()</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-16.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" class="plot" /></div></div>
+
+
+<p><i>Example 6: simple Markov chain</i></p>
+
+<p>One of the simplest models of discrete trait evolution can be modeled
+with a Markov chain with two states and equal transition rates. This
+is the default of the function <code>rTraitDisc</code>:</p>
+
+<div class="chunk" id="unnamed-chunk-17"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">x</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rTraitDisc</span><span class="hl std">(tr)</span>
+<span class="hl std">x</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##  t2  t7  t5  t4 t10  t1  t3  t9  t6  t8 
+##   A   A   A   A   A   B   A   A   A   A 
+## Levels: A B
+</pre></div>
+</div></div>
+
+
+<p>To change the model to one with asymmetric rates, we can simply use
+the short-cut "ARD" as model and give the values of rates (if only
+one value is given, an error is returned):</p>
+
+<div class="chunk" id="unnamed-chunk-18"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">x</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rTraitDisc</span><span class="hl std">(tr,</span> <span class="hl str">&quot;ARD&quot;</span><span class="hl std">,</span> <span class="hl kwc">rate</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">0.1</span><span class="hl std">,</span> <span class="hl num">0.2</span><span class="hl std">))</span>
+<span class="hl std">x</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##  t2  t7  t5  t4 t10  t1  t3  t9  t6  t8 
+##   A   A   A   A   A   A   B   A   A   A 
+## Levels: A B
+</pre></div>
+</div></div>
+
+
+<p><i>Example 7: meristic characters</i></p>
+
+<p>This kind of discrete traits evolve so that only transitions between
+'contiguous states' are possible. For instance, we can assume that the
+number of vertebrae (or other developmental units) can only change by
+adding (or removing) one vertebra at a time. There are several ways to
+simulate such a model of evolution in R. If the number of states is
+limited, it is possible to build a Markov chain where only the
+transitions close to the diagonal will be permitted:</p>
+
+<div class="chunk" id="unnamed-chunk-19"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">m</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">)</span>
+<span class="hl kwa">for</span> <span class="hl std">(i</span> <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">3</span><span class="hl std">) m[i, i</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl std">]</span> <span class="hl kwb">&lt;-</span> <span class="hl std">m[i</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl std">, i]</span> <span class="hl kwb">&lt;-</span> <span class="hl num">2</span>
+<span class="hl std">m</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##      [,1] [,2] [,3] [,4]
+## [1,]    0    2    0    0
+## [2,]    2    0    2    0
+## [3,]    0    2    0    2
+## [4,]    0    0    2    0
+</pre></div>
+</div></div>
+
+
+<p>In this model the rates of increase and of decrease are equal, but
+this can be modified easily. This matrix is then used as argument to
+the option <code>model</code>:</p>
+
+<div class="chunk" id="unnamed-chunk-20"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">rTraitDisc</span><span class="hl std">(tr,</span> <span class="hl kwc">model</span> <span class="hl std">= m)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##  t2  t7  t5  t4 t10  t1  t3  t9  t6  t8 
+##   B   A   B   B   A   B   A   B   A   A 
+## Levels: A B C D
+</pre></div>
+</div></div>
+
+
+<p>This model assumes a limited number of states for the trait. For a
+model with an infinite number of states, it is better to use
+<code>rTraitCont</code> with a custom function such as:</p>
+
+<div class="chunk" id="unnamed-chunk-21"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">m</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">,</span> <span class="hl kwc">l</span><span class="hl std">) x</span> <span class="hl opt">+</span> <span class="hl kwd">sample</span><span class="hl std">(</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">size</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+
+<p>In this model, <i>x</i> is evolved by adding &ndash;1, 0, or +1 with
+equal probability. These probabilities can be
+changed with the option <code>prob</code> of <code>sample</code>; for instance, a
+model where the probability of no change is equal to 0.9
+and the probability of change in either direction is equal to 0.05
+would be defined with:</p>
+
+<div class="chunk" id="unnamed-chunk-22"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">m</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">,</span> <span class="hl kwc">l</span><span class="hl std">) x</span> <span class="hl opt">+</span> <span class="hl kwd">sample</span><span class="hl std">(</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">size</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">prob</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">0.05</span><span class="hl std">,</span> <span class="hl num">0.9</span><span class="hl std">,</span> <span class="hl num">0.05</span><span class="hl std">))</span>
+</pre></div>
+</div></div>
+
+
+<p><i>Example 8: branch length transformation</i></p>
+
+<p>We have seen several times than, under a Brownian motion model, the
+quantity of evolution accumulated through time is expected to be equal
+to &sigma;<sup>2</sup> <i>T</i>. Thus, changing the value of <i>T</i> (the time of
+evolution) will have the same effect than changing the value of
+&sigma;<sup>2</sup> (the rate of evolution) as long as their product is the
+same. Thus, we can simulate various models of evolution on a phylogeny
+by transforming its branch lengths (as long as they represent values
+of time).</p>
+
+<p>The package <code>geiger</code> has the function <code>rescale</code> which transforms
+the branch lengths of a tree according to a specified model (11 models
+are available). The function <code>compute.brlen</code> in <code>ape</code> provides a
+way to change branch lengths with user-defined numerical values or a
+function. It is also possible to modify the length of a specific
+branch in R's standard way, for instance:</p>
+
+<div class="chunk" id="unnamed-chunk-23"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">tr</span><span class="hl opt">$</span><span class="hl std">edge.length[</span><span class="hl num">5</span><span class="hl std">]</span> <span class="hl kwb">&lt;-</span> <span class="hl num">10</span>
+</pre></div>
+</div></div>
+
+
+<p>The transformed tree is then used to simulate traits as seen before.</p>
+
+<p><i>Example 9: two correlated traits</i></p>
+
+<p>There are a number of ways to model the correlated evolution of two
+traits. We take here a model:</p>
+
+<dl>
+<dd> <i>X<sub>t</sub></i> = <i>X</i><sub>0</sub> + <i>M</i> &epsilon;<i><sub>t</sub></i>,
+</dl>
+
+<p>where <i>X</i> is a vector with two values, <i>M</i> is a matrix giving the
+strength of the correlation between the two traits, and &epsilon;<sub><i>t</i></sub>
+is a vector of two independent random normal variates. We define <i>M</i>
+as a 2 by 2 matrix with diagonal elements 1 and off-diagonal elements 0.5,
+which shows that this is a model with correlated errors. We can write the model as a function:</p>
+
+<div class="chunk" id="unnamed-chunk-24"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">sigma</span> <span class="hl kwb">&lt;-</span> <span class="hl num">0.1</span>
+<span class="hl std">M</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">0.5</span><span class="hl std">,</span> <span class="hl num">0.5</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">),</span> <span class="hl num">2</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">)</span>
+<span class="hl std">foo</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">,</span> <span class="hl kwc">l</span><span class="hl std">) x</span> <span class="hl opt">+</span> <span class="hl std">M</span> <span class="hl opt">%*%</span> <span class="hl kwd">rnorm</span><span class="hl std">(</span><span class="hl num">2</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">, sigma</span> <span class="hl opt">*</span> <span class="hl std">l)</span>
+</pre></div>
+</div></div>
+
+
+<p>The function <code>foo</code> has the same arguments than we have seen above, but this
+time it returns a vector of length two instead of a single
+value. There is also a notable difference: <code>sigma</code> and <code>M</code>
+have been defined outside <code>foo</code> and this one can found them
+thanks to the lexical scoping rule of R. This is useful to run several
+simulations and changing the values of these parameters as done below:</p>
+
+<div class="chunk" id="unnamed-chunk-25"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">rTraitMult</span><span class="hl std">(tr, foo,</span> <span class="hl kwc">p</span> <span class="hl std">=</span> <span class="hl num">2</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##             x1       x2
+## t2  -1.2441561 -2.00833
+## t7  -1.3089568 -1.95362
+## t5   0.2059091  0.06923
+## t4   0.1045884 -0.01463
+## t10 -0.1122785 -0.07383
+## t1   0.1091219  0.04879
+## t3  -0.2106405 -0.21023
+## t9   0.0679979  0.11302
+## t6   0.0610700  0.05060
+## t8   0.0004179  0.02351
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">sigma</span> <span class="hl kwb">&lt;-</span> <span class="hl num">1</span>
+<span class="hl kwd">rTraitMult</span><span class="hl std">(tr, foo,</span> <span class="hl kwc">p</span> <span class="hl std">=</span> <span class="hl num">2</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##          x1       x2
+## t2  -0.7955 -7.29234
+## t7  -1.4215 -6.98234
+## t5  -3.1582 -2.99656
+## t4  -2.6850 -2.49535
+## t10 -2.9068 -3.10976
+## t1  -2.6136 -1.71306
+## t3  -0.6735  0.99482
+## t9  -1.4408 -0.19704
+## t6  -0.4405  0.04391
+## t8   0.4374 -0.66539
+</pre></div>
+</div></div>
+
+
+<p><i>Example 10: assessing type I error rates</i></p>
+
+<div class="chunk" id="unnamed-chunk-26"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">Pvalue</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">n</span><span class="hl std">) {</span>
+    <span class="hl std">tr</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rtree</span><span class="hl std">(n)</span>
+    <span class="hl std">x</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rnorm</span><span class="hl std">(n)</span>  <span class="hl com"># rTraitCont(tr)</span>
+    <span class="hl std">y</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rnorm</span><span class="hl std">(n)</span>  <span class="hl com"># rTraitCont(tr)</span>
+    <span class="hl kwd">summary</span><span class="hl std">(</span><span class="hl kwd">lm</span><span class="hl std">(</span><span class="hl kwd">pic</span><span class="hl std">(x, tr)</span> <span class="hl opt">~</span> <span class="hl kwd">pic</span><span class="hl std">(y, tr)</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl std">))</span><span class="hl opt">$</span><span class="hl std">coef[</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">]</span>
+<span class="hl std">}</span>
+
+<span class="hl std">typeIerrorRate</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">n</span><span class="hl std">,</span> <span class="hl kwc">nrep</span><span class="hl std">)</span> <span class="hl kwd">sum</span><span class="hl std">(</span><span class="hl kwd">replicate</span><span class="hl std">(nrep,</span> <span class="hl kwd">Pvalue</span><span class="hl std">(n))</span> <span class="hl opt">&lt;</span> <span class="hl num">0.05</span><span class="hl std">)</span><span class="hl opt">/</span><span class="hl std">nrep</span>
+
+<span class="hl kwd">sapply</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">10</span><span class="hl std">,</span> <span class="hl num">50</span><span class="hl std">,</span> <span class="hl num">100</span><span class="hl std">), typeIerrorRate,</span> <span class="hl kwc">nrep</span> <span class="hl std">=</span> <span class="hl num">10000</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.1192 0.1714 0.1911
+</pre></div>
+</div></div>
+
+
+<p>This code evaluates the type I error rate of testing the correlation
+of two variables that do not evolve on a tree and controlling
+(wrongly) for phylogenetic dependence. The function <code>Pvalue</code> can
+easily be modified to simulate different scenarios (as shown after the
+<code>#</code>). <code>n</code> is the number of species in the tree and
+<code>nrep</code> is the number of replications of the simulation. The last
+command was used to calculate the type I error rates reported in the
+book.</p>
+
+<p><i>Example 11: constrained simulation with a known ancestral character</i></p>
+
+This problem was <a href="https://stat.ethz.ch/pipermail/r-sig-phylo/2014-February/003281.html">suggested by Tristan Lefebure</a>:
+
+<dl>
+<dd> Say that we have two characters that are evolutionary correlated: one is
+continuous (say body length) the other being discrete (say habitat type).
+Let's say also that we know how these two characters are correlated (for
+exemple from a prior pgls analysis), and that we know the ancestral state
+of the discrete character (say from paleoecological studies). How would you
+simulate the evolution of the continuous trait with a BM model given the
+ancestral state of the discrete one?
+</dl>
+
+<p>This is a very interesting question which has many potential
+applications, particularly since paleoecological data are widely
+available. In the function <code>rTraitCont</code>, the option <code>model</code>
+can be either "BM" or "OU", but also a function of the form
+<code>f(x, l)</code> where <code>x</code> is the trait value of the ancestor
+and <code>l</code> is the branch length; this function must return the value
+of the trait after evolution along that branch. A simple example could be:</p>
+
+<div class="chunk" id="unnamed-chunk-27"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">f</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">,</span> <span class="hl kwc">l</span><span class="hl std">) x</span> <span class="hl opt">+</span> <span class="hl kwd">rnorm</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl num">0.1</span> <span class="hl opt">*</span> <span class="hl kwd">sqrt</span><span class="hl std">(l))</span>
+<span class="hl kwd">rTraitCont</span><span class="hl std">(tr,</span> <span class="hl kwc">model</span> <span class="hl std">= f)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##       t2       t7       t5       t4      t10       t1       t3       t9 
+##  0.47416  0.60474  0.20600  0.27827  0.23707  0.15512  0.14326  0.24908 
+##       t6       t8 
+##  0.13863 -0.03565
+</pre></div>
+</div></div>
+
+
+<p>which is nothing else than our classical BM model with
+&sigma; = 0.1. The way the ancestral value is called in the code of
+<code>rTraitCont</code> makes possible to use known values for a specific
+node. For instance, suppose we want to simulate a model where the
+trait follows a BM process with &sigma; = 0.1 when the variable
+`habitat' is 1, and with &sigma; = 0.5 when its is 2. To prepare our
+simulations, we need to build two vectors: one with the values of
+&sigma; and one with the values of `habitat' ordered along the node
+numbers of the tree:</p>
+
+<div class="chunk" id="unnamed-chunk-28"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">sigma</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">0.1</span><span class="hl std">,</span> <span class="hl num">0.5</span><span class="hl std">)</span>
+<span class="hl std">habitat</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">)</span>  <span class="hl com"># etc....</span>
+</pre></div>
+</div></div>
+
+
+<p>In this case, we would have habitat = 1 for the first and the second
+nodes, etc. (the node numbering system used by <code>ape</code> can be displayed with
+<code>nodelabels()</code> after plotting a tree). We can now define our
+model with this function:</p>
+
+<div class="chunk" id="unnamed-chunk-29"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">f</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">,</span> <span class="hl kwc">l</span><span class="hl std">) {</span>
+    <span class="hl std">sig</span> <span class="hl kwb">&lt;-</span> <span class="hl std">sigma[</span><span class="hl kwd">as.numeric</span><span class="hl std">(habitat[anc[i]</span> <span class="hl opt">-</span> <span class="hl std">n])]</span>
+    <span class="hl std">x</span> <span class="hl opt">+</span> <span class="hl kwd">rnorm</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">, sig</span> <span class="hl opt">*</span> <span class="hl std">l)</span>
+<span class="hl std">}</span>
+</pre></div>
+</div></div>
+
+
+<p>The crucial bit is <code>anc[i]</code> which matches the internal code of
+<code>rTraitCont</code>. Note the offset <code>-n</code> because the node numbers
+starts from <i>n</i> + 1 (this offset would be omitted if <code>habitat</code> were a
+concatenated vector of the recent and ancestral values). The
+<code>as.numeric</code> is to insure that a numeric value is used even if
+<code>habitat</code> is coded as a factor.</p>
+
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+<ul>
+<li>Harmon LJ, Weir JT, Brock CD, Glor RE, Challenger W (2008) GEIGER: investigating evolutionary radiations. Bioinformatics 24:129-131</li>
+<li>Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20:289-290</li>
+</ul>
+
+</body>
+</html>

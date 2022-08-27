@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+</HEAD>
+
+<BODY >
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+		<p style="padding-left: 30px;"><code>"MCMCglmm"</code> (Hadfield, 2010a) </p>
+
+	<h4>Data</h4>
+	<p style="padding-left: 30px;"><strong>Phenotypic data</strong> (<code>"data_repeat.txt"</code>), Data frame containing the phenotypic data (with multiple measurement) </p>
+	<p style="padding-left: 30px;"><strong>Phylogeny</strong> (<code>"phylo.nex"</code>), Phylogeny file (NEXUS file)</p>
+
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+<P>
+Let's build up on the example from the last section by adding multiple 
+measurements per species:
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl kwd">library</span><span class="hl std">(ape)</span>
+  <span class="hl kwd">library</span><span class="hl std">(MCMCglmm)</span>
+  <span class="hl std">phylo</span><span class="hl kwb">&lt;-</span><span class="hl kwd">read.nexus</span><span class="hl std">(</span><span class="hl str">&quot;phylo.nex&quot;</span><span class="hl std">)</span>
+  <span class="hl std">data</span><span class="hl kwb">&lt;-</span><span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;data_repeat.txt&quot;</span><span class="hl std">,</span><span class="hl kwc">header</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+  <span class="hl kwd">head</span><span class="hl std">(data)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##     phen cofactor species phylo
+## 1 107.42   11.224    sp_1  sp_1
+## 2 109.16    9.806    sp_1  sp_1
+## 3  91.89   10.308    sp_1  sp_1
+## 4 121.54    8.355    sp_1  sp_1
+## 5 105.32   11.855    sp_1  sp_1
+## 6  65.00    4.314    sp_2  sp_2
+</pre></div>
+</div></div>
+How can we analyse such a dataset using a phylogenetic mixed model? 
+We only have to add a new random effect taking into account the 
+fact that each species has a ``multiple measurement effect''. Note the new 
+column <TT>species</TT>, which is identical to the <TT>phylo</TT> one and will be 
+used for that purpose. First, we will try to fit the model described in Eqn.
+(6) in the main text, using the specific mean of the cofactor:
+<div class="chunk" id="unnamed-chunk-9"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl std">data</span><span class="hl opt">$</span><span class="hl std">spec_mean_cf</span><span class="hl kwb">&lt;-</span><span class="hl kwd">sapply</span><span class="hl std">(</span><span class="hl kwd">split</span><span class="hl std">(data</span><span class="hl opt">$</span><span class="hl std">cofactor,data</span><span class="hl opt">$</span><span class="hl std">phylo),mean)[data</span><span class="hl opt">$</span><span class="hl std">phylo]</span>
+</pre></div>
+</div></div>
+The code is a bit complex because we need to overcome the fact that R is trying to sort alphabetically
+the species name (which we don't want!), but we are simply calculating the mean of the cofactor
+for each species and pulling it in a new entry of the data frame. Now, because we have a new random effect, 
+we also need to change our priors. The model would thus be:
+<div class="chunk" id="unnamed-chunk-10"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">inv.phylo</span><span class="hl kwb">&lt;-</span><span class="hl kwd">inverseA</span><span class="hl std">(phylo,</span><span class="hl kwc">nodes</span><span class="hl std">=</span><span class="hl str">&quot;TIPS&quot;</span><span class="hl std">,</span><span class="hl kwc">scale</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">prior2</span><span class="hl kwb">&lt;-</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G1</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl kwc">nu</span><span class="hl std">=</span><span class="hl num">0.02</span><span class="hl std">),</span><span class="hl kwc">G2</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl kwc">nu</span><span class="hl std">=</span><span class="hl num">0.02</span><span class="hl std">)),</span>
+   <span class="hl kwc">R</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl kwc">nu</span><span class="hl std">=</span><span class="hl num">0.02</span><span class="hl std">))</span>
+<span class="hl std">model_repeat1</span><span class="hl kwb">&lt;-</span><span class="hl kwd">MCMCglmm</span><span class="hl std">(phen</span><span class="hl opt">~</span><span class="hl std">spec_mean_cf,</span><span class="hl kwc">random</span><span class="hl std">=</span><span class="hl opt">~</span><span class="hl std">phylo</span><span class="hl opt">+</span><span class="hl std">species,</span>
+   <span class="hl kwc">family</span><span class="hl std">=</span><span class="hl str">&quot;gaussian&quot;</span><span class="hl std">,</span><span class="hl kwc">ginverse</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">phylo</span><span class="hl std">=inv.phylo</span><span class="hl opt">$</span><span class="hl std">Ainv),</span>
+   <span class="hl kwc">prior</span><span class="hl std">=prior2,</span><span class="hl kwc">data</span><span class="hl std">=data,</span><span class="hl kwc">nitt</span><span class="hl std">=</span><span class="hl num">5000000</span><span class="hl std">,</span><span class="hl kwc">burnin</span><span class="hl std">=</span><span class="hl num">1000</span><span class="hl std">,</span><span class="hl kwc">thin</span><span class="hl std">=</span><span class="hl num">500</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+Since the columns <TT>phylo</TT> and <TT>species</TT> have the same 
+content and are called in the same fashion in the model, one would wonder if 
+they are not accounting for the same thing. Actually, a careful inspection of
+the <TT>ginverse</TT> argument would show that we are providing the phylogenetic
+variance-covariance for the <TT>phylo</TT> effect, but not for the <TT>species</TT>
+one. This means that <TT>species</TT> is here to account for 
+any specific effect that would be independent from the phylogenetic relationship
+between species (e.g. environmental/niche effects). This is also visible in 
+Eqn. (4) in the main text. Here, because we distinguish these
+effects from the residual variance, the residual variance <TT>units</TT> now 
+actually corresponds to the intra-specific variance (which is assumed equal 
+across species). The output summary follows:
+<div class="chunk" id="unnamed-chunk-11"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">summary</span><span class="hl std">(model_repeat1)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+##  Iterations = 1001:4999501
+##  Thinning interval  = 500
+##  Sample size  = 9998 
+## 
+##  DIC: 7187 
+## 
+##  G-structure:  ~phylo
+## 
+##       post.mean l-95% CI u-95% CI eff.samp
+## phylo       278      153      403     8804
+## 
+##                ~species
+## 
+##         post.mean l-95% CI u-95% CI eff.samp
+## species      24.4     8.48     41.7     9444
+## 
+##  R-structure:  ~units
+## 
+##       post.mean l-95% CI u-95% CI eff.samp
+## units      65.8     59.5     72.3     9343
+## 
+##  Location effects: phen ~ spec_mean_cf 
+## 
+##              post.mean l-95% CI u-95% CI eff.samp  pMCMC    
+## (Intercept)      38.32    23.02    54.50     9998 <1e-04 ***
+## spec_mean_cf      5.10     4.89     5.29     9253 <1e-04 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+</pre></div>
+</div></div>
+Because our sampling of individuals within species was totally unbiased, the 
+results are similar, except we now have an estimate of the intra-specific 
+variance, which is represented by the residual variance <TT>units</TT>. 
+
+We did not, however, use the whole dataset in the previous model. We totally
+ignored the intra-specific variability of the cofactor. In order to get an
+estimate for the ``between-species'' and ``within-species'' (see Eqn. (7)
+in the main text), we need to use the <SPAN  CLASS="textit">within-group centring</SPAN> technique:
+<div class="chunk" id="unnamed-chunk-12"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">data</span><span class="hl opt">$</span><span class="hl std">within_spec_cf</span><span class="hl kwb">&lt;-</span><span class="hl std">data</span><span class="hl opt">$</span><span class="hl std">cofactor</span><span class="hl opt">-</span><span class="hl std">data</span><span class="hl opt">$</span><span class="hl std">spec_mean_cf</span>
+</pre></div>
+</div></div>
+We can now use a slightly more elaborate model:
+<div class="chunk" id="unnamed-chunk-13"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">model_repeat2</span><span class="hl kwb">&lt;-</span><span class="hl kwd">MCMCglmm</span><span class="hl std">(phen</span><span class="hl opt">~</span><span class="hl std">spec_mean_cf</span><span class="hl opt">+</span><span class="hl std">within_spec_cf,</span>
+    <span class="hl kwc">random</span><span class="hl std">=</span><span class="hl opt">~</span><span class="hl std">phylo</span><span class="hl opt">+</span><span class="hl std">species,</span><span class="hl kwc">family</span><span class="hl std">=</span><span class="hl str">&quot;gaussian&quot;</span><span class="hl std">,</span>
+    <span class="hl kwc">ginverse</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">phylo</span><span class="hl std">=inv.phylo</span><span class="hl opt">$</span><span class="hl std">Ainv),</span><span class="hl kwc">prior</span><span class="hl std">=prior2,</span><span class="hl kwc">data</span><span class="hl std">=data,</span>
+    <span class="hl kwc">nitt</span><span class="hl std">=</span><span class="hl num">5000000</span><span class="hl std">,</span><span class="hl kwc">burnin</span><span class="hl std">=</span><span class="hl num">1000</span><span class="hl std">,</span><span class="hl kwc">thin</span><span class="hl std">=</span><span class="hl num">500</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+The fixed effect <TT>spec_mean_cf</TT> corresponds to the between-species slope
+(just as the previous model) and the fixed effect <TT>within_spec_cf</TT> corresponds
+to the within-species slope. As usual, we can have a look at the results:
+<div class="chunk" id="unnamed-chunk-14"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">summary</span><span class="hl std">(model_repeat2)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+##  Iterations = 1001:4999501
+##  Thinning interval  = 500
+##  Sample size  = 9998 
+## 
+##  DIC: 7189 
+## 
+##  G-structure:  ~phylo
+## 
+##       post.mean l-95% CI u-95% CI eff.samp
+## phylo       278      159      409     9998
+## 
+##                ~species
+## 
+##         post.mean l-95% CI u-95% CI eff.samp
+## species      24.4      8.3     41.7     9998
+## 
+##  R-structure:  ~units
+## 
+##       post.mean l-95% CI u-95% CI eff.samp
+## units      65.8     59.3     72.4     9998
+## 
+##  Location effects: phen ~ spec_mean_cf + within_spec_cf 
+## 
+##                post.mean l-95% CI u-95% CI eff.samp  pMCMC    
+## (Intercept)      38.3001  22.5414  53.8096     9998 <1e-04 ***
+## spec_mean_cf      5.0988   4.8918   5.2982     9998 <1e-04 ***
+## within_spec_cf   -0.0576  -0.4284   0.3061     9998   0.75    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+</pre></div>
+</div></div>
+The results are almost unchanged, with apparently no relationship between
+the phenotype <TT>phen</TT> and <TT>cofactor</TT> on the intra-specific level.
+Finally, we can again calculate <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img7.png"
+ ALT="$ \lambda$"></SPAN> using:
+<div class="chunk" id="unnamed-chunk-15"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">lambda</span> <span class="hl kwb">&lt;-</span> <span class="hl std">model_repeat2</span><span class="hl opt">$</span><span class="hl std">VCV[,</span><span class="hl str">'phylo'</span><span class="hl std">]</span><span class="hl opt">/</span>
+ <span class="hl std">(model_repeat2</span><span class="hl opt">$</span><span class="hl std">VCV[,</span><span class="hl str">'phylo'</span><span class="hl std">]</span><span class="hl opt">+</span><span class="hl std">model_repeat2</span><span class="hl opt">$</span><span class="hl std">VCV[,</span><span class="hl str">'species'</span><span class="hl std">]</span><span class="hl opt">+</span>
+ <span class="hl std">model_repeat2</span><span class="hl opt">$</span><span class="hl std">VCV[,</span><span class="hl str">'units'</span><span class="hl std">])</span>
+</pre></div>
+</div></div>
+
+
+</BODY>
+</HTML>

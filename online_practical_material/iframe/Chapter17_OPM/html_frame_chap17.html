@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+
+<body>
+
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+		
+		<p style="padding-left: 30px;"> <code>"ABC_PCM.c"</code>: A program code used in an analysis of weevil rostrum length in Chapter 17. Programs were written in C and should be run in a Unix (Linux) machine. All data can be input in the .c file. Each branch is labeled with consecutive numbers, which corresponded with its descendent node (shown in a parenthesis on the phylogeny below).</p>
+		
+</div><div class="rimage default"><img src="figure/image001.png" title="plot of image001" alt="plot of image001" class="plot" /></div></div>		
+		
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+	
+<p>Since we are interested in estimating trait values of internal nodes at the end of branch 0 and 1, we output a value of MRCA (theta), P[0], and P[1] (corresponding to species A, B, and C in Fig 17.2).</p>
+
+<p>Compile the C code as</p>
+
+<div class="source"><pre class="knitr r">
+>> gcc ABC_PCM.c
+</pre></div>
+
+<p>Run the program</p>
+<div class="source"><pre class="knitr r">
+>> ./a.out
+</pre></div>
+
+<p>The following output file will be created (in /Users in the case of Mac):</p>
+
+<table class=MsoNormalTable border=0 cellspacing=0 cellpadding=0 width=270
+ style='margin-left:4.2pt;border-collapse:collapse;mso-table-layout-alt:fixed;
+ mso-yfti-tbllook:1184;mso-padding-alt:0cm 4.95pt 0cm 4.95pt'>
+ <tr style='mso-yfti-irow:0;mso-yfti-firstrow:yes;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span class=GramE><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>theta</span></span><span style='font-size:11.0pt;mso-fareast-font-family:
+  "\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";color:black'><o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span class=GramE><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>k</span></span><span style='font-size:11.0pt;mso-fareast-font-family:
+  "\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";color:black'><o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span class=GramE><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>mu</span></span><span style='font-size:11.0pt;mso-fareast-font-family:
+  "\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";color:black'><o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span class=GramE><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>P[</span></span><span style='font-size:11.0pt;mso-fareast-font-family:
+  "\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";color:black'>0]<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span class=GramE><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>P[</span></span><span style='font-size:11.0pt;mso-fareast-font-family:
+  "\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";color:black'>1]<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span class=SpellE><span
+  class=GramE><span style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>loglik</span></span></span><span style='font-size:11.0pt;
+  mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";color:black'><o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span class=GramE><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>bar</span></span><span style='font-size:11.0pt;mso-fareast-font-family:
+  "\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";color:black'><o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.54<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.5<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.73<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.6<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.76<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-10.93<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.01<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.17<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.44<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.05<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.35<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.65<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-6.06<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.73<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.56<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>9.84<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.79<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.81<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.38<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.12<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.14<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.78<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.06<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>15.86<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.76<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.06<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.58<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.01<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:5;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.47<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.76<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.96<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.76<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.03<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-10.89<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:6;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.24<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.49<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>7.73<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.94<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.89<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.55<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.12<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:7;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.9<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.57<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>7.43<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.02<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.13<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.39<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.08<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:8;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.85<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>1.93<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>18.23<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.58<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.53<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-6.26<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.72<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:9;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.57<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.57<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>9.73<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.89<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.39<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-6.51<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.32<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:10;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.8<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>10.71<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.19<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.57<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.01<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-11.92<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:11;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.28<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.88<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.78<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.19<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.4<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-9.06<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.02<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:12;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.33<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.97<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.76<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.39<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.29<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-10.06<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.01<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:13;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.93<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.84<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>9.25<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.03<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.05<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-10.71<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.01<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:14;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.5<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.2<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>8.74<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.36<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.94<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-5.04<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.77<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:15;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.9<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>9.38<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>1.87<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.53<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.55<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.07<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:16;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.32<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.93<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.21<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.36<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.86<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.1<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:17;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.25<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.64<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.66<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.22<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.58<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.24<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.27<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:18;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.38<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.96<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>9.86<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.1<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.97<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.51<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:19;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.56<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.6<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>7.35<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.48<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.37<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.81<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.12<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:20;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.52<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.4<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>7.68<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.58<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.36<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-10.49<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.01<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:21;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.4<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.03<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>10.3<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.37<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.33<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.2<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.03<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:22;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.86<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>15.97<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.06<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.34<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.17<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-13.92<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:23;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.01<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.3<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.45<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.16<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.29<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.27<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.06<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:24;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.34<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.57<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>9.6<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.52<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.42<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-9.95<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.01<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:25;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.19<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>13.08<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>1.73<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.28<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.25<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.76<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.13<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:26;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.04<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>11.36<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.76<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.03<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.17<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.03<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.23<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:27;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.2<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.54<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.77<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.53<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.22<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-6.47<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.34<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:28;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.87<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.96<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.61<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.46<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.59<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-7.31<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.19<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:29;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.87<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.13<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.79<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.27<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.55<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-4.77<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.51<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:30;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>5.97<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.51<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>7.79<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.8<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.91<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-10.87<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:31;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.62<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.17<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>13.55<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.75<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.68<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-6.72<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.2<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:32;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.52<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.04<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>14.34<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.94<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.33<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-8.14<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.1<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:33;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.15<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>1.85<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>21.83<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>6.95<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.54<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-6.99<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.19<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:34;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.05<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>2.03<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>17.96<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>4.55<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>3.46<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>-6.55<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>0.09<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:35;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:36;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:37;mso-yfti-lastrow:yes;height:18.0pt'>
+  <td width=43 nowrap valign=bottom style='width:43.3pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=43 nowrap valign=bottom style='width:42.5pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+  <td width=35 nowrap valign=bottom style='width:35.45pt;padding:0cm 4.95pt 0cm 4.95pt;
+  height:18.0pt'>
+  <p class=MsoNormal align=center style='text-align:center'><span
+  style='font-size:11.0pt;mso-fareast-font-family:"\FF2D\FF33 \FF30\30B4\30B7\30C3\30AF";
+  color:black'>.<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+	<ul>
+	<li>Kutsukake N, Innan H (2013) Simulation-based likelihood approach for evolutionary models of phenotypic traits on phylogeny. Evolution 67:355-367.</li>
+	</ul>
+
+</body>
+</html>

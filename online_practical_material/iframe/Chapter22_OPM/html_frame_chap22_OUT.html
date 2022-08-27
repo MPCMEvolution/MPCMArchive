@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+
+<body>
+
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"paleotree"</code> (Bapst 2012) </p>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+	
+	<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>data(retiolitinae)</strong>, a small dataset available as part of the public release of <code>"paleotree"</code>, containing a cladogram and temporal ranges taken from Bates et al. (2005) and Sadler et al. (2008)</p>
+		
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+<p>The software package <code>"paleotree"</code> (Bapst, 2012) contains a number of functions related to preparing and time-scaling phylogenetic datasets in paleobiology, implemented in the free programming environment R (R Core Team, 2013). For example, the function <code>expandTaxonTree</code> can replace one set of taxa with polytomies of multiple subtaxa, given a taxonomic list, as discussed above. Time-scaling a cladogram post-inference with <code>"paleotree"</code> can involve multiple steps and decisions. Here, I demonstrate inputting and time-scaling an example dataset with <code>"paleotree"</code> using a small dataset of generic ranges and relationships, for the planktonic graptolite clade known as the Retiolitinae (Bates et al., 2005). These stratigraphic ranges were originally given in graptolite biozones from the Silurian, but finely resolved boundary dates for most of those biozones can be obtained from Sadler et al. (2009).</p>
+
+<p>The first step in time-scaling is to input data in <strong>R</strong> and get it into the correct format. The Retiolitinae data is included with the public release of <code>"paleotree"</code> at the Comprehensive R Archive Network (CRAN), and can be downloaded and installed from within <strong>R</strong> by inputting the following command into the <strong>R</strong> console, which will also automatically download and install all dependencies:</p>
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">install.packages</span><span class="hl std">(</span><span class="hl str">&quot;paleotree&quot;</span><span class="hl std">)</span>
+</pre></div>
+
+<p>The package and the data can then be loaded with the following two commands:</p>
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(paleotree)</span>
+<span class="hl kwd">data</span><span class="hl std">(retiolitinae)</span>
+</pre></div>
+</div></div>
+
+<p>This adds two objects to our workspace in <strong>R</strong>: a phylogeny (<code>retioTree</code>) and a dataset of stratigraphic ranges (<code>retioRanges</code>). You can always use the function <code>ls()</code> in <strong>R</strong> to list what objects are in your current workspace. In this case, both <code>retioTree</code> and <code>retioRanges</code> are formatted as <code>"paleotree"</code> would like: <code>retioTree</code> is an unscaled cladogram in the <code>phylo</code> format for the phylogenetic <strong>R</strong> package <code>"ape"</code> (Paradis et al., 2004); in this case, the consensus tree from Bates et al. (2005). Generally, we can get these trees by reading Newick or NEXUS format files into <strong>R</strong> using <code>read.tree</code> or <code>read.nexus</code> functions from <code>"ape"</code>; more about the <code>phylo</code> format can be found in the documentation for <code>"ape"</code> (e.g Paradis, 2012). Inputting stratigraphic information, like temporal ranges, can be a little trickier. Let us look at <code>retioRanges</code> a little closer. We can type in the name of an object to print the entire dataset in the console or use the function str to look at the structure of the object:</p>
+
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">str</span><span class="hl std">(retioRanges)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## List of 2
+##  $ int.times  :'data.frame':	20 obs. of  2 variables:
+##   ..$ start_time: num [1:20] 440 439 437 437 436 ...
+##   ..$ end_time  : num [1:20] 439 437 437 436 435 ...
+##  $ taxon.times:'data.frame':	22 obs. of  2 variables:
+##   ..$ first_int: int [1:22] 8 6 2 8 8 8 8 13 8 13 ...
+##   ..$ last_int : int [1:22] 8 10 10 8 14 14 14 14 14 14 ...
+</pre></div>
+</div></div>
+
+<p>At first glance, this may seem complex. For datasets with continuous time appearance dates, all <code>"paleotree"</code> will want is a simple two-column matrix consisting of first and last appearance dates for each taxon, with row names labeled with the taxon names on the cladogram. Most datasets will instead have stratigraphic ranges known only from discrete intervals and thus will require a more complicated structure, like <code>retioRanges</code>. As we can see with <code>str()</code>, <code>retioRanges</code> is actually a list composed of two matrices, each of which are composed of two columns. In <strong>R</strong>, we can use double square bracket to subset lists and look at each matrix in turn.</p>
+
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">retioRanges[[</span><span class="hl num">1</span><span class="hl std">]]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##                                                       start_time end_time
+## Coronograptus cyphus                                       440.2    439.4
+## Demirastrites triangulatus - Demirastrites pectinatus      439.4    437.5
+## Pernerograptus argenteus                                   437.5    437.0
+## Lituigraptus convolutus                                    437.0    435.9
+## Stimulograptus sedgwicki                                   435.9    434.9
+## Spirograptus guerichi                                      434.9    432.5
+## Spirograptus turriculatus - Stretograptus crispus          432.5    430.4
+## Monoclimacis griestoniensis - Monoclimacis crenulata       430.4    429.4
+## Spirograptus spiralis                                      429.4    429.0
+## Nanograptus lapworthi - Cyrtograptus insectus              429.0    427.1
+## Crytograptus centhfugus - Cyrtograptus murchisoni          427.1    426.5
+## Monograptus riccartonensis - Monograptus belophorus        426.5    426.1
+## Cyrtograptus rigidus - Cyrtograptus perneri                426.1    424.9
+## Cyrtograptus lundgreni                                     424.9    424.0
+## Gothograptus nassa - Pristiograptus dubius                 424.0    423.1
+## Colonograptus preadeubeli - Colonograptus deubeli          423.1    422.8
+## Colonograptus ludensis                                     422.8    422.6
+## Neolobograptus nilssoni - Lobograptus progenitor           422.6    422.4
+## Lobograptus scanicus                                       422.4    421.3
+## Saetograptus leintwardnensis                               421.3    420.4
+</pre></div>
+</div></div>
+
+<p>The first matrix (named <code>int.times</code> for interval times), each row is a different interval (i.e. biozone), row names are the names of each interval and the start and end times for the intervals are given in the two columns. Graptolite data like those used in this example are well resolved relative to the data available for many other fossil groups. Some intervals are less than a million years long, all of the occurrences are resolved to a single zone, and none of the zones overlap or contain one another (i.e. they are sequential). Datasets for other groups are often much more complicated than this example. For instance, some datasets may have taxa with bounds on their dates that do not correspond to named intervals. These can be included in the same way.</p>
+
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">retioRanges[[</span><span class="hl num">2</span><span class="hl std">]]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##                       first_int last_int
+## Rotaretiolites                8        8
+## Pseudoplegmatograptus         6       10
+## Pseudoretiolites              2       10
+## Dabashanograptus              8        8
+## Retiolites                    8       14
+## Stomatograptus                8       14
+## Paraplectograptus             8       14
+## Pseudoplectograptus          13       14
+## Sokolovograptus               8       14
+## Eisenackograptus             13       14
+## Sagenograptus                14       14
+## Cometograptus                14       14
+## Plectograptus                17       19
+## Plectodinemagraptus          20       20
+## Semiplectograptus            19       20
+## Baculograptus                14       16
+## Doliograptus                 15       15
+## Gothograptus                 14       16
+## Papiliograptus               16       16
+## Spinograptus                 16       17
+## Holoretiolites               18       18
+## Neogothograptus              18       18
+</pre></div>
+</div></div>
+
+<p>The second matrix in <code>retioRanges</code> (named <code>taxon.times</code> for taxon times) only has meaning relative to the first matrix. Here, each row is a taxon, the row names are the taxon labels (which must match the labels on the tree) and the two columns are respectively the interval identifiers for those intervals which that fossil taxon first and last appeared in. The interval identifiers used in these columns reflect the row number for that interval in the matrix of interval start and end dates, i.e. the first matrix of <code>retioRanges</code>. For example, <code>Rotaretiolites</code> first and last appears in the biozone listed on the eighth row (labeled as the <em>Monoclimacis griestoniensis-Monoclimacis crenulata</em> interval).</p>
+
+<p>As this is discrete interval data, we will begin exploring the various time-scaling methods using the <code>bin_timePaleoPhy()</code> function. This function applies the simplest family of time-scaling algorithms, along with an algorithm for randomly resampling appearance dates from within discrete intervals. The simplest of the time-scaling algorithms is the "basic" method, which makes clades as old as their earliest appearing member (Norell, 1992; Smith, 1994). We can easily apply it with:</p>
+
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">timetree</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">bin_timePaleoPhy</span><span class="hl std">(</span><span class="hl kwc">tree</span> <span class="hl std">= retioTree,</span> <span class="hl kwc">timeList</span> <span class="hl std">= retioRanges,</span> <span class="hl kwc">type</span> <span class="hl std">=</span> <span class="hl str">&quot;basic&quot;</span><span class="hl std">,</span> <span class="hl kwc">ntrees</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">plot</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## Warning: Do not interpret a single tree; dates are stochastically pulled from uniform distributions
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-6.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" class="plot" /></div></div>
+
+<p><small><strong>Figure 1. The "basic" method of time-scaling applied to the Retiolitinae dataset taken from Bates et al. (2005).</strong> At top the unscaled cladogram used as input is figured, and the lower figure is the time-scaled output. Appearance dates for taxa are randomly resampled from within discrete intervals and polytomies are left unresolved. Times of observation used are the first appearance dates. The time axes shown are not absolute time, but rather counting backwards from the time of the latest tip of the tree, which in this case is <em>Plectodinemagraptus</em>. </small></p>
+
+<p>The function will immediately issue a warning not to interpret a single output tree, because the dates were randomly resampled. The plotting argument will produce a figure with the cladogram and the time-scaled tree produced (Figure 1). The plots cannot look identical to a user's because they are random (and, for pedagogical purposes, we will avoid using an approach that would remove this disconcerting random element to the tutorial: I want to keep you off balance). The time-axis at the bottom is somewhat misleading, as it assumes the latest tip of the tree is at time 0, which is unfortunate given the latest appearing taxon on the tree is at around 420 million years ago. Thus, the time-axis as plotted only provides dating information relative to this latest tip, although on an absolute scale.</p>
+
+<p>The relative "location" of the tips on the output time-scaled tree reflects the relative first appearance dates of taxa, not their last appearance dates. By default, <code>bin_timePaleoPhy</code> assumes that the times of observation to be used are the first appearance dates, which may not be appropriate for many analyses. Incidentally, this means all the plotted branches represent hypothetical ghost branches and ghost lineages, reflecting unsampled portions of graptoloid evolution history (Norell, 1992; 1993). We can change the times of observation to the last appearance date using the argument <code>add.term</code>:</p>
+
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">timetree</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">bin_timePaleoPhy</span><span class="hl std">(</span><span class="hl kwc">tree</span> <span class="hl std">= retioTree,</span> <span class="hl kwc">timeList</span> <span class="hl std">= retioRanges,</span> <span class="hl kwc">type</span><span class="hl std">=</span> <span class="hl str">&quot;basic&quot;</span><span class="hl std">,</span> <span class="hl kwc">add.term</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">,</span> <span class="hl kwc">ntrees</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">plot</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## Warning: Do not interpret a single tree; dates are stochastically pulled from uniform distributions
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-7.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" class="plot" /></div></div>
+
+<p><small><strong>Figure 2. Using last appearance dates as the times of observation can greatly alter the time-scaled branch lengths. </strong> As in Figure 1, the top figure is the unscaled cladogram used as input and the lower figure is the time-scaled output, and the axis shown is time relative to the latest terminal tip. Times of observation used are the last appearance dates. Appearance dates for taxa are randomly resampled from within discrete intervals and polytomies are left unresolved.</small></p>
+
+<p>This argument adds the "terminal" stratigraphic ranges of taxa to the tree. The difference in the choice of times of appearance can greatly alter the tree. For example, the tip with <em>Pseudoretiolites</em> shifts forward in time, because this genus has a long stratigraphic range (Figure 2).</p>
+
+<p>The polytomies in the cladogram have not been resolved in the last two time-scaled phylogenies we have produced. This may exacerbate issues with zero-length branches. To randomly resolve these nodes prior to time-scaling, forcing these trees to be dichotomous, we can use the argument <code>randres</code> which controls the interval application of the function <code>multi2di()</code> from the package <code>"ape"</code>.</p>
+
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">timetree</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">bin_timePaleoPhy</span><span class="hl std">(</span><span class="hl kwc">tree</span> <span class="hl std">= retioTree,</span> <span class="hl kwc">timeList</span> <span class="hl std">= retioRanges,</span> <span class="hl kwc">type</span> <span class="hl std">=</span> <span class="hl str">&quot;basic&quot;</span><span class="hl std">,</span> <span class="hl kwc">randres</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">,</span> <span class="hl kwc">add.term</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">,</span> <span class="hl kwc">ntrees</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">plot</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## Warning: Do not interpret a single tree; dates are stochastically pulled from uniform distributions
+## Warning: Do not interpret a single randomly-resolved tree
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-8.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" class="plot" /></div></div>
+
+<p><small><strong>Figure 3. Randomly resolving polytomies forces a bifurcating tree, but zero-length branches remain, creating apparent polytomies.</strong> As in Figure 1, the top figure is the unscaled cladogram used as input and the lower figure is the time-scaled output, and the axis shown is time relative to the latest terminal tip. Times of observation used are the last appearance dates. Appearance dates for taxa are randomly resampled from within discrete intervals and polytomies are randomly resolved.</small></p>
+
+<p>We get a new warning, this one telling us to beware interpreting a single output phylogeny because of the random resolution of polytomies. As discussed above, when we deal with uncertainty by using stochastic methods, like randomly resolving polytomies, it is more appropriate to generate large sample of trees for an analysis.</p> 
+
+<p>The plotted time-scaled phylogeny (Figure 3) will still appear to have polytomies, even though we have forced it to be dichotomous. The reason for this is the internal zero-length branches produced by having more derived taxa nested within a clade occurs earlier in the fossil record than the other members in that clade. This pushes branching nodes up against each other in the basic time-scaling method, forcing us to infer simultaneous divergence events, even though the topology is fully dichotomous.</p>
+
+<p>To avoid these artifacts, we need a different time-scaling algorithm than the basic method. There are several that have been developed as just extensions of the basic time-scaling method, such as the minimum branch length method ("MBL"; Laurin, 2004), which forces nodes to shift backwards in time so that all branches meet some minimum length. To use this method in <code>"paleotree"</code>, we need to set the type argument to <code>mbl</code>. Additionally, this requires setting the minimum branch length with the <code>vartime</code> argument. Here we will use 1 million years (1 time unit) as an example.</p>
+
+<div class="chunk" id="unnamed-chunk-9"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">timetree</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">bin_timePaleoPhy</span><span class="hl std">(</span><span class="hl kwc">tree</span> <span class="hl std">= retioTree,</span> <span class="hl kwc">timeList</span> <span class="hl std">= retioRanges,</span> <span class="hl kwc">type</span> <span class="hl std">=</span> <span class="hl str">&quot;mbl&quot;</span><span class="hl std">,</span> <span class="hl kwc">vartime</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">randres</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">,</span> <span class="hl kwc">add.term</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">,</span> <span class="hl kwc">ntrees</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">plot</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## Warning: Do not interpret a single tree; dates are stochastically pulled from uniform distributions
+## Warning: Do not interpret a single randomly-resolved tree
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-9.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" class="plot" /></div></div>
+
+<p><small><strong>Figure 4. The Minimum Branch Length time-scaling algorithm uses the "basic" method and then adjusts divergence dates backwards in time, forcing all branches to be at least as long as some preset constant (for this example, 1 million years).</strong> As in Figure 1, the top figure is the unscaled cladogram used as input and the lower figure is the time-scaled output, and the axis shown is time relative to the latest terminal tip. Times of observation used are the last appearance dates. Appearance dates for taxa are randomly resampled from within discrete intervals and polytomies are randomly resolved.</small></p>
+
+<p>The MBL method will add a noticeably large amount of extra branch lengths to the time-scaled phylogeny (Figure 4), effectively positing that there is much more unobserved evolutionary history across the clade. Because the tree is fairly pectinate (ladder-like), there is now a long series of nodes separated at one million-year intervals, reflecting nodes pushed apart to satisfy the minimum branch length requirement. Obviously, the choices made to time-scale a tree makes assumptions about the spacing of branching events and the amount of unobserved evolutionary history. Even if we knew exactly how much unobserved evolutionary history to expect, we would not know where to arrange it on the tree.</p> 
+
+The cal3 time-scaling method provides a solution to this, estimating how much unobserved evolutionary history to expect and placing it stochastically across the phylogeny (Bapst, 2013). Unfortunately, when divergence dates are likely to have occurred relative to sampling events is not just a function of the sampling process, but also the processes by which new lineages branch and go extinct. Thus, cal3 requires three rates to calibrate the time-scaling, hence its name. Estimating those rates can be tricky for some fossil records, but is usually quite simple for marine invertebrate datasets, and some tools to do so can be found in <code>"paleotree"</code>.</p>
+
+<p>Glossing over several alternative options, the recommended method in <code>"paleotree"</code> for getting a sampling rate from discrete interval data is a maximum likelihood method developed by Foote (1997), based on the frequency distribution of stratigraphic ranges (Foote and Raup, 1996). This method is implemented in the function <code>getSampProbDisc()</code>, and can be applied directly to the stratigraphic range data we used for time-scaling our cladogram. This function requires that the intervals in our data are sequential and of roughly the same length, which is mostly satisfied here. This function will return a lot of output:</p>
+
+<div class="chunk" id="unnamed-chunk-10"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">SPresult</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">getSampProbDisc</span><span class="hl std">(retioRanges)</span>
+<span class="hl std">SPresult</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $Title
+## [1] "Analysis with 1 time bins and 0 groupings ( 0 and 0 States),with 2 parameters and 22 taxa"
+## 
+## $parameters
+##      extRate     sampProb Completeness 
+##       0.2028       0.5454       0.8673 
+## 
+## $log.likelihood
+## [1] -41.41
+## 
+## $AICc
+## [1] 87.44
+## 
+## $convergence
+## [1] 0
+## 
+## $message
+## [1] "CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
+</pre></div>
+</div></div>
+
+<p>Most importantly among all this output, we can evaluate whether the maximum-likelihood optimizer (the standard <strong>R</strong> optimizer <code>optim</code>) at work within <code>getSampProbDisc()</code> converged properly: if <code>$convergence</code> is 0, then we are probably okay. The best-fit parameters are at top, in particular, the per-genus sampling probability for each biozone zone is ~0.545. Post-analysis, users should evaluate the degree to which these parameter estimates make sense, either on first principles or by comparing them to similar published estimates, perhaps for similar groups (e.g. Foote and Sepkoski, 1999). Maximum likelihood analyses can sometimes be susceptible to inferring nonsensical parameter values depending on the topography of the likelihood surface; hence the need to also ensure that the optimizer converges.</p>
+
+<p>If we have prior reasons to believe that sampling varies across a given group, we can use <code>getSampProbDisc()</code> to fit models with different parameters to taxa in different time-intervals or different clades. We can then use Akaike Information Criterion or other metrics (Akaike, 1973; Burnham and Anderson, 2003) to compare different models of sampling variation. The small dataset used here comprises only twenty-two genera so we may lack statistical power to adequately differentiate between more complex models. For the sake of this tutorial, we will continue with our present estimate of sampling probability.</p>
+
+<p>The <code>getSampProbDisc()</code> analysis has only provided us with the per-interval sampling probability, but cal3 time-scaling requires that we have the instantaneous rate of sampling, i.e. the rate of sampling events occurring per lineage, per time-unit. This is mainly because other metrics of sampling, like taxonomic completeness or the per-interval probability, are partly dependent on extinction rate (Foote, 1997). To get the instantaneous rate, we need to use the function <code>sProb2sRate()</code>, which also requires we have the mean interval length, which we can get with a little arithmetic applied to <code>retioRanges</code>:</p>
+
+<div class="chunk" id="unnamed-chunk-11"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">meanInt</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">mean</span><span class="hl std">(</span><span class="hl kwd">apply</span><span class="hl std">(retioRanges[[</span><span class="hl num">1</span><span class="hl std">]],</span> <span class="hl num">1</span><span class="hl std">, diff))</span>
+<span class="hl std">sRate</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">sProb2sRate</span><span class="hl std">(SPresult</span><span class="hl opt">$</span><span class="hl std">parameters[</span><span class="hl num">2</span><span class="hl std">],</span> <span class="hl kwc">int.length</span> <span class="hl std">= meanInt)</span>
+<span class="hl std">sRate</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] -0.7988
+</pre></div>
+</div></div>
+
+<p>We also must calculate the rates of extinction and branching to apply the cal3 time-scaling method. A typical approach would be to estimate these separately using per-capita rates (Foote, 2000) and take the long-term mean of these rates (e.g. Roy et al., 2009). <code>getSampProbDisc()</code> also calculates a per-interval extinction rate, which we use for our purposes here for simplicity. Additionally, branching (origination) rates are often equal to extinction rates (or close to equal) in the fossil record (Stanley, 1979; Sepkoski, 1998), and so we will use the extinction rate estimate as the branching rate, again as a simplifying assumption for this tutorial. To get the per-lineage, per-time-unit extinction rate, we need to divide the extinction rate by the mean interval length:</p>
+
+<div class="chunk" id="unnamed-chunk-12"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">extRate</span> <span class="hl kwb">&lt;-</span> <span class="hl std">SPresult</span><span class="hl opt">$</span><span class="hl std">parameters[</span><span class="hl num">1</span><span class="hl std">]</span><span class="hl opt">/</span><span class="hl std">meanInt</span>
+</pre></div>
+</div></div>
+
+<p>With these three rates, we can apply the cal3 time-scaling method. As this is a discrete interval dataset, we should apply the function <code>bin_cal3TimePaleoPhy()</code>. By default, the cal3 time-scaling functions randomly resolve polytomies, although weighted toward solutions that match the mismatch expected under a model of sampling in the fossil record. In addition, <code>bin_cal3TimePaleoPhy()</code> includes the "terminal" stratigraphic ranges of taxa in the output tree by default, the exact opposite of the default behavior for <code>bin_timePaleoPhy()</code>, but this behavior can be changed via the arguments such as <code>FAD.only</code>.</p>
+
+<div class="chunk" id="unnamed-chunk-13"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">timetree</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">bin_cal3TimePaleoPhy</span><span class="hl std">(retioTree, retioRanges,</span> <span class="hl kwc">brRate</span> <span class="hl std">= extRate,</span> <span class="hl kwc">extRate</span> <span class="hl std">= extRate,</span> <span class="hl kwc">sampRate</span> <span class="hl std">= sRate,</span> <span class="hl kwc">ntrees</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">plot</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## Warning: Do not interpret a single cal3 time-scaled tree
+## Warning: Do not interpret a single tree; dates are stochastically pulled from uniform distributions
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-13.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" class="plot" /></div></div>
+
+<p><small><strong>Figure 5. Branching times are stochastically resampled under a model of sampling and diversification using the cal3 time-scaling method, which accounts for ancestor-descendant relationships.</strong> Similar to Figures 1-4, the top figure is the unscaled cladogram used as input and the middle figure is that tree time-scaled using the "basic" method. The lowest figure is the tree time-scaled using the cal3 algorithm. The axes shown are time relative to the latest terminal tip in each time-scaled tree, respectively. Times of observation used are the last appearance dates. Appearance dates for taxa are randomly resampled from within discrete intervals and polytomies are resolved according to a model of expected fit to the fossil record.</small></p>
+
+<p>Just like before, we get a number of warnings to not interpret any single time-scaled tree, particularly as cal3 is a stochastic time-scaling algorithm. The plotted time-scaled tree is shown with both the unscaled cladogram and the basic time-scaled tree, which we calculated above (Figure 5). Overall, the cal3 algorithm has not greatly shifted the nodes further back in time, because additional unsampled evolutionary history is unlikely given the high sampling rates we estimated for our graptoloid data. In particular, some of the zero length branches in the "basic" time-scaled tree have only lengthened slightly in the cal3 time-scaled phylogeny.</p>
+
+<p>Generating a sample of time-scaled trees is absolutely necessary to grasp the uncertainty in an analysis using any randomizations, either singular or in combination, such as the randomizations previously discussed: cal3 time-scaling, random resolving of polytomies or random resampling of dates from discrete intervals. We can then run our analysis across the sample of trees. For instance, if we are interested in the rate of trait change, we look at the distribution of rate estimates across a sample of trees. If we want to use model-fitting analyses to test between different patterns of trait evaluation, we would evaluate Akaike weights (Burnham and Anderson, 2002) for those models across the different phylogenies. For the most part, these methods are not available in <code>"paleotree"</code>, but can be found in other packages for <strong>R</strong>. This package does contain functions for analyzing diversity over multiple datasets that are applicable, however. The <code>"paleotree"</code> function <code>multiDiv()</code> can be used to examine the distribution of phylogenetic-corrected diversity estimates across geologic time. For example, we can easily generate a hundred trees and look at the resulting diversity curve:</p>
+
+<div class="chunk" id="unnamed-chunk-14"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">timetrees</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">bin_cal3TimePaleoPhy</span><span class="hl std">(retioTree, retioRanges,</span>
+<span class="hl kwc">brRate</span> <span class="hl std">= extRate,</span> <span class="hl kwc">extRate</span> <span class="hl std">= extRate,</span> <span class="hl kwc">sampRate</span> <span class="hl std">= sRate,</span> <span class="hl kwc">ntrees</span> <span class="hl std">=</span> <span class="hl num">100</span><span class="hl std">,</span> <span class="hl kwc">plot</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">)</span>
+<span class="hl kwd">multiDiv</span><span class="hl std">(timetrees)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-14.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" class="plot" /></div></div>
+
+<p><small><strong>Figure 6. A median diversity curve with 95% quantiles calculated across a sample of 100 time-scaled phylogenies output using the cal3 time-scaling algorithm.</strong> The thick line is the median diversity estimated for each interval across the tree sample and the gray boxes represent the two-tailed 95% quantile for the range of diversities observed across the output trees. The phylogenies used had appearance dates randomly resampled from within intervals, polytomies resolved according to a model of expected fit to the fossil record and used last appearance dates as the times of observation.</small></p>
+
+<p>The result (Figure 6) depicts the median lineage diversity for each interval as a thick black line, with a surrounding arrangement of gray blocks that represent the 95% quantiles for the per-interval lineage diversity, across the sample of time-scaled phylogenies.</p>
+
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+	<ul>
+<li>Akaike H Information theory and an extension of the maximum likelihood principle. In: Petrov BN, Csaki F (eds) Second International Symposium on Information Theory, Akademiai Kiado, Budapest., 1973. pp 267-281.</li>
+<li>Bapst DW (2012) paleotree: an R package for paleontological and phylogenetic analyses of evolution. Methods in Ecology and Evolution 3 (5):803-807. doi:10.1111/j.2041-210X.2012.00223.x.</li>
+<li>Bapst DW (2013) A stochastic rate-calibrated method for time-scaling phylogenies of fossil taxa. Methods in Ecology and Evolution 4 (8):724-733. doi:10.1111/2041-210x.12081.</li>
+<li>Bates DEB, Kozlowska A, Lenz AC (2005) Silurian retiolitid graptolites: Morphology and evolution. Acta Palaeontologica Polonica 50 (4):705-720.</li>
+<li>Burnham KP, Anderson DR (2002) Model Selection and Mulitmodel Inference: A Practical Information-Theoretic Approach. Springer, New York.</li>
+<li>Foote M (1997) Estimating Taxonomic Durations and Preservation Probability. Paleobiology 23 (3):278-300.</li>
+<li>Foote M (2000) Origination and extinction components of taxonomic diversity: general problems. In: Erwin DH, Wing SL (eds) Deep Time: Paleobiology's Perspective. The Paleontological Society, Lawrence, Kansas, pp 74-102.</li>
+<li>Foote M, Raup DM (1996) Fossil preservation and the stratigraphic ranges of taxa. Paleobiology 22 (2):121-140.</li>
+Laurin M (2004) The Evolution of Body Size, Cope's Rule and the Origin of Amniotes. Systematic Biology 53 (4):594-622.</li>
+<li>Norell MA (1992) Taxic origin and temporal diversity: the effect of phylogeny. In: Novacek MJ, Wheeler QD (eds) Extinction and phylogeny. Columbia University Press, New York, pp 89-118.</li>
+<li>Paradis E (2012) Analysis of Phylogenetics and Evolution with R. Springer, New York. </li>
+<li>Paradis E, Claude J, Strimmer K (2004) APE: Analyses of phylogenetics and evolution in R language. Bioinformatics 20 (2):289-290.</li>
+<li>R Core Team (2013) R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria.</li>
+<li>Roy K, Hunt G, Jablonski D (2009) Phylogenetic Conservatism of Extinctions in Marine Bivalves. Science 325 (5941):733-737.</li>
+<li>Sadler PM, Cooper RA, Melchin M (2009) High-resolution, early Paleozoic (Ordovician-Silurian) time scales. Geological Society of America Bulletin 121 (5-6):887-906.</li>
+<li>Sepkoski JJ (1998) Rates of speciation in the fossil record. Philosophical Transactions: Biological Sciences 353 (1366):315-326
+<li>Stanley SM (1979) Macroevolution: Patterns and Process. W. H. Freeman, Co., San Francisco.</li>
+	</ul>
+
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al. 2004) </p>
+		<p style="padding-left: 30px;"><code>"geiger"</code> (Harmon et al. 2008) </p>
+		<p style="padding-left: 30px;"><code>"nlme"</code> (Pinheiro et al. 2014) </p>
+		<p style="padding-left: 30px;"><code>"picante"</code> (Kembel et al. 2010) </p>
+		<p style="padding-left: 30px;"><code>"caper"</code> (Orme et al. 2012) </p>
+		<p style="padding-left: 30px;"><code>"gtools"</code> (Warnes et al. 2013) </p>
+		<p style="padding-left: 30px;"><code>"AICcmodavg"</code> (Mazerolle 2013) </p>
+	
+	<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>Species-specific trait data</strong> (<code>"primate_data.txt"</code>), a tab separated text file, species-specific data for body mass, gestation length, home range, longevity and social group size in primates</p>
+		<p style="padding-left: 30px;"><strong>Sample of phylogenetic trees</strong> (<code>"primate_tree.nex"</code>), 100 phylogenetic hypotheses in nexus format, phylogeny of primates from Arnold et al. (2010)</p>
+		
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+<h4>To get started</h4>
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># activate libraries</span>
+<span class="hl kwd">library</span>(ape)
+<span class="hl kwd">library</span>(geiger)
+<span class="hl kwd">library</span>(nlme)
+<span class="hl kwd">library</span>(picante)
+<span class="hl kwd">library</span>(caper)
+<span class="hl kwd">library</span>(gtools)
+
+<span class="hl com"># import the first tree from the sample of phylogenies</span>
+tree &lt;- <span class="hl kwd">read.nexus</span>(<span class="hl str">&quot;primate_tree.nex&quot;</span>)[[1]]
+
+<span class="hl com"># import and transform data</span>
+xdata &lt;- <span class="hl kwd">read.table</span>(<span class="hl str">&quot;primate_data.txt&quot;</span>, sep = <span class="hl str">&quot;\t&quot;</span>, header = <span class="hl kwa">TRUE</span>)
+xdata = <span class="hl kwd">data.frame</span>(xdata, log.MaxLongevity_m = <span class="hl kwd">log</span>(xdata$MaxLongevity_m), log.AdultBodyMass_g = <span class="hl kwd">log</span>(xdata$AdultBodyMass_g), 
+    log.SocialGroupSize = <span class="hl kwd">log</span>(xdata$SocialGroupSize), log.HomeRange = <span class="hl kwd">log</span>(xdata$HomeRange_km2))
+
+<span class="hl com"># prune phylogeny to the data</span>
+<span class="hl kwd">rownames</span>(xdata) = xdata$Binomial
+tree &lt;- <span class="hl kwd">drop.tip</span>(tree, <span class="hl kwd">setdiff</span>(tree$tip.label, <span class="hl kwd">rownames</span>(xdata)))
+</pre></div>
+</div></div>
+
+
+<h4>caper </h4>	
+<p>We first generate models with all possible combinations of predictors</p>
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r">pred.vars = <span class="hl kwd">c</span>(<span class="hl str">&quot;GestationLen_d&quot;</span>, <span class="hl str">&quot;log.AdultBodyMass_g&quot;</span>, <span class="hl str">&quot;log.SocialGroupSize&quot;</span>, 
+    <span class="hl str">&quot;log.HomeRange&quot;</span>)
+m.mat = <span class="hl kwd">permutations</span>(n = 2, r = 4, v = <span class="hl kwd">c</span>(F, T), repeats.allowed = T)
+models = <span class="hl kwd">apply</span>(<span class="hl kwd">cbind</span>(T, m.mat), 1, <span class="hl kwd"><span class="hl kwa">function</span></span>(xrow) {
+    <span class="hl kwd">paste</span>(<span class="hl kwd">c</span>(<span class="hl str">&quot;1&quot;</span>, pred.vars)[xrow], collapse = <span class="hl str">&quot;+&quot;</span>)
+})
+models = <span class="hl kwd">paste</span>(<span class="hl str">&quot;log.MaxLongevity_m&quot;</span>, models, sep = <span class="hl str">&quot;~&quot;</span>)
+</pre></div>
+</div></div>
+
+
+<p>Then we define objects, in which we later store model outputs</p>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># AIC of models</span>
+all.aic = <span class="hl kwd">rep</span>(<span class="hl kwa">NA</span>, <span class="hl kwd">length</span>(models))
+<span class="hl com"># Estiamted lambdas</span>
+all.lambda = <span class="hl kwd">rep</span>(<span class="hl kwa">NA</span>, <span class="hl kwd">length</span>(models))
+<span class="hl com"># Which predictors are estimated <span class="hl kwa">in</span> the models beside the intercept</span>
+m.mat = <span class="hl kwd">cbind</span>(1, m.mat)
+<span class="hl kwd">colnames</span>(m.mat) = <span class="hl kwd">c</span>(<span class="hl str">&quot;(Intercept)&quot;</span>, pred.vars)
+<span class="hl com"># number of parameters estimated <span class="hl kwa">in</span> the models</span>
+n.par = 2 + <span class="hl kwd">apply</span>(m.mat, 1, sum)
+</pre></div>
+</div></div>
+
+
+<p>Finally, we run all models and store the parameters of interests (AIC, lambda and model coefficients). This is the part where we will use the PGLS functions available in <code>"caper"</code>. Basically, we use the same model in a loop that goes through all defined combinations of predictors. </p>
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r">primate &lt;- <span class="hl kwd">comparative.data</span>(phy = tree, data = xdata, names.col = Binomial, 
+    vcv = <span class="hl kwa">TRUE</span>, na.omit = <span class="hl kwa">FALSE</span>, warn.dropped = <span class="hl kwa">TRUE</span>)
+<span class="hl std">coefs</span><span class="hl kwb">=</span><span class="hl std">m.mat</span><span class="hl com"># define an object to store the coefficients</span>   
+<span class="hl kwd"><span class="hl kwa">for</span></span> (k <span class="hl kwa">in</span> 1:<span class="hl kwd">length</span>(models)) {
+    res = <span class="hl kwd">try</span>(<span class="hl kwd">pgls</span>(<span class="hl kwd">as.formula</span>(models[k]), data = primate, lambda = <span class="hl str">&quot;ML&quot;</span>))
+    <span class="hl kwd"><span class="hl kwa">if</span></span> (<span class="hl kwd">class</span>(res) != <span class="hl str">&quot;try-error&quot;</span>) {
+        all.aic[k] = -2 * <span class="hl kwd">logLik</span>(res)[1] + 2 * n.par[k]
+        all.lambda[k] = <span class="hl kwd">summary</span>(res)$param[2]
+        xx = <span class="hl kwd">coefficients</span>(res)
+        coefs[k, <span class="hl kwd">match</span>(<span class="hl kwd">names</span>(xx), <span class="hl kwd">colnames</span>(m.mat))] = xx
+    }
+}
+</pre></div>
+</div></div>
+
+
+<p>If we want to know which model is associated with the lowest AIC:</p>
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">min</span>(all.aic)
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 20.32
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># this corresponds to the model</span>
+models[<span class="hl kwd">which</span>(all.aic == <span class="hl kwd">min</span>(all.aic))]
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] "log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize"
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># with the following parameters</span>
+coefs[<span class="hl kwd">which</span>(all.aic == <span class="hl kwd">min</span>(all.aic)), ]
+</pre></div>
+<div class="output"><pre class="knitr r">##         (Intercept)      GestationLen_d log.AdultBodyMass_g 
+##             4.61488             0.00000             0.11905 
+## log.SocialGroupSize       log.HomeRange 
+##             0.06502             0.00000
+</pre></div>
+<div class="source"><pre class="knitr r">all.lambda[<span class="hl kwd">which</span>(all.aic == <span class="hl kwd">min</span>(all.aic))]
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.742
+</pre></div>
+</div></div>
+
+
+<p>If we want to do model averaging over the entire candidate model set:</p>
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># get summed Akaike weights per model</span>
+aic_delta = all.aic - <span class="hl kwd">min</span>(all.aic)
+w = <span class="hl kwd">exp</span>(-0.5 * aic_delta)/<span class="hl kwd">sum</span>(<span class="hl kwd">exp</span>(-0.5 * aic_delta))
+<span class="hl com"># get model averaged parameters (with estimate set to 0 inmodels in which</span>
+<span class="hl com"># the term doesn't appear):</span>
+<span class="hl kwd">unlist</span>(<span class="hl kwd">lapply</span>(1:<span class="hl kwd">ncol</span>(coefs), <span class="hl kwd"><span class="hl kwa">function</span></span>(x) {
+    <span class="hl kwd">weighted.mean</span>(x = coefs[, x], w = w, na.rm = T)
+}))
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 4.7503043 0.0001867 0.1065480 0.0310901 0.0147193
+</pre></div>
+<div class="source"><pre class="knitr r">
+<span class="hl com"># get model averaged parameters (considering only the models in which the</span>
+<span class="hl com"># term appears):</span>
+<span class="hl kwd">unlist</span>(<span class="hl kwd">lapply</span>(1:<span class="hl kwd">ncol</span>(coefs), <span class="hl kwd"><span class="hl kwa">function</span></span>(x) {
+    x = coefs[, x]
+    x[x == 0] = NA
+    <span class="hl kwd">weighted.mean</span>(x = x, w = w, na.rm = T)
+}))
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 4.7503043 0.0006305 0.1147252 0.0595306 0.0319888
+</pre></div>
+</div></div>
+
+
+<h4>AICcmodavg, nlme and ape</h4>	
+<p>This is very similar to the above exercise, but here we will rely on the PGLS functions available in <code>"nlme"</code> in combination with <code>"ape"</code>. Moreover, we can use the <code>"AICcmodavg"</code> functions for multimodel inference. </p>
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span>(AICcmodavg)
+
+<span class="hl com"># define candidate models as above</span>
+pred.vars = <span class="hl kwd">c</span>(<span class="hl str">&quot;GestationLen_d&quot;</span>, <span class="hl str">&quot;log.AdultBodyMass_g&quot;</span>, <span class="hl str">&quot;log.SocialGroupSize&quot;</span>, 
+    <span class="hl str">&quot;log.HomeRange&quot;</span>)
+m.mat = <span class="hl kwd">permutations</span>(n = 2, r = 4, v = <span class="hl kwd">c</span>(F, T), repeats.allowed = T)
+models = <span class="hl kwd">apply</span>(<span class="hl kwd">cbind</span>(T, m.mat), 1, <span class="hl kwd"><span class="hl kwa">function</span></span>(xrow) {
+    <span class="hl kwd">paste</span>(<span class="hl kwd">c</span>(<span class="hl str">&quot;1&quot;</span>, pred.vars)[xrow], collapse = <span class="hl str">&quot;+&quot;</span>)
+})
+models = <span class="hl kwd">paste</span>(<span class="hl str">&quot;log.MaxLongevity_m&quot;</span>, models, sep = <span class="hl str">&quot;~&quot;</span>)
+<span class="hl com"># Which predictors are estimated in the models beside the intercept</span>
+m.mat = <span class="hl kwd">cbind</span>(1, m.mat)
+<span class="hl kwd">colnames</span>(m.mat) = <span class="hl kwd">c</span>(<span class="hl str">&quot;(Intercept)&quot;</span>, pred.vars)
+
+<span class="hl com"># run all models</span>
+Cand.models = <span class="hl kwd">list</span>()
+<span class="hl kwd"><span class="hl kwa">for</span></span> (k <span class="hl kwa">in</span> 1:<span class="hl kwd">length</span>(models)) {
+    Cand.models[[k]] = <span class="hl kwd">gls</span>(<span class="hl kwd">as.formula</span>(models[k]), data = xdata, method = <span class="hl str">&quot;ML&quot;</span>, 
+        correlation = <span class="hl kwd">corPagel</span>(value = 0.5, tree, fixed = F))
+}
+
+<span class="hl com"># get the AIC and AICc tables</span>
+<span class="hl kwd">aictab</span>(cand.set = Cand.models, modnames = models, sort = F, second.ord = F)
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Model selection based on AIC :
+## 
+##                                                                                           K
+## log.MaxLongevity_m~1                                                                      3
+## log.MaxLongevity_m~1+log.HomeRange                                                        4
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                  4
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                    5
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                  4
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                    5
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                              5
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                6
+## log.MaxLongevity_m~1+GestationLen_d                                                       4
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                         5
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                   5
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                     6
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                   5
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                     6
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize               6
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange 7
+##                                                                                             AIC
+## log.MaxLongevity_m~1                                                                      31.70
+## log.MaxLongevity_m~1+log.HomeRange                                                        25.75
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                  28.51
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                    26.20
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                  21.19
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                    21.00
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                              20.32
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                21.59
+## log.MaxLongevity_m~1+GestationLen_d                                                       29.89
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                         25.28
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                   27.97
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                     26.18
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                   23.08
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                     22.85
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize               22.30
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange 23.53
+##                                                                                           Delta_AIC
+## log.MaxLongevity_m~1                                                                          11.38
+## log.MaxLongevity_m~1+log.HomeRange                                                             5.42
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                       8.19
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                         5.88
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                       0.86
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                         0.68
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                                   0.00
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                     1.27
+## log.MaxLongevity_m~1+GestationLen_d                                                            9.57
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                              4.96
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                        7.64
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                          5.86
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                        2.75
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                          2.53
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize                    1.98
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange      3.21
+##                                                                                           AICWt
+## log.MaxLongevity_m~1                                                                       0.00
+## log.MaxLongevity_m~1+log.HomeRange                                                         0.02
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                   0.00
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                     0.01
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                   0.15
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                     0.17
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                               0.23
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                 0.12
+## log.MaxLongevity_m~1+GestationLen_d                                                        0.00
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                          0.02
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                    0.01
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                      0.01
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                    0.06
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                      0.07
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize                0.09
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange  0.05
+##                                                                                               LL
+## log.MaxLongevity_m~1                                                                      -12.85
+## log.MaxLongevity_m~1+log.HomeRange                                                         -8.87
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                  -10.25
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                     -8.10
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                   -6.59
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                     -5.50
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                               -5.16
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                 -4.79
+## log.MaxLongevity_m~1+GestationLen_d                                                       -10.95
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                          -7.64
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                    -8.98
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                      -7.09
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                    -6.54
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                      -5.43
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize                -5.15
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange  -4.77
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">aictab</span>(cand.set = Cand.models, modnames = models, sort = T, second.ord = T)
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Model selection based on AICc :
+## 
+##                                                                                           K
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                              5
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                  4
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                    5
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                6
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize               6
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                   5
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                     6
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange 7
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                         5
+## log.MaxLongevity_m~1+log.HomeRange                                                        4
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                    5
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                     6
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                   5
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                  4
+## log.MaxLongevity_m~1+GestationLen_d                                                       4
+## log.MaxLongevity_m~1                                                                      3
+##                                                                                            AICc
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                              21.17
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                  21.74
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                    21.85
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                22.79
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize               23.50
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                   23.92
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                     24.05
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange 25.16
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                         26.13
+## log.MaxLongevity_m~1+log.HomeRange                                                        26.30
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                    27.04
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                     27.38
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                   28.81
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                  29.07
+## log.MaxLongevity_m~1+GestationLen_d                                                       30.45
+## log.MaxLongevity_m~1                                                                      32.03
+##                                                                                           Delta_AICc
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                                    0.00
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                        0.57
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                          0.68
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                      1.62
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize                     2.33
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                         2.75
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                           2.89
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange       3.99
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                               4.96
+## log.MaxLongevity_m~1+log.HomeRange                                                              5.14
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                          5.88
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                           6.22
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                         7.64
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                        7.90
+## log.MaxLongevity_m~1+GestationLen_d                                                             9.28
+## log.MaxLongevity_m~1                                                                           10.86
+##                                                                                           AICcWt
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                                0.24
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                    0.18
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                      0.17
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                  0.11
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize                 0.07
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                     0.06
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                       0.06
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange   0.03
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                           0.02
+## log.MaxLongevity_m~1+log.HomeRange                                                          0.02
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                      0.01
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                       0.01
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                     0.01
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                    0.00
+## log.MaxLongevity_m~1+GestationLen_d                                                         0.00
+## log.MaxLongevity_m~1                                                                        0.00
+##                                                                                           Cum.Wt
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                                0.24
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                    0.42
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                      0.59
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                  0.70
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize                 0.77
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                     0.84
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                       0.89
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange   0.92
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                           0.94
+## log.MaxLongevity_m~1+log.HomeRange                                                          0.96
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                      0.98
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                       0.99
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                     0.99
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                    1.00
+## log.MaxLongevity_m~1+GestationLen_d                                                         1.00
+## log.MaxLongevity_m~1                                                                        1.00
+##                                                                                               LL
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize                               -5.16
+## log.MaxLongevity_m~1+log.AdultBodyMass_g                                                   -6.59
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.HomeRange                                     -5.50
+## log.MaxLongevity_m~1+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange                 -4.79
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize                -5.15
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g                                    -6.54
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.HomeRange                      -5.43
+## log.MaxLongevity_m~1+GestationLen_d+log.AdultBodyMass_g+log.SocialGroupSize+log.HomeRange  -4.77
+## log.MaxLongevity_m~1+GestationLen_d+log.HomeRange                                          -7.64
+## log.MaxLongevity_m~1+log.HomeRange                                                         -8.87
+## log.MaxLongevity_m~1+log.SocialGroupSize+log.HomeRange                                     -8.10
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize+log.HomeRange                      -7.09
+## log.MaxLongevity_m~1+GestationLen_d+log.SocialGroupSize                                    -8.98
+## log.MaxLongevity_m~1+log.SocialGroupSize                                                  -10.25
+## log.MaxLongevity_m~1+GestationLen_d                                                       -10.95
+## log.MaxLongevity_m~1                                                                      -12.85
+</pre></div>
+<p> </p>
+<p>Model averaging</p>
+
+<div class="source"><pre class="knitr r">
+<span class="hl com"># get model averaged parameters (considering only the</span>
+<span class="hl com"># models in which the term appears):</span>
+modav_pars = <span class="hl kwd">matrix</span>(<span class="hl kwa">NA</span>, <span class="hl kwd">length</span>(<span class="hl kwd">colnames</span>(m.mat)), 2)
+<span class="hl kwd"><span class="hl kwa">for</span></span> (i <span class="hl kwa">in</span> 1:<span class="hl kwd">length</span>(<span class="hl kwd">colnames</span>(m.mat))) {
+    modav_par = <span class="hl kwd">modavg</span>(parm = <span class="hl kwd">colnames</span>(m.mat)[i], cand.set = Cand.models, modnames = models, 
+        second.ord = F)
+    modav_pars[i, ] = <span class="hl kwd">cbind</span>(modav_par$Mod.avg.beta, modav_par$Uncond.SE)
+}
+<span class="hl kwd">data.frame</span>(row.names = <span class="hl kwd">colnames</span>(m.mat), Estimate = modav_pars[, 1], SE = modav_pars[, 
+    2])
+</pre></div>
+<div class="output"><pre class="knitr r">##                      Estimate       SE
+## (Intercept)         4.7503044 0.375728
+## GestationLen_d      0.0006305 0.001641
+## log.AdultBodyMass_g 0.1147252 0.040836
+## log.SocialGroupSize 0.0595306 0.041366
+## log.HomeRange       0.0319887 0.025469
+</pre></div>
+<div class="source"><pre class="knitr r">
+<span class="hl com"># get model averaged parameters (with estimate set to 0 in models in which</span> 
+<span class="hl com"># the term doesn't appear):</span>
+<span class="hl kwd"><span class="hl kwa">for</span></span> (i <span class="hl kwa">in</span> 1:<span class="hl kwd">length</span>(<span class="hl kwd">colnames</span>(m.mat))) {
+    modav_par = <span class="hl kwd">modavg.shrink</span>(parm = <span class="hl kwd">colnames</span>(m.mat)[i], cand.set = Cand.models, 
+        modnames = models, second.ord = F)
+    modav_pars[i, ] = <span class="hl kwd">cbind</span>(modav_par$Mod.avg.beta, modav_par$Uncond.SE)
+}
+<span class="hl kwd">data.frame</span>(row.names = <span class="hl kwd">colnames</span>(m.mat), Estimate = modav_pars[, 1], SE = modav_pars[, 
+    2])
+</pre></div>
+<div class="output"><pre class="knitr r">##                      Estimate        SE
+## (Intercept)         4.7503044 0.3757283
+## GestationLen_d      0.0001867 0.0009382
+## log.AdultBodyMass_g 0.1065479 0.0491932
+## log.SocialGroupSize 0.0310901 0.0421649
+## log.HomeRange       0.0147193 0.0235090
+</pre></div>
+</div></div>
+
+
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+	<ul>
+<li>Arnold C, Matthews LJ, Nunn CL (2010) The 10kTrees website: a new online resource for primate hylogeny. Evol Anthropol 19:114-118.</li>
+<li>Harmon LJ, Weir J, Brock C, Glor RE, Challenger W (2008) GEIGER: Investigating evolutionary radiations. Bioinformatics 24:129-131.</li>
+<li>Kembel SW, Cowan PD, Helmus MR, Cornwell WK, Morlon H, Ackerly DD, Blomberg SP, Webb CO (2010) Picante: R tools for integrating phylogenies and ecology. Bioinformatics 26:1463-1464.</li>
+<li>Mazerolle MJ (2013) AICcmodavg: Model selection and multimodel inference based on (Q)AIC(c). R package version 1.28.</li>
+<li>Orme D, Freckleton R, Thomas G, Petzoldt T, Fritz S, Isaac N, Pearse W (2012) caper: Comparative Analyses of Phylogenetics and Evolution in R. R package version 3.1-104.</li>
+<li>Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20:289-290.</li>
+<li>Pinheiro J, Bates D, DebRoy S, Sarkar D, R Development Core Team (2012) nlme: Linear and Nonlinear Mixed Effects Models. R package version 3.1-104, 
+<li>Warnes GR, Bolker B, Lumley T (2013) gtools: various R programming tools. R package version 3.1.1.</li>
+	</ul>
+
+</body>
+</html>

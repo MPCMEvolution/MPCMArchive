@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+		<p style="padding-left: 30px;"><code>"ade4"</code> (Dray & Dufour, 2007; Chessel et al. 2004; Dray et al. 2007)</p>
+		<p style="padding-left: 30px;"><code>"MASS"</code> (Venables & Ripey, 2004)</p>
+		<p style="padding-left: 30px;"><code>"picante"</code> (Kembel et al., 2010)</p>
+		<p style="padding-left: 30px;"><code>"apTreeshape"</code> (Bartolussi et al. 2012) </p>
+		<p style="padding-left: 30px;"><code>"spacodiR"</code> (Eastman et al., 2013) </p>
+		<p style="padding-left: 30px;"><code>"phylobase"</code> (R Hackathon et al. 2013) </p>
+		<p style="padding-left: 30px;"><code>"phyloseq"</code> (McMurdie & Holmes, 2013) </p>	
+	<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>METRIC CODE</strong> (<code>"metrics.R"</code>), Novel code to calculate community phylogenetic metrics</p>
+		<p style="padding-left: 30px;"><strong>WRAPPER CODE</strong> (<code>"functions.R"</code>), Wrapper code to rapidly calculate the shape, evenness, and dispersion metrics described in the chapter</p>
+		<p style="padding-left: 30px;"><strong>FIGURE 2 ANALYSES</strong> (<code>"figures.R"</code>), Code used to generate figure 2 in the chapter, and use the above files to calculate metrics and compare them</p>
+		<p style="padding-left: 30px;"><strong>PGLMM ANALYSES</strong> (<code>"pglmm.R"</code>), Code to calculate the PGLMM models in the chapter</p>
+		<p style="padding-left: 30px;"><strong>METRIC TABLES</strong> (<code>"tables.pdf"</code>), Description of additional metrics and their placement into the framework described in the chapter. Also the abbreviations used in figure 2 in the chapter.</p>
+
+		
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+	<h4>Example</h4>
+		<p>The file functions.R shows how the metrics described in the chapter can be calculated. However, below is a more annotated example that shows how the functions can be used.</p>	
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#Load the functions written for the chapter</span>
+<span class="hl kwd">source</span><span class="hl std">(</span><span class="hl str">'functions.R'</span><span class="hl std">)</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## Loading required package: apTreeshape
+## 
+## Attaching package: 'apTreeshape'
+## 
+## The following object is masked from 'package:phylobase':
+## 
+##     ancestor
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">#Load example data from 'picante'</span>
+<span class="hl kwd">data</span><span class="hl std">(phylocom)</span>
+<span class="hl com">#Prune species from the phylogeny missing from the community data</span>
+<span class="hl std">tree</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">drop.tip</span><span class="hl std">(phylocom</span><span class="hl opt">$</span><span class="hl std">phy,</span> <span class="hl kwd">setdiff</span><span class="hl std">(phylocom</span><span class="hl opt">$</span><span class="hl std">phy</span><span class="hl opt">$</span><span class="hl std">tip.label,</span>  <span class="hl kwd">colnames</span><span class="hl std">(phylocom</span><span class="hl opt">$</span><span class="hl std">sample)))</span>
+<span class="hl com">#Calculate metrics! (ignore the warnings)</span>
+<span class="hl std">shape</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">shape.metrics</span><span class="hl std">(phylocom</span><span class="hl opt">$</span><span class="hl std">sample, tree)</span>
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">evenness</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">evenness.metrics</span><span class="hl std">(phylocom</span><span class="hl opt">$</span><span class="hl std">sample, tree)</span>
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">dispersion</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">dispersion.metrics</span><span class="hl std">(phylocom</span><span class="hl opt">$</span><span class="hl std">sample, tree)</span>
+<span class="hl com">#Take a quick look!</span>
+<span class="hl kwd">head</span><span class="hl std">(shape)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##            PSV   PSR SR   MPD PD   regPD Ic  Gamma TDI_Dplus TDI_SRDplus
+## clump1  0.4857 3.886  8 4.857 16 -4.8824  9 -1.131     7.929       63.43
+## clump2a 0.6000 4.800  8 6.000 17 -4.8235  6 -1.131     8.000       64.00
+## clump2b 0.7143 5.714  8 7.143 18 -3.8235  6 -1.061     7.714       61.71
+## clump4  0.8286 6.629  8 8.286 22  0.1765  5 -1.131     8.357       66.86
+## even    0.8857 7.086  8 8.857 30  9.1176  6 -2.222     8.571       68.57
+## random  0.8429 6.743  8 8.429 27  4.2353 11 -1.471     7.500       60.00
+##         PEsumvar Eed Hed
+## clump1   0.03563  NA  NA
+## clump2a  0.04493  NA  NA
+## clump2b  0.03985  NA  NA
+## clump4   0.04539  NA  NA
+## even     0.04985  NA  NA
+## random   0.02268  NA  NA
+</pre></div>
+</div></div>
+
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+<ul>
+<li>Bortolussi, N., Durand, E., Blum, M., and Francois, O. (2012). apTreeshape: analyses of phylogenetic treeshape. R package version 1.4-5. http://CRAN.R-project.org/package=apTreeshape</li></li>
+<li>Chessel, D. and Dufour, A.B. and Thioulouse, J. (2004): The ade4  package-I- One-table 	methods. R News. 4: 5-10.</li>
+<li>Dray, S. and Dufour, A.B. (2007): The ade4 package: implementing the duality diagram for 	ecologists. Journal of Statistical Software.22(4): 1-20.</li>
+<li>Dray, S. and Dufour, A.B. and Chessel, D. (2007): The ade4  package-II: Two-table and 	K-table methods. R News. 7(2): 47-52</li>
+<li>Eastman, J., Paine, T., and Hardy, O. (2013). spacodiR: spatial and phylogenetic analysis of 	community diversity. R package version 0.13.0115. 	http://CRAN.R-project.org/package=spacodiR</li>
+<li>Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly, D.D., 	Blomberg, S.P., and Webb, C.O.. 2010. Picante: R tools for integrating phylogenies 	and ecology. Bioinformatics 26:1463-1464.</li>
+<li>McMurdie, P.J., and Holmes, S. (2013) PLoS ONE 8(4):e61217. phyloseq: An R 	package for reproducible interactive analysis and graphics of microbiome	census data.</li>
+<li>Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20:289-290</li>
+<li>R Core Team (2014). R: A language and environment for statistical computing. R Foundation 	for Statistical Computing, Vienna, Austria. URL http://www.R-project.org/.</li>
+<li>R Hackathon et al. (2013). phylobase: Base package for phylogeneticstructures and comparative data. R package version 0.6.5.2.http://CRAN.R-project.org/package=phylobase</li>
+<li>Venables, W. N. & Ripley, B. D. (2002) Modern Applied Statistics with S. Fourth Edition. 	Springer, New York. ISBN 0-387-95457-0 </li>
+ </ul>
+</body>
+</html>

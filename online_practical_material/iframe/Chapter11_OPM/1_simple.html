@@ -1,0 +1,340 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<head>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+
+<BODY >
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+		<p style="padding-left: 30px;"><code>"MCMCglmm"</code> (Hadfield, 2010a) </p>
+
+	<h4>Data</h4>
+	<p style="padding-left: 30px;"><strong>Phenotypic data</strong> (<code>"data_simple.txt"</code>), Data frame containing the phenotypic data</p>
+	<p style="padding-left: 30px;"><strong>Phylogeny</strong> (<code>"phylo.nex"</code>), Phylogeny file (NEXUS file)</p>
+
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+<P>
+We will begin by fitting the simple comparative model described in main text 
+section 11.2.1, 
+using simulated data. Assume we have measurements of a phenotype <TT>phen</TT> 
+(say the body size) and a <TT>cofactor</TT> variable (say the temperature of 
+the environment), for several species:
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl kwd">library</span><span class="hl std">(ape)</span>
+  <span class="hl kwd">library</span><span class="hl std">(MCMCglmm)</span>
+  <span class="hl std">phylo</span><span class="hl kwb">&lt;-</span><span class="hl kwd">read.nexus</span><span class="hl std">(</span><span class="hl str">&quot;phylo.nex&quot;</span><span class="hl std">)</span>
+  <span class="hl std">data</span><span class="hl kwb">&lt;-</span><span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;data_simple.txt&quot;</span><span class="hl std">,</span><span class="hl kwc">header</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+  <span class="hl kwd">head</span><span class="hl std">(data)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##     phen cofactor phylo
+## 1 107.07   10.310  sp_1
+## 2  79.61    9.691  sp_2
+## 3 116.38   15.008  sp_3
+## 4 143.29   19.088  sp_4
+## 5 139.61   15.658  sp_5
+## 6  68.51    6.005  sp_6
+</pre></div>
+</div></div>
+
+We want to investigate a possible relationship between the phenotypes 
+and the cofactor, while controlling for any phylogenetic dependency in the 
+dataset. To achieve our goal, we want to use the phylogenetic mixed model 
+implemented in the MCMCglmm package. Note the <TT>phylo</TT> column containing 
+the name of the species in our dataset: it corresponds to the phylogenetic effect
+we are going to include in our model. In order to do so, we need to calculate the
+inverse of the <!-- MATH
+ $\bm{\Sigma}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.png"
+ ALT="$ \bm{\Sigma}$"></SPAN> matrix of phylogenetic correlation:
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl std">inv.phylo</span><span class="hl kwb">&lt;-</span><span class="hl kwd">inverseA</span><span class="hl std">(phylo,</span><span class="hl kwc">nodes</span><span class="hl std">=</span><span class="hl str">&quot;TIPS&quot;</span><span class="hl std">,</span><span class="hl kwc">scale</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+The <TT>inverseA()</TT> function accepts R phylogenetic objects. Here, we
+state that we wants to calculate <!-- MATH
+ $\bm{\Sigma}^{-1}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="30" HEIGHT="21" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.png"
+ ALT="$ \bm{\Sigma}^{-1}$"></SPAN> using the argument
+<TT>nodes=`TIPS'</TT>. If, as explained in the Introduction of the main
+text, we want to calculate the inverse of the bigger matrix <!-- MATH
+ $\bm{\Omega}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="17" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img4.png"
+ ALT="$ \bm{\Omega}$"></SPAN>
+(for a much larger phylogeny, it would be much more efficient), we would have
+used <TT>nodes=`ALL'</TT> to include ancestral nodes into the calculation.
+The <TT>scale</TT> argument yields a correlation matrix (scaling total branch
+length, from root to tips, to one).
+
+<P>
+Now, we have the inverse of our matrix, but because it is using a Bayesian framework, 
+this package needs prior distributions for the fixed and random effects. The default prior for 
+the fixed effects is suitable for our needs. However, regarding the random effects, we 
+need to define a set of priors for the variance components of reach random effect:
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl std">prior</span><span class="hl kwb">&lt;-</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G1</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl kwc">nu</span><span class="hl std">=</span><span class="hl num">0.02</span><span class="hl std">)),</span><span class="hl kwc">R</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl kwc">nu</span><span class="hl std">=</span><span class="hl num">0.02</span><span class="hl std">))</span>
+</pre></div>
+</div></div>
+These priors (<TT>G</TT> for the random effect(s), and <TT>R</TT> for the 
+residual variance) correspond to an inverse-Gamma distribution with shape and 
+scale parameters equal to 0.01<A NAME="tex2html2"
+  HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#foot307"><SUP><SPAN CLASS="arabic">1</SPAN></SUP></A>, which is 
+relatively canonical, 
+though not without drawbacks&nbsp;(see <A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/biblio.html#gelman_prior_2006">Gelman, 2006</A>, for more information). 
+The model is then defined as follows:
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">model_simple</span><span class="hl kwb">&lt;-</span><span class="hl kwd">MCMCglmm</span><span class="hl std">(phen</span><span class="hl opt">~</span><span class="hl std">cofactor,</span><span class="hl kwc">random</span><span class="hl std">=</span><span class="hl opt">~</span><span class="hl std">phylo,</span>
+  <span class="hl kwc">family</span><span class="hl std">=</span><span class="hl str">&quot;gaussian&quot;</span><span class="hl std">,</span><span class="hl kwc">ginverse</span><span class="hl std">=</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">phylo</span><span class="hl std">=inv.phylo</span><span class="hl opt">$</span><span class="hl std">Ainv),</span><span class="hl kwc">prior</span><span class="hl std">=prior,</span>
+  <span class="hl kwc">data</span><span class="hl std">=data,</span><span class="hl kwc">nitt</span><span class="hl std">=</span><span class="hl num">5000000</span><span class="hl std">,</span><span class="hl kwc">burnin</span><span class="hl std">=</span><span class="hl num">1000</span><span class="hl std">,</span><span class="hl kwc">thin</span><span class="hl std">=</span><span class="hl num">500</span><span class="hl std">)</span>
+</pre></div>
+Here, we assume a linear relationship between <TT>phen</TT> and 
+<TT>cofactor</TT>, with a random effect <TT>phylo</TT> corresponding the 
+phylogenetic effect. The argument <TT>ginverse</TT> allows us to include
+a custom matrix for our random effect <TT>phylo</TT>, using the results
+of the <TT>inverseA</TT> function (above). We used the <TT>prior</TT> variable defined above.
+The variables <TT>nitt</TT> and <TT>burnin</TT> 
+are used to calibrate the MCMCM algorithm: it will iterate for <TT>burnin</TT> 
+iterations before recording samples (to ensure convergence), and then iterate 
+<TT>nitt</TT> times. The parameter <TT>thin</TT> helps us to save memory by 
+saving only every <TT>`thin'</TT> value and thus,
+dropping highly auto-correlated values<A NAME="tex2html3"
+  HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#foot92"><SUP><SPAN CLASS="arabic">2</SPAN></SUP></A>. Note that the use of <TT>nodes=`TIPS'</TT> or
+<TT>nodes=`ALL'</TT> in the <TT>inverseA</TT> function can have a noticeable
+impact on auto-correlation: whereas the latter would speed up computation, it
+can results in higher auto-correlation. Whether to use to one or the other would
+thus depend mainly on the size of the phylogeny (very large phylogenies would probably
+need <TT>nodes=`ALL'</TT> to allow MCMCglmm to run at all). Finally, note that this 
+example can take up to a few hours to run.
+<BR><P>
+After checking for convergence (for example using <TT>heidel.diag()</TT> function), 
+we can look at the output summary:
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r">  <span class="hl kwd">summary</span><span class="hl std">(model_simple)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">
+##  Iterations = 1001:4999501
+##  Thinning interval  = 500
+##  Sample size  = 9998 
+## 
+##  DIC: 1516 
+## 
+##  G-structure:  ~phylo
+## 
+##       post.mean l-95% CI u-95% CI eff.samp
+## phylo       210     92.3      334     9998
+## 
+##  R-structure:  ~units
+## 
+##       post.mean l-95% CI u-95% CI eff.samp
+## units      85.8     60.8      113    10986
+## 
+##  Location effects: phen ~ cofactor 
+## 
+##             post.mean l-95% CI u-95% CI eff.samp  pMCMC    
+## (Intercept)     39.71    26.09    53.60     9998 <1e-04 ***
+## cofactor         5.18     4.90     5.44     9998 <1e-04 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+</pre></div>
+</div></div>
+The first part shows a summary of MCMC sampling parameters, and gives the 
+Deviance Information Criterion (DIC) of the model. The DIC is a model selection 
+criterion comparable to Akaike's Information Criterion (AIC)<A NAME="tex2html4"
+  HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#foot100"><SUP><SPAN CLASS="arabic">3</SPAN></SUP></A>. Following are the 
+results for the random effect variances (<TT>G-structure</TT>, containing the variance
+of the <TT>phylo</TT> effect) and the residual variance (<TT>R-structure</TT>, 
+the residual variance is called <TT>units</TT> in MCMCglmm).
+We have information about the posterior mean of 
+the estimate, its 95% credible interval<A NAME="tex2html5"
+  HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#foot300"><SUP><SPAN CLASS="arabic">4</SPAN></SUP></A> 
+and its effective sample size. The 
+latter is a measure of the auto-correlation within the parameter sample: it 
+should be close to the MCMC sample size above, or failing that, it should be at 
+least large enough (say more than 1,000). The summary of the fixed 
+effects (<TT>intercept</TT> and <TT>cofactor</TT>) are similar, except we also 
+have a ``pMCMC'' value for significance testing if the parameter is different 
+from zero<A NAME="tex2html6"
+  HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#foot301"><SUP><SPAN CLASS="arabic">5</SPAN></SUP></A>. By 
+using <TT>plot(model_simple)</TT>, we can obtain the ``trace'' of the sampling 
+(to check for convergence and auto-correlation) and posterior density of each 
+parameter (Fig. <A HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple#fig_dens_simple">11.1</A>).
+
+<DIV ALIGN="CENTER"><A NAME="fig_dens_simple"></A><A NAME="123"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 11.1:</STRONG>
+Plot of trace and posterior density for fixed effects (top two firsts) and 
+variance parameters (bottom two lasts).</CAPTION>
+<TR><TD>
+<DIV ALIGN="CENTER">
+
+</DIV> <TABLE  WIDTH="150%">
+<TR><TD><IMG src="fixed.png"></TD></TR>
+<TR><TD><IMG src="VCV.png"></TD></TR>
+</TABLE></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+Finally, we can easily calculate the posterior probability of the phylogenetic signal <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img7.png"
+ ALT="$ \lambda$"></SPAN> 
+(see section 11.2.1 in the main text) using:
+ <div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">lambda</span> <span class="hl kwb">&lt;-</span> <span class="hl std">model_simple</span><span class="hl opt">$</span><span class="hl std">VCV[,</span><span class="hl str">'phylo'</span><span class="hl std">]</span><span class="hl opt">/</span>
+ <span class="hl std">(model_simple</span><span class="hl opt">$</span><span class="hl std">VCV[,</span><span class="hl str">'phylo'</span><span class="hl std">]</span><span class="hl opt">+</span><span class="hl std">model_simple</span><span class="hl opt">$</span><span class="hl std">VCV[,</span><span class="hl str">'units'</span><span class="hl std">])</span>
+</pre></div>
+</div></div>
+We can calculate the posterior mean (mean of the posterior distribution), posterior mode 
+(most likely value regarding the posterior distribution) and the 95% credible interval of <SPAN CLASS="MATH"><IMG
+ WIDTH="15" HEIGHT="32" ALIGN="MIDDLE" BORDER="0"
+ SRC="img7.png"
+ ALT="$ \lambda$"></SPAN>:
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"> <span class="hl kwd">mean</span><span class="hl std">(lambda)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.6961
+</pre></div>
+<div class="source"><pre class="knitr r"> <span class="hl kwd">posterior.mode</span><span class="hl std">(lambda)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##   var1 
+## 0.7442
+</pre></div>
+<div class="source"><pre class="knitr r"> <span class="hl kwd">HPDinterval</span><span class="hl std">(lambda)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##       lower  upper
+## var1 0.5267 0.8522
+## attr(,"Probability")
+## [1] 0.95
+</pre></div>
+</div></div>
+
+<hr>
+<h3><span style="text-decoration: underline;"><strong> Footnotes </strong></span></h3>
+
+<DT><A NAME="foot307">... 0.01</A><A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#tex2html2"><SUP><SPAN CLASS="arabic">1</SPAN></SUP></A></DT>
+<DD>MCMCglmm univariate prior formulation 
+is such that it corresponds to an inverse-Gamma with shape parameter 
+<!-- MATH
+ $\alpha=\dfrac{\mathtt{nu}}{2}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="56" HEIGHT="45" ALIGN="MIDDLE" BORDER="0"
+ SRC="img5.png"
+ ALT="$ \alpha=\dfrac{\mathtt{nu}}{2}$"></SPAN> and scale parameter 
+<!-- MATH
+ $\beta=\dfrac{\mathtt{nu}\times\mathtt{V}}{2}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="80" HEIGHT="49" ALIGN="MIDDLE" BORDER="0"
+ SRC="img6.png"
+ ALT="$ \beta=\dfrac{\mathtt{nu}\times\mathtt{V}}{2}$"></SPAN>.
+It is important to note that this inverse-Gamma could become unwantedly `informative' 
+when variance components are close to 0 so that it is always recommended running models with different prior specifications. 
+For which prior should be used, see discussion in <A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/biblio.html#hadfield_mcmcglmm_2010">Hadfield (2010b)</A> and also one can find more recent discussion 
+on this topic online within the correspondences in the <TT>r-sig-mixed-modes</TT> mailing list.
+
+<DT><A NAME="foot92">... values</A><A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#tex2html3"><SUP><SPAN CLASS="arabic">2</SPAN></SUP></A></DT>
+<DD>Because the MCMC sampling is 
+Markovian, it is a time-series, which often appears to be auto-correlated: 
+closely following iterations tend to resemble each other. The ``thinning'' help 
+to save memory when running the MCMC for longer. For phylogenetic mixed model, this auto-correlation can be large 
+and problematic: always make sure your effective sample size is large enough and 
+that auto-correlation is low.
+
+<DT><A NAME="foot100">... (AIC)</A><A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#tex2html4"><SUP><SPAN CLASS="arabic">3</SPAN></SUP></A></DT>
+<DD>Here we do not
+provide explanations on how information criteria can be used for model selection. 
+For a detailed discussion on this topic, the reader is referred to Chapter 12.
+
+<DT><A NAME="foot300">... interval</A><A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#tex2html5"><SUP><SPAN CLASS="arabic">4</SPAN></SUP></A></DT>
+<DD>Credible interval can be 
+considered as the Bayesian version of confidence intervals, and also it is 
+known as the highest posterior density (see <A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/biblio.html#hadfield_mcmcglmm_2010">Hadfield, 2010b</A>).
+ 
+<DT><A NAME="foot301">... zero</A><A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#tex2html6"><SUP><SPAN CLASS="arabic">5</SPAN></SUP></A></DT>
+<DD>If we are strictly Bayesian, we should not do significance 
+testing because such a concept belongs to the frequentists' paradigm. However, 
+we use ``pMCMC'' as if frequentists' <SPAN  CLASS="textit">p-values</SPAN> for convenience.
+
+
+</BODY>
+</HTML>

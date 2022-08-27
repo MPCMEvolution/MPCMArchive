@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+	<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+		<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+		<p style="padding-left: 30px;"><code>"nlme"</code> (Pinheiro et al 2012) </p>
+		<p style="padding-left: 30px;"><code>"GLSME"</code> (Hansen and Bartoszek 2012) </p>
+		<p style="padding-left: 30px;"><code>"MCMCglmm"</code> (Hadfield 2010) </p>
+		<p style="padding-left: 30px;"><code>"phytools"</code> (Revell 2012) </p>
+		
+		<h4>Matlab packages</h4>
+		<p style="padding-left: 30px;"><code>"MERegPHYSIG"</code> (Ives et al 2007) </p>
+				
+		<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>brain size and body size on primates</strong> (<code>"primate_ind.txt"</code>, a tab separated text file), with more than one observation for the majority of species, individual-specific data</p>
+		<p style="padding-left: 30px;"><strong>brain size and body size on primates</strong> (<code>"primate_spec.txt"</code>, a tab separated text file), species-specific data obtained from the exercises above, includes information on within-species sampling (sample sizes, variances and standard errors<p>
+		<p style="padding-left: 30px;"><strong>phylogeny</strong> (<code>"primate_tree.phy"</code>, in phylip format) is taken from 10kTrees (Arnold et al 2010) and tailored to the data at hand</p>
+		
+	<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+		<h4>ape & nlme (PGLS)</h4>
+		<p>When measurement error is ignored</p>
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(ape)</span>
+<span class="hl kwd">library</span><span class="hl std">(nlme)</span>
+<span class="hl std">data.spec</span> <span class="hl kwb">=</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;primate_spec.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">tree</span> <span class="hl kwb">=</span> <span class="hl kwd">read.tree</span><span class="hl std">(</span><span class="hl str">&quot;primate_tree.phy&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">row.names</span><span class="hl std">(data.spec)</span> <span class="hl kwb">=</span> <span class="hl std">data.spec</span><span class="hl opt">$</span><span class="hl std">species</span>
+<span class="hl std">pgls.nlme</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, data.spec,</span> <span class="hl kwc">correlation</span> <span class="hl std">=</span> <span class="hl kwd">corBrownian</span><span class="hl std">(</span><span class="hl kwc">phy</span> <span class="hl std">= tree))</span>
+<span class="hl kwd">summary</span><span class="hl std">(pgls.nlme)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## Generalized least squares fit by REML
+##   Model: lg.brain ~ lg.body 
+##   Data: data.spec 
+##     AIC   BIC logLik
+##   60.48 67.77 -27.24
+## 
+## Correlation Structure: corBrownian
+##  Formula: ~1 
+##  Parameter estimate(s):
+## numeric(0)
+## 
+## Coefficients:
+##             Value Std.Error t-value p-value
+## (Intercept) 1.218    0.5333   2.284  0.0249
+## lg.body     0.287    0.0389   7.375  0.0000
+## 
+##  Correlation: 
+##         (Intr)
+## lg.body -0.544
+## 
+## Standardized residuals:
+##     Min      Q1     Med      Q3     Max 
+## -2.1662  0.1224  0.7819  1.1608  3.3928 
+## 
+## Residual standard error: 0.8308 
+## Degrees of freedom: 86 total; 84 residual
+</pre></div>
+</div></div>
+
+		
+		<p>When considering measurement error (on the predictor)</p>
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">pglsME.nlme</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, data.spec,</span> <span class="hl kwc">correlation</span> <span class="hl std">=</span> <span class="hl kwd">corBrownian</span><span class="hl std">(</span><span class="hl kwc">phy</span> <span class="hl std">= tree),</span>
+    <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl kwd">varFixed</span><span class="hl std">(</span><span class="hl opt">~</span><span class="hl std">lg.body_var.adj))</span>
+<span class="hl kwd">summary</span><span class="hl std">(pglsME.nlme)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## Generalized least squares fit by REML
+##   Model: lg.brain ~ lg.body 
+##   Data: data.spec 
+##     AIC   BIC logLik
+##   181.9 189.2 -87.97
+## 
+## Correlation Structure: corBrownian
+##  Formula: ~1 
+##  Parameter estimate(s):
+## numeric(0)
+## Variance function:
+##  Structure: fixed weights
+##  Formula: ~lg.body_var.adj 
+## 
+## Coefficients:
+##               Value Std.Error t-value p-value
+## (Intercept) -1.3018    0.3866  -3.367  0.0011
+## lg.body      0.7049    0.0485  14.549  0.0000
+## 
+##  Correlation: 
+##         (Intr)
+## lg.body -0.983
+## 
+## Standardized residuals:
+##      Min       Q1      Med       Q3      Max 
+## -0.95067 -0.35625 -0.13744  0.05117  1.55863 
+## 
+## Residual standard error: 8.399 
+## Degrees of freedom: 86 total; 84 residual
+</pre></div>
+</div></div>
+
+		
+		<h4>MERegPHYSIG (outputs from the program)</h4>
+		<p>When measurement error is ignored</p>
+		<div class="output"><pre class="knitr r">
+%METHOD = GLS
+%
+%Data file and ME file saved as 'workingDataFile.txt' and 'workingMEfile.txt'
+%
+%Coefficients
+%b0 (intercept) = 1.2179
+%b1 = 0.28701
+%
+%sigma2 = 0.10725
+%
+%Independent variable means, variances, and correlations
+%aX1 = 7.4524
+%s2X1 = 0.83315
+%
+%LnLikelihood = -25.028
+%-2LL = 50.056
+%AIC(par=3) = 56.056
+		</pre></div>
+		
+		<p>When considering measurement error (on both the response and predictor, but without within-species covariance)</p>
+		<div class="output"><pre class="knitr r">
+%METHOD = EGLS
+%
+%Data file and ME file saved as 'workingDataFile.txt' and 'workingMEfile.txt'
+%
+%Coefficients with approximate SE
+%b0 (intercept) = 1.1929 +- 0.53329
+%b1 = 0.29033 +- 0.038919
+%
+%sigma2 = 0.12494
+%
+%Independent variable means, variances, and correlations
+%aX1 = 7.4533
+%s2X1 = 0.82363
+</pre></div>
+<p> </p>
+<div class="output"><pre class="knitr r">
+%METHOD = ML
+%
+%Data file and ME file saved as 'workingDataFile.txt' and 'workingMEfile.txt'
+%
+%Coefficients with approximate SE
+%b0 (intercept) = 1.1659 +- 0.52755
+%b1 = 0.29394 +- 0.039164
+%
+%correlation matrix of estimates of b = 
+%    1    -0.55338
+%    -0.55338           1
+%
+%sigma2 = 0.1046
+%
+%Independent variable means, variances, and correlations
+%aX1 = 7.4534
+%s2X1 = 0.81061
+%
+%LnLikelihood = -138.0037
+%-2LL = 276.0074
+%AIC(par=5) = 286.0074
+</pre></div>
+<p> </p>
+<div class="output"><pre class="knitr r">
+%METHOD = REML
+%
+%Data file and ME file saved as 'workingDataFile.txt' and 'workingMEfile.txt'
+%
+%Coefficients
+%b0 (intercept) = 1.1648
+%b1 = 0.29384
+%
+%sigma2 = 0.10462
+%
+%Independent variable means, variances, and correlations
+%aX1 = 7.4597
+%s2X1 = 0.020603
+%
+%LnLikelihood = -132.3263
+%-2LL = 264.6526
+%AIC(par=2) = 268.6526
+		</pre></div>
+
+		<h4>phytools</h4>
+		<p>When measurement error is ignored</p>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(phytools)</span>
+<span class="hl std">data.spec</span> <span class="hl kwb">=</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;primate_spec.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">tree</span> <span class="hl kwb">=</span> <span class="hl kwd">read.tree</span><span class="hl std">(</span><span class="hl str">&quot;primate_tree.phy&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">pgls.Ives</span><span class="hl std">(</span><span class="hl kwc">tree</span> <span class="hl std">= tree,</span> <span class="hl kwc">X</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body, data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span> <span class="hl kwc">y</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.brain,</span>
+    <span class="hl std">data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span> <span class="hl kwc">Vx</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip)), data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span>
+    <span class="hl kwc">Vy</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip)), data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span> <span class="hl kwc">Cxy</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span>
+        <span class="hl kwd">length</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip)), data.spec</span><span class="hl opt">$</span><span class="hl std">species))</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $beta
+## [1] 0.6108 0.3123
+## 
+## $sig2x
+## [1] 0.108
+## 
+## $sig2y
+## [1] 0.009439
+## 
+## $a
+## [1] -0.5942  0.4252
+## 
+## $logL
+## [1] -156.5
+## 
+## $convergence
+## [1] 0
+## 
+## $message
+## [1] "CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
+</pre></div>
+</div></div>
+
+
+<p>The convergence is often sensitive to starting conditions. It may be more straightforward to repeat the above procedure several times (10-100) and select the results with the highest likelihood:</p>
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">res</span> <span class="hl kwb">=</span> <span class="hl kwd">c</span><span class="hl std">()</span>
+<span class="hl kwa">for</span> <span class="hl std">(k</span> <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">100</span><span class="hl std">) {</span>
+    <span class="hl std">mod</span> <span class="hl kwb">=</span> <span class="hl kwd">try</span><span class="hl std">(</span><span class="hl kwd">pgls.Ives</span><span class="hl std">(</span><span class="hl kwc">tree</span> <span class="hl std">= tree,</span> <span class="hl kwc">X</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body, data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span>
+        <span class="hl kwc">y</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.brain, data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span> <span class="hl kwc">Vx</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span>
+            <span class="hl kwd">length</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip)), data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span> <span class="hl kwc">Vy</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip)),</span>
+            <span class="hl std">data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span> <span class="hl kwc">Cxy</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip)), data.spec</span><span class="hl opt">$</span><span class="hl std">species)))</span>
+    <span class="hl kwa">if</span> <span class="hl std">(</span><span class="hl kwd">class</span><span class="hl std">(mod)</span> <span class="hl opt">!=</span> <span class="hl str">&quot;try-error&quot;</span><span class="hl std">) {</span>
+        <span class="hl std">int</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">beta[</span><span class="hl num">1</span><span class="hl std">]</span>
+        <span class="hl std">slope</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">beta[</span><span class="hl num">2</span><span class="hl std">]</span>
+        <span class="hl std">lik</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">logL</span>
+        <span class="hl std">anc_a</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">a[</span><span class="hl num">1</span><span class="hl std">]</span>
+        <span class="hl std">anc_b</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">a[</span><span class="hl num">2</span><span class="hl std">]</span>
+        <span class="hl std">conv</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">convergence</span>
+    <span class="hl std">}</span>
+    <span class="hl std">res</span> <span class="hl kwb">=</span> <span class="hl kwd">rbind</span><span class="hl std">(res,</span> <span class="hl kwd">data.frame</span><span class="hl std">(k, int, slope, anc_a, anc_b, lik, conv))</span>
+<span class="hl std">}</span>
+<span class="hl std">res[</span><span class="hl kwd">which</span><span class="hl std">(res[,</span> <span class="hl num">6</span><span class="hl std">]</span> <span class="hl opt">==</span> <span class="hl kwd">max</span><span class="hl std">(</span><span class="hl kwd">subset</span><span class="hl std">(res, conv</span> <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl std">)[,</span> <span class="hl num">6</span><span class="hl std">])), ]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##     k   int  slope anc_a anc_b    lik conv
+## 56 56 1.215 0.2872 7.434  3.35 -138.7    0
+</pre></div>
+</div></div>
+
+
+
+<p> When considering measurement error (on both the response and predictor, but without within-species covariance)</p>
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">res</span> <span class="hl kwb">=</span> <span class="hl kwd">c</span><span class="hl std">()</span>
+<span class="hl kwa">for</span> <span class="hl std">(k</span> <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">100</span><span class="hl std">) {</span>
+    <span class="hl std">mod</span> <span class="hl kwb">=</span> <span class="hl kwd">try</span><span class="hl std">(</span><span class="hl kwd">pgls.Ives</span><span class="hl std">(</span><span class="hl kwc">tree</span> <span class="hl std">= tree,</span> <span class="hl kwc">X</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body, data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span>
+        <span class="hl kwc">y</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.brain, data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span> <span class="hl kwc">Vx</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body_var.adj,</span>
+            <span class="hl std">data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span> <span class="hl kwc">Vy</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.brain_var.adj, data.spec</span><span class="hl opt">$</span><span class="hl std">species),</span>
+        <span class="hl kwc">Cxy</span> <span class="hl std">=</span> <span class="hl kwd">setNames</span><span class="hl std">(</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip)), data.spec</span><span class="hl opt">$</span><span class="hl std">species)))</span>
+    <span class="hl kwa">if</span> <span class="hl std">(</span><span class="hl kwd">class</span><span class="hl std">(mod)</span> <span class="hl opt">!=</span> <span class="hl str">&quot;try-error&quot;</span><span class="hl std">) {</span>
+        <span class="hl std">int</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">beta[</span><span class="hl num">1</span><span class="hl std">]</span>
+        <span class="hl std">slope</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">beta[</span><span class="hl num">2</span><span class="hl std">]</span>
+        <span class="hl std">lik</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">logL</span>
+        <span class="hl std">anc_a</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">a[</span><span class="hl num">1</span><span class="hl std">]</span>
+        <span class="hl std">anc_b</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">a[</span><span class="hl num">2</span><span class="hl std">]</span>
+        <span class="hl std">conv</span> <span class="hl kwb">=</span> <span class="hl std">mod</span><span class="hl opt">$</span><span class="hl std">convergence</span>
+    <span class="hl std">}</span>
+    <span class="hl std">res</span> <span class="hl kwb">=</span> <span class="hl kwd">rbind</span><span class="hl std">(res,</span> <span class="hl kwd">data.frame</span><span class="hl std">(k, int, slope, anc_a, anc_b, lik, conv))</span>
+<span class="hl std">}</span>
+<span class="hl std">res[</span><span class="hl kwd">which</span><span class="hl std">(res[,</span> <span class="hl num">6</span><span class="hl std">]</span> <span class="hl opt">==</span> <span class="hl kwd">max</span><span class="hl std">(</span><span class="hl kwd">subset</span><span class="hl std">(res, conv</span> <span class="hl opt">==</span> <span class="hl num">0</span><span class="hl std">)[,</span> <span class="hl num">6</span><span class="hl std">])), ]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##     k     int  slope anc_a anc_b    lik conv
+## 59 59 -0.2379 0.4826  7.46 3.362 -125.7    0
+</pre></div>
+</div></div>
+
+
+
+		<h4>GLSME</h4>
+		<p>When both measurement error and phylogeny are ignored (GLS)</p>
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># functions are stored in a source file (available from K. Bartoszek's</span>
+<span class="hl com"># website)</span>
+<span class="hl kwd">source</span><span class="hl std">(</span><span class="hl str">&quot;~/Dropbox/comparative book/website/OPMs/chap_7_Garamszegi/GLSME.R&quot;</span><span class="hl std">)</span>
+<span class="hl std">data.spec</span> <span class="hl kwb">=</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;primate_spec.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl kwd">row.names</span><span class="hl std">(data.spec)</span> <span class="hl kwb">=</span> <span class="hl std">data.spec</span><span class="hl opt">$</span><span class="hl std">species</span>
+<span class="hl std">tree</span> <span class="hl kwb">=</span> <span class="hl kwd">read.tree</span><span class="hl std">(</span><span class="hl str">&quot;primate_tree.phy&quot;</span><span class="hl std">)</span>
+<span class="hl std">gls.glsme</span> <span class="hl kwb">=</span> <span class="hl kwd">GLSME</span><span class="hl std">(</span><span class="hl kwc">y</span> <span class="hl std">= data.spec</span><span class="hl opt">$</span><span class="hl std">lg.brain,</span> <span class="hl kwc">D</span> <span class="hl std">=</span> <span class="hl kwd">cbind</span><span class="hl std">(</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body)),</span>
+    <span class="hl std">data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body),</span> <span class="hl kwc">Vt</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">Ve</span> <span class="hl std">=</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwc">Vd</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl str">&quot;F&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;F&quot;</span><span class="hl std">),</span> <span class="hl kwc">Vu</span> <span class="hl std">=</span> <span class="hl num">0</span><span class="hl std">)</span>
+<span class="hl std">gls.glsme</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $GLSestimate
+##         [,1]
+## [1,] -1.6429
+## [2,]  0.7128
+## 
+## $errorGLSestim
+##         [,1]
+## [1,] 0.32506
+## [2,] 0.04057
+## 
+## $BiasCorrectedGLSestimate
+##         [,1]
+## [1,] -1.6429
+## [2,]  0.7128
+## 
+## $errorBiasCorrectedGLSestim
+##         [,1]
+## [1,] 0.32506
+## [2,] 0.04057
+## 
+## $K
+##      [,1] [,2]
+## [1,]    1    0
+## [2,]    0    1
+## 
+## $R2
+##        [,1]
+## [1,] 0.7821
+## 
+## $R2BiasCorrectedModel
+##        [,1]
+## [1,] 0.7821
+## 
+## $LogLikelihood
+## [1] -63.45
+## 
+## $LogLikelihoodBiasCorrectedModel
+## [1] -63.45
+## 
+## $PredictorVarianceConstantEstimate
+## [1] 0 0
+## 
+## $ResponseVarianceConstantEstimate
+## [1] 0.2561
+</pre></div>
+</div></div>
+
+		
+		<p>When measurement error is ignored but phylogeny is accounted for (PGLS)</p>
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># the order of species in the data should be the same as the order of</span>
+<span class="hl com"># species in the VCV matrix, thus the dataset should be resorted as</span>
+<span class="hl com"># data.spec[tree$tip.label,]!</span>
+<span class="hl std">pgls.glsme</span> <span class="hl kwb">=</span> <span class="hl kwd">GLSME</span><span class="hl std">(</span><span class="hl kwc">y</span> <span class="hl std">= data.spec[tree</span><span class="hl opt">$</span><span class="hl std">tip.label, ]</span><span class="hl opt">$</span><span class="hl std">lg.brain,</span> <span class="hl kwc">D</span> <span class="hl std">=</span> <span class="hl kwd">cbind</span><span class="hl std">(</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span>
+    <span class="hl kwd">length</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body)), data.spec[tree</span><span class="hl opt">$</span><span class="hl std">tip.label, ]</span><span class="hl opt">$</span><span class="hl std">lg.body),</span> <span class="hl kwc">Vt</span> <span class="hl std">=</span> <span class="hl kwd">vcv</span><span class="hl std">(tree),</span>
+    <span class="hl kwc">Ve</span> <span class="hl std">=</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwc">Vd</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl str">&quot;F&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;F&quot;</span><span class="hl std">),</span> <span class="hl kwc">Vu</span> <span class="hl std">=</span> <span class="hl num">0</span><span class="hl std">)</span>
+<span class="hl std">pgls.glsme</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $GLSestimate
+##       [,1]
+## [1,] 1.218
+## [2,] 0.287
+## 
+## $errorGLSestim
+##         [,1]
+## [1,] 0.52707
+## [2,] 0.03846
+## 
+## $BiasCorrectedGLSestimate
+##       [,1]
+## [1,] 1.218
+## [2,] 0.287
+## 
+## $errorBiasCorrectedGLSestim
+##         [,1]
+## [1,] 0.52707
+## [2,] 0.03846
+## 
+## $K
+##      [,1] [,2]
+## [1,]    1    0
+## [2,]    0    1
+## 
+## $R2
+##       [,1]
+## [1,] 0.393
+## 
+## $R2BiasCorrectedModel
+##       [,1]
+## [1,] 0.393
+## 
+## $LogLikelihood
+## [1] -25.02
+## 
+## $LogLikelihoodBiasCorrectedModel
+## [1] -25.02
+## 
+## $PredictorVarianceConstantEstimate
+## [1] 0 0
+## 
+## $ResponseVarianceConstantEstimate
+## [1] 0.009235
+</pre></div>
+</div></div>
+
+		
+		<p>When both measurement error and phylogeny are accounted for (considering measurement error (on both the response and predictor, but without within-species covariance) </p>
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># again, the order of species in the data should be the same as the order of</span>
+<span class="hl com"># species in the VCV matrix, thus the dataset should be resorted as</span>
+<span class="hl com"># data.spec[tree$tip.label,]! in addition, note that when there is a</span>
+<span class="hl com"># measurement error in the predictors, these are treated as 'random effects'</span>
+<span class="hl com"># (as specified by the non zero entry in the Vd matrix), and they will be</span>
+<span class="hl com"># centered on their means by default (it can be switched off by setting</span>
+<span class="hl com"># CenterPredictor=FALSE)</span>
+<span class="hl std">pglsME.glsme</span> <span class="hl kwb">=</span> <span class="hl kwd">GLSME</span><span class="hl std">(</span><span class="hl kwc">y</span> <span class="hl std">= data.spec[tree</span><span class="hl opt">$</span><span class="hl std">tip.label, ]</span><span class="hl opt">$</span><span class="hl std">lg.brain,</span> <span class="hl kwc">D</span> <span class="hl std">=</span> <span class="hl kwd">cbind</span><span class="hl std">(</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span>
+    <span class="hl kwd">length</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body)), data.spec[tree</span><span class="hl opt">$</span><span class="hl std">tip.label, ]</span><span class="hl opt">$</span><span class="hl std">lg.body),</span> <span class="hl kwc">Vt</span> <span class="hl std">=</span> <span class="hl kwd">vcv</span><span class="hl std">(tree),</span>
+    <span class="hl kwc">Ve</span> <span class="hl std">=</span> <span class="hl kwd">diag</span><span class="hl std">(data.spec[tree</span><span class="hl opt">$</span><span class="hl std">tip.label, ]</span><span class="hl opt">$</span><span class="hl std">lg.brain_var.adj),</span> <span class="hl kwc">Vd</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl str">&quot;F&quot;</span><span class="hl std">,</span>
+        <span class="hl kwd">vcv</span><span class="hl std">(tree)),</span> <span class="hl kwc">Vu</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl str">&quot;F&quot;</span><span class="hl std">,</span> <span class="hl kwd">diag</span><span class="hl std">(data.spec[tree</span><span class="hl opt">$</span><span class="hl std">tip.label, ]</span><span class="hl opt">$</span><span class="hl std">lg.body_var.adj)))</span>
+<span class="hl std">pglsME.glsme</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $GLSestimate
+##        [,1]
+## [1,] 3.3610
+## [2,] 0.3209
+## 
+## $errorGLSestim
+##         [,1]
+## [1,] 0.48730
+## [2,] 0.04689
+## 
+## $BiasCorrectedGLSestimate
+##        [,1]
+## [1,] 3.3582
+## [2,] 0.4173
+## 
+## $errorBiasCorrectedGLSestim
+##         [,1]
+## [1,] 0.48730
+## [2,] 0.06111
+## 
+## $K
+##      [,1]     [,2]
+## [1,]    1 0.006861
+## [2,]    0 0.769192
+## 
+## $R2
+##        [,1]
+## [1,] 0.4894
+## 
+## $R2BiasCorrectedModel
+##        [,1]
+## [1,] 0.5328
+## 
+## $LogLikelihood
+## [1] -23.66
+## 
+## $LogLikelihoodBiasCorrectedModel
+## [1] -21.25
+## 
+## $PredictorVarianceConstantEstimate
+## [1] 0.00000 0.04932
+## 
+## $ResponseVarianceConstantEstimate
+## [1] 0.0112
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># as a consequence of centering, the estimated intercept corresponds to</span>
+<span class="hl com"># b0+b1*mean(data.spec$lg.body) from model data.spec$lg.brain =</span>
+<span class="hl com"># b0+b1*mean(data.spec$lg.body) + b1*(data.spec$lg.body-</span>
+<span class="hl com"># mean(data.spec$lg.body)). Therefore, the intercept of interests can be</span>
+<span class="hl com"># obtained as:</span>
+<span class="hl std">pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">BiasCorrectedGLSestimate[</span><span class="hl num">1</span><span class="hl std">]</span> <span class="hl opt">-</span> <span class="hl std">pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">BiasCorrectedGLSestimate[</span><span class="hl num">2</span><span class="hl std">]</span> <span class="hl opt">*</span>
+    <span class="hl kwd">mean</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.06225
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># from which, the slope of interest is:</span>
+<span class="hl std">pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">BiasCorrectedGLSestimate[</span><span class="hl num">2</span><span class="hl std">]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.4173
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># taking into account estimation error after the bias correction, the slope</span>
+<span class="hl com"># falls within the error range of:</span>
+<span class="hl std">slope_range</span> <span class="hl kwb">=</span> <span class="hl kwd">rbind</span><span class="hl std">(pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">BiasCorrectedGLSestimate[</span><span class="hl num">2</span><span class="hl std">]</span> <span class="hl opt">-</span> <span class="hl std">pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">errorBiasCorrectedGLSestim[</span><span class="hl num">2</span><span class="hl std">],</span>
+    <span class="hl std">pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">BiasCorrectedGLSestimate[</span><span class="hl num">2</span><span class="hl std">]</span> <span class="hl opt">+</span> <span class="hl std">pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">errorBiasCorrectedGLSestim[</span><span class="hl num">2</span><span class="hl std">])</span>
+<span class="hl std">slope_range</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##        [,1]
+## [1,] 0.3561
+## [2,] 0.4784
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># the standard error of the intercept can be computed based on the variance</span>
+<span class="hl com"># of the noncentered intercept estimate (T. Hansen and K. Bartoszek pers.</span>
+<span class="hl com"># comm.):</span>
+<span class="hl std">int_var</span> <span class="hl kwb">=</span> <span class="hl std">pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">errorBiasCorrectedGLSestim[</span><span class="hl num">1</span><span class="hl std">]</span><span class="hl opt">^</span><span class="hl num">2</span> <span class="hl opt">+</span> <span class="hl std">pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">errorBiasCorrectedGLSestim[</span><span class="hl num">2</span><span class="hl std">]</span><span class="hl opt">^</span><span class="hl num">2</span> <span class="hl opt">*</span>
+    <span class="hl kwd">mean</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body)</span><span class="hl opt">^</span><span class="hl num">2</span>
+<span class="hl kwd">sqrt</span><span class="hl std">(int_var)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.6859
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># from this the error range around the non-centred intercept can be given:</span>
+<span class="hl std">intercept_range</span> <span class="hl kwb">=</span> <span class="hl kwd">rbind</span><span class="hl std">(pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">BiasCorrectedGLSestimate[</span><span class="hl num">1</span><span class="hl std">]</span> <span class="hl opt">-</span> <span class="hl std">pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">BiasCorrectedGLSestimate[</span><span class="hl num">2</span><span class="hl std">]</span> <span class="hl opt">*</span>
+    <span class="hl kwd">mean</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body)</span> <span class="hl opt">-</span> <span class="hl kwd">sqrt</span><span class="hl std">(int_var), pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">BiasCorrectedGLSestimate[</span><span class="hl num">1</span><span class="hl std">]</span> <span class="hl opt">-</span>
+    <span class="hl std">pglsME.glsme</span><span class="hl opt">$</span><span class="hl std">BiasCorrectedGLSestimate[</span><span class="hl num">2</span><span class="hl std">]</span> <span class="hl opt">*</span> <span class="hl kwd">mean</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body)</span> <span class="hl opt">+</span> <span class="hl kwd">sqrt</span><span class="hl std">(int_var))</span>
+<span class="hl std">intercept_range</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##         [,1]
+## [1,] -0.6237
+## [2,]  0.7481
+</pre></div>
+</div></div>
+
+		
+		<h4>MCMCglmm</h4>
+		<p> To prepare the dataset, we need to generate a column named 'animal'</p>
+<div class="chunk" id="unnamed-chunk-9"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(MCMCglmm)</span>
+<span class="hl std">data.spec</span> <span class="hl kwb">=</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;primate_spec.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">data.ind</span> <span class="hl kwb">=</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;primate_ind.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">tree</span> <span class="hl kwb">=</span> <span class="hl kwd">read.tree</span><span class="hl std">(</span><span class="hl str">&quot;primate_tree.phy&quot;</span><span class="hl std">)</span>
+<span class="hl std">data.spec</span><span class="hl opt">$</span><span class="hl std">animal</span> <span class="hl kwb">=</span> <span class="hl std">data.spec</span><span class="hl opt">$</span><span class="hl std">species</span>
+<span class="hl std">data.ind</span><span class="hl opt">$</span><span class="hl std">animal</span> <span class="hl kwb">=</span> <span class="hl std">data.ind</span><span class="hl opt">$</span><span class="hl std">species</span>
+</pre></div>
+</div></div>
+
+		
+		<p>When measurement error is ignored, and species-specific data are used (equivalent with PGLS)</p>
+<div class="chunk" id="unnamed-chunk-10"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">prior</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">R</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">nu</span> <span class="hl std">=</span> <span class="hl num">0.002</span><span class="hl std">),</span> <span class="hl kwc">G</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G1</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">nu</span> <span class="hl std">=</span> <span class="hl num">0.002</span><span class="hl std">)))</span>
+<span class="hl std">mcmc</span> <span class="hl kwb">=</span> <span class="hl kwd">MCMCglmm</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body,</span> <span class="hl kwc">random</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl std">animal,</span> <span class="hl kwc">data</span> <span class="hl std">= data.spec,</span> <span class="hl kwc">pedigree</span> <span class="hl std">= tree,</span>
+    <span class="hl kwc">prior</span> <span class="hl std">= prior,</span> <span class="hl kwc">verbose</span> <span class="hl std">= F,</span> <span class="hl kwc">family</span> <span class="hl std">=</span> <span class="hl str">&quot;gaussian&quot;</span><span class="hl std">,</span> <span class="hl kwc">nodes</span> <span class="hl std">=</span> <span class="hl str">&quot;TIPS&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">summary</span><span class="hl std">(mcmc)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+##  Iterations = 3001:12991
+##  Thinning interval  = 10
+##  Sample size  = 1000 
+## 
+##  DIC: -238.3 
+## 
+##  G-structure:  ~animal
+## 
+##        post.mean l-95% CI u-95% CI eff.samp
+## animal      0.69     0.47    0.904     1000
+## 
+##  R-structure:  ~units
+## 
+##       post.mean l-95% CI u-95% CI eff.samp
+## units   0.00327 0.000199  0.00967      226
+## 
+##  Location effects: lg.brain ~ lg.body 
+## 
+##             post.mean l-95% CI u-95% CI eff.samp  pMCMC    
+## (Intercept)    1.0990   0.0235   2.0715     1000  0.024 *  
+## lg.body        0.2996   0.2282   0.3870     1000 <0.001 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+</pre></div>
+</div></div>
+
+		
+		<p>When measurement error is considered on the predictor variable, and individual-specific data are used (phylogenetic mixed model)</p>
+<div class="chunk" id="unnamed-chunk-11"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># we need within-subject centering to do this (van de Pol and Wright 2009),</span>
+<span class="hl com"># the approprate data transformation:</span>
+<span class="hl std">data.ind</span><span class="hl opt">$</span><span class="hl std">lg.body</span> <span class="hl kwb">=</span> <span class="hl kwd">log</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">body)</span>
+<span class="hl std">data.ind</span><span class="hl opt">$</span><span class="hl std">lg.brain</span> <span class="hl kwb">=</span> <span class="hl kwd">log</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">brain)</span>
+<span class="hl std">means</span> <span class="hl kwb">=</span> <span class="hl kwd">tapply</span><span class="hl std">(</span><span class="hl kwc">X</span> <span class="hl std">= data.ind</span><span class="hl opt">$</span><span class="hl std">lg.body,</span> <span class="hl kwc">INDEX</span> <span class="hl std">= data.ind</span><span class="hl opt">$</span><span class="hl std">species,</span> <span class="hl kwc">FUN</span> <span class="hl std">= mean)</span>
+<span class="hl std">N</span> <span class="hl kwb">=</span> <span class="hl kwd">tapply</span><span class="hl std">(</span><span class="hl kwc">X</span> <span class="hl std">= data.ind</span><span class="hl opt">$</span><span class="hl std">lg.body,</span> <span class="hl kwc">INDEX</span> <span class="hl std">= data.ind</span><span class="hl opt">$</span><span class="hl std">species,</span> <span class="hl kwc">FUN</span> <span class="hl std">= length)</span>
+<span class="hl std">mean.vector</span> <span class="hl kwb">=</span> <span class="hl kwd">vector</span><span class="hl std">()</span>
+<span class="hl kwa">for</span> <span class="hl std">(k</span> <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">:</span><span class="hl kwd">length</span><span class="hl std">(means)) {</span>
+    <span class="hl std">mean.set</span> <span class="hl kwb">=</span> <span class="hl kwd">rep</span><span class="hl std">(means[k], N[k])</span>
+    <span class="hl std">mean.vector</span> <span class="hl kwb">=</span> <span class="hl kwd">rbind</span><span class="hl std">(mean.vector,</span> <span class="hl kwd">as.data.frame</span><span class="hl std">(mean.set))</span>
+<span class="hl std">}</span>
+<span class="hl std">data.ind</span><span class="hl opt">$</span><span class="hl std">body_av</span> <span class="hl kwb">=</span> <span class="hl std">mean.vector[,</span> <span class="hl num">1</span><span class="hl std">]</span>
+<span class="hl std">data.ind</span><span class="hl opt">$</span><span class="hl std">body_centr</span> <span class="hl kwb">&lt;-</span> <span class="hl std">data.ind</span><span class="hl opt">$</span><span class="hl std">lg.body</span> <span class="hl opt">-</span> <span class="hl std">data.ind</span><span class="hl opt">$</span><span class="hl std">body_av</span>
+
+<span class="hl com"># the model based on individual-specific data</span>
+<span class="hl std">prior2</span> <span class="hl kwb">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G1</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">nu</span> <span class="hl std">=</span> <span class="hl num">0.02</span><span class="hl std">),</span> <span class="hl kwc">G2</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">nu</span> <span class="hl std">=</span> <span class="hl num">0.02</span><span class="hl std">)),</span>
+    <span class="hl kwc">R</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">nu</span> <span class="hl std">=</span> <span class="hl num">0.02</span><span class="hl std">))</span>
+<span class="hl std">mcmc.ind.centr</span> <span class="hl kwb">=</span> <span class="hl kwd">MCMCglmm</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">body_centr</span> <span class="hl opt">+</span> <span class="hl std">body_av,</span> <span class="hl kwc">random</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl std">animal</span> <span class="hl opt">+</span>
+    <span class="hl std">species,</span> <span class="hl kwc">data</span> <span class="hl std">= data.ind,</span> <span class="hl kwc">pedigree</span> <span class="hl std">= tree,</span> <span class="hl kwc">prior</span> <span class="hl std">= prior2,</span> <span class="hl kwc">verbose</span> <span class="hl std">= F,</span>
+    <span class="hl kwc">family</span> <span class="hl std">=</span> <span class="hl str">&quot;gaussian&quot;</span><span class="hl std">,</span> <span class="hl kwc">nodes</span> <span class="hl std">=</span> <span class="hl str">&quot;TIPS&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">summary</span><span class="hl std">(mcmc.ind.centr)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+##  Iterations = 3001:12991
+##  Thinning interval  = 10
+##  Sample size  = 1000 
+## 
+##  DIC: -1236 
+## 
+##  G-structure:  ~animal
+## 
+##        post.mean l-95% CI u-95% CI eff.samp
+## animal     0.649     0.44    0.899     1000
+## 
+##                ~species
+## 
+##         post.mean l-95% CI u-95% CI eff.samp
+## species   0.00642   0.0017   0.0134      469
+## 
+##  R-structure:  ~units
+## 
+##       post.mean l-95% CI u-95% CI eff.samp
+## units    0.0134    0.012   0.0147      911
+## 
+##  Location effects: lg.brain ~ body_centr + body_av 
+## 
+##             post.mean l-95% CI u-95% CI eff.samp  pMCMC    
+## (Intercept)     1.445    0.542    2.492     1000  0.002 ** 
+## body_centr      0.129    0.114    0.144     1000 <0.001 ***
+## body_av         0.258    0.184    0.318     1000 <0.001 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+</pre></div>
+</div></div>
+
+		<p>The slope for 'body_av' that gives the interspecific slope that is controlled for phylogeny and within-species variance in body mass (predictor).</p>
+		<p>See more exercises with <code>"MCMCglmm"</code> in the OPM for chapter 11</p>
+		
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+	<ul>
+	<li>Arnold C, Matthews LJ, Nunn CL (2010) The 10kTrees website: a new online resource for primate hylogeny. Evol Anthropol 19: 114-118.</li>
+	<li>Hadfield JD (2010) MCMC methods for multi-response generalized linear mixed models: the MCMCglmm R package. Journal of Statistical Software 33: 1-22.</li>
+	<li>Hansen TF, Bartoszek K (2012) Interpreting the evolutionary regression: the interplay between observational and biological errors in phylogenetic comparative studies. Syst Biol 61: 413-425.</li>
+	<li>Ives AR, Midford PE, Garland T (2007) Within-species variation and measurement error in phylogenetic comparative methods. Syst Biol 56: 252-270.</li>
+	<li>Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20: 289-290.</li>
+	<li>Pinheiro J, Bates D, DebRoy S, Sarkar D, R Development Core Team (2012) nlme: Linear and Nonlinear Mixed Effects Models. R package version 3.1-104.</li> 
+<li>Revell LJ (2012) Phytools: an R package for phylogenetic comparative biology (and other things). Methods Ecol Evol 3: 217-223.</li>
+<li>van de Pol MV, Wright J (2009) A simple method for distinguishing within- versus between-subject effects using mixed models. Anim Behav 77: 753-758.</li>
+	</ul>
+
+	
+</body>
+</html>
+
+	

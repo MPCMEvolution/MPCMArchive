@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+
+<body>
+
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al. 2004) </p>
+		<p style="padding-left: 30px;"><code>"caper"</code> (Orme et al. 2012) </p>
+		<p style="padding-left: 30px;"><code>"geiger"</code> (Harmon et al. 2008) </p>
+		<p style="padding-left: 30px;"><code>"phytools"</code> (Revell 2012) </p>
+	
+	<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>Primate phylogeny</strong> (<code>"primate_tree.phy"</code>), phylogeny in phylip format, phylogeny of primates from Arnold et al. (2010)</p>
+		<p style="padding-left: 30px;"><strong>Species-specific trait data</strong> (<code>"primate_spec.txt"</code>), a tab separated text file, species-specific data for brain size and body size in primates</p>
+		<p style="padding-left: 30px;"><strong>Sample of phylogenetic trees</strong> (<code>"bird_trees.tre"</code>), a block of phylogenies for birds from Jetz et al. (2012) in nexus format</p>
+		
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+	
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(ape)</span>
+<span class="hl kwd">library</span><span class="hl std">(caper)</span>
+<span class="hl kwd">library</span><span class="hl std">(geiger)</span>
+<span class="hl kwd">library</span><span class="hl std">(phytools)</span>
+</pre></div>
+</div></div>
+	
+	<h4>Exercise 1: Importing a tree from a file </h4>
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#To import a tree file in Newick (phylip) format</span>
+<span class="hl std">tree</span><span class="hl kwb">=</span><span class="hl kwd">read.tree</span><span class="hl std">(</span><span class="hl str">&quot;primate_tree.phy&quot;</span><span class="hl std">)</span>
+<span class="hl com">#To import a tree file in Nexus format. Note that this particular file has a subsample of trees, and thus a multi.phylo object is created.</span>
+<span class="hl std">trees</span><span class="hl kwb">=</span><span class="hl kwd">read.nexus</span><span class="hl std">(</span><span class="hl str">&quot;bird_trees.tre&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+	<h4>Exercise 2: Creating a phylogenetic tree with random resolution or a star phylogeny for a list of species </h4>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#Read data first</span>
+<span class="hl std">xdata</span> <span class="hl kwb">=</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;primate_spec.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">= T)</span>
+<span class="hl com">#For some functions species' names should be the row names</span>
+<span class="hl kwd">row.names</span><span class="hl std">(xdata)</span><span class="hl kwb">=</span><span class="hl std">xdata</span><span class="hl opt">$</span><span class="hl std">species</span>
+
+<span class="hl com">#Random tree created by randomly splitting the edges, n is the number of species and we use the list of primate species to name the tips.</span>
+<span class="hl std">rnd.tree</span><span class="hl kwb">=</span><span class="hl kwd">rtree</span><span class="hl std">(</span><span class="hl kwc">n</span><span class="hl std">=</span><span class="hl kwd">length</span><span class="hl std">(xdata</span><span class="hl opt">$</span><span class="hl std">species),</span> <span class="hl kwc">rooted</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">,</span> <span class="hl kwc">tip.label</span> <span class="hl std">=</span> <span class="hl kwd">as.character</span><span class="hl std">(xdata</span><span class="hl opt">$</span><span class="hl std">species))</span>
+
+<span class="hl com">#The two commands below can create a star phylogeny from a bifurcating tree.</span>
+<span class="hl std">tree0</span><span class="hl kwb">=</span><span class="hl kwd">rescale</span><span class="hl std">(rnd.tree,</span> <span class="hl str">&quot;lambda&quot;</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">)</span>
+<span class="hl std">tree0</span><span class="hl kwb">=</span><span class="hl kwd">di2multi</span><span class="hl std">(</span><span class="hl kwd">compute.brlen</span><span class="hl std">(tree0,</span> <span class="hl num">0.1</span><span class="hl std">),</span> <span class="hl kwc">tol</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">)</span>
+
+<span class="hl com">#plot</span>
+<span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">3</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">3</span><span class="hl std">))</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">ladderize</span><span class="hl std">(tree),</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">title</span><span class="hl std">(</span><span class="hl str">&quot;True phylogeny&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">ladderize</span><span class="hl std">(rnd.tree),</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">title</span><span class="hl std">(</span><span class="hl str">&quot;Random phylogeny&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">ladderize</span><span class="hl std">(tree0),</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">title</span><span class="hl std">(</span><span class="hl str">&quot;Star phylogeny&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-3.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl com">#some checks</span>
+<span class="hl kwd">is.ultrametric</span><span class="hl std">(rnd.tree)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] FALSE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">is.ultrametric</span><span class="hl std">(tree0)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] TRUE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">is.rooted</span><span class="hl std">(rnd.tree)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] TRUE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">is.rooted</span><span class="hl std">(tree0)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] FALSE
+</pre></div>
+</div></div>
+		
+<h4>Exercise 3: Adding/removing species to/from the phylogeny </h4>		
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#To remove a particular species from the phylogeny (e.g. if no data is available for that species)</span>
+<span class="hl std">tree.prun1</span><span class="hl kwb">=</span><span class="hl kwd">drop.tip</span><span class="hl std">(tree,</span><span class="hl str">&quot;Ateles_belzebuth&quot;</span><span class="hl std">)</span>
+
+<span class="hl com">#To remove all the species of a particular genus. Taking advantage of R's flexibility we can simply search all tip labels (species) containing the genus name.</span>
+<span class="hl std">tree.prun2</span><span class="hl kwb">=</span><span class="hl kwd">drop.tip</span><span class="hl std">(tree, tree</span><span class="hl opt">$</span><span class="hl std">tip.label[</span><span class="hl kwd">agrep</span><span class="hl std">(</span><span class="hl str">&quot;Cercopithecus&quot;</span><span class="hl std">, tree</span><span class="hl opt">$</span><span class="hl std">tip.label,</span><span class="hl kwc">max.distance</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">)])</span>
+
+<span class="hl com">#To remove all species within the clade Strepsirrhini. This exercise is simplified by the fact that the taxonomy is coded within the datafile.</span>
+<span class="hl std">tree.prun3</span><span class="hl kwb">=</span><span class="hl kwd">drop.tip</span><span class="hl std">(tree,</span> <span class="hl kwd">as.character</span><span class="hl std">(xdata[</span><span class="hl kwd">agrep</span><span class="hl std">(</span><span class="hl str">&quot;Strepsirrhini&quot;</span><span class="hl std">, xdata</span><span class="hl opt">$</span><span class="hl std">suborder,</span><span class="hl kwc">max.distance</span> <span class="hl std">=</span> <span class="hl num">0</span><span class="hl std">),]</span><span class="hl opt">$</span><span class="hl std">species))</span>
+
+<span class="hl com">#To remove species (tips in the tree) that are not in the data file. Note the use of setdiff to compare the species names in the phylogeny (tip.label) to the species names in the data file.</span>
+<span class="hl std">tree.prun4</span><span class="hl kwb">=</span><span class="hl kwd">drop.tip</span><span class="hl std">(tree,</span> <span class="hl kwd">setdiff</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip.label,</span><span class="hl kwd">as.character</span><span class="hl std">(xdata[</span><span class="hl num">3</span><span class="hl opt">:</span><span class="hl num">15</span><span class="hl std">,]</span><span class="hl opt">$</span><span class="hl std">species)))</span>
+
+<span class="hl com">#To add tips at random to a tree with branch lengths, n is the number of species to add and tips is used to assign tip.labels.</span>
+<span class="hl std">tree.prun5</span><span class="hl kwb">=</span><span class="hl kwd">add.random</span><span class="hl std">(tree.prun4,</span> <span class="hl kwc">n</span><span class="hl std">=</span><span class="hl num">2</span><span class="hl std">,</span> <span class="hl kwc">tips</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;species1&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;species2&quot;</span><span class="hl std">))</span>
+
+<span class="hl com">#To add a tip at the root of a specific genus.</span>
+<span class="hl std">tree.prun6</span><span class="hl kwb">=</span><span class="hl kwd">add.species.to.genus</span><span class="hl std">(tree.prun4,</span><span class="hl str">&quot;Ateles_sp&quot;</span><span class="hl std">)</span>
+
+<span class="hl com">#Finally a tip can also be added at a specific position.</span>
+<span class="hl std">tree.prun7</span><span class="hl kwb">=</span><span class="hl kwd">bind.tip</span><span class="hl std">(tree.prun4,</span> <span class="hl str">&quot;Ateles_sp&quot;</span><span class="hl std">,</span> <span class="hl kwc">where</span><span class="hl std">=</span><span class="hl kwd">which</span><span class="hl std">(tree.prun4</span><span class="hl opt">$</span><span class="hl std">tip.label</span><span class="hl opt">==</span><span class="hl str">&quot;Ateles_paniscus&quot;</span><span class="hl std">),</span> <span class="hl kwc">position</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">)</span>
+
+<span class="hl com">#To add a clade to a tree (sticking two trees together)</span>
+<span class="hl std">receptor</span><span class="hl kwb">=</span><span class="hl std">tree.prun7</span>
+<span class="hl std">receptor</span><span class="hl opt">$</span><span class="hl std">tip.label[</span><span class="hl num">14</span><span class="hl std">]</span><span class="hl kwb">=</span><span class="hl str">&quot;NA&quot;</span>
+<span class="hl com">#this is the clade we want to add</span>
+<span class="hl std">donor</span><span class="hl kwb">=</span><span class="hl kwd">rtree</span><span class="hl std">(</span><span class="hl num">5</span><span class="hl std">,</span> <span class="hl kwc">tip.label</span> <span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;Ateles_sp1&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;Ateles_sp2&quot;</span><span class="hl std">,</span><span class="hl str">&quot;Ateles_sp3&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;Ateles_sp4&quot;</span><span class="hl std">,</span><span class="hl str">&quot;Ateles_sp5&quot;</span><span class="hl std">))</span>
+<span class="hl std">donor</span><span class="hl opt">$</span><span class="hl std">root.edge</span><span class="hl kwb">=</span><span class="hl num">0</span>
+<span class="hl std">tree.prun8</span><span class="hl kwb">=</span><span class="hl kwd">paste.tree</span><span class="hl std">(receptor, donor)</span>
+
+<span class="hl com">#Try ploting any of the above to see what it looks like</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">ladderize</span><span class="hl std">(tree.prun7),</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-41.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">ladderize</span><span class="hl std">(tree.prun8),</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-42.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" class="plot" /></div></div>
+
+<h4>Exercise 4: Moving branches</h4>
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#Move a particular tip (Ateles_sp) to the root</span>
+<span class="hl std">tree.rooted</span><span class="hl kwb">=</span><span class="hl kwd">root</span><span class="hl std">(tree.prun6,</span> <span class="hl str">&quot;Ateles_sp&quot;</span><span class="hl std">,</span> <span class="hl kwc">resolve.root</span><span class="hl std">=T)</span>
+</pre></div>
+</div></div>
+
+<h4>Exercise 5: Aletring branch lengths</h4>
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#Grafen's branch lengths adjustments</span>
+
+<span class="hl com">#all branches equal to 1</span>
+<span class="hl std">tree.prun6.bl1</span><span class="hl kwb">=</span><span class="hl kwd">compute.brlen</span><span class="hl std">(tree.prun6,</span> <span class="hl num">1</span><span class="hl std">)</span>
+<span class="hl std">tree.prun6.bl1</span><span class="hl kwb">=</span><span class="hl std">tree.prun6</span>
+<span class="hl std">tree.prun6.bl1</span><span class="hl opt">$</span><span class="hl std">edge.length</span><span class="hl kwb">=</span><span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(tree.prun6</span><span class="hl opt">$</span><span class="hl std">edge.length))</span>
+
+<span class="hl com">#scaling branches differently depending on the position relative to the root</span>
+<span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">4</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">))</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">compute.brlen</span><span class="hl std">(tree.prun6,</span> <span class="hl kwc">power</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">),</span> <span class="hl kwc">main</span><span class="hl std">=</span><span class="hl kwd">expression</span><span class="hl std">(rho</span><span class="hl opt">==</span><span class="hl num">1</span><span class="hl std">),</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">compute.brlen</span><span class="hl std">(tree.prun6,</span> <span class="hl kwc">power</span><span class="hl std">=</span><span class="hl num">3</span><span class="hl std">),</span> <span class="hl kwc">main</span><span class="hl std">=</span><span class="hl kwd">expression</span><span class="hl std">(rho</span><span class="hl opt">==</span><span class="hl num">3</span><span class="hl std">),</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">compute.brlen</span><span class="hl std">(tree.prun6,</span> <span class="hl kwc">power</span><span class="hl std">=</span><span class="hl num">0.5</span><span class="hl std">),</span> <span class="hl kwc">main</span><span class="hl std">=</span><span class="hl kwd">expression</span><span class="hl std">(rho</span><span class="hl opt">==</span><span class="hl num">0.5</span><span class="hl std">),</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">compute.brlen</span><span class="hl std">(tree.prun6,</span> <span class="hl kwc">power</span><span class="hl std">=</span><span class="hl num">0.1</span><span class="hl std">),</span> <span class="hl kwc">main</span><span class="hl std">=</span><span class="hl kwd">expression</span><span class="hl std">(rho</span><span class="hl opt">==</span><span class="hl num">0.1</span><span class="hl std">),</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-61.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">)</span>
+
+<span class="hl com">#Pagels' branch length adjustments </span>
+<span class="hl com">#Lambda</span>
+<span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">3</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl num">3</span><span class="hl std">))</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl str">&quot;lambda&quot;</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Lambda = 0&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl str">&quot;lambda&quot;</span><span class="hl std">,</span> <span class="hl num">0.5</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Lambda = 0.5&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(tree.prun6,</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Lambda = 1 (default)&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-62.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">)</span>
+
+<span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">3</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl num">3</span><span class="hl std">))</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl str">&quot;kappa&quot;</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Kappa = 0&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl str">&quot;kappa&quot;</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Kappa = 1 (default)&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl str">&quot;kappa&quot;</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Kappa = 2&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-63.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">)</span>
+
+<span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">3</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl num">3</span><span class="hl std">))</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl str">&quot;delta&quot;</span><span class="hl std">,</span> <span class="hl num">0.1</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Delta = 0.1&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl str">&quot;delta&quot;</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Delta = 1 (default)&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl str">&quot;delta&quot;</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Delta = 2&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-64.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+<p>Tree transformations are now available in the function <code>rescale()</code>!</p>
+
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#Other transformations</span>
+<span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">3</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl num">3</span><span class="hl std">))</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl kwc">model</span><span class="hl std">=</span><span class="hl str">&quot;lambda&quot;</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Brownian motion&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl kwc">model</span><span class="hl std">=</span><span class="hl str">&quot;OU&quot;</span><span class="hl std">,</span> <span class="hl num">0.1</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Ornstein-Uhlenbeck model&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rescale</span><span class="hl std">(tree.prun6,</span> <span class="hl kwc">model</span><span class="hl std">=</span><span class="hl str">&quot;EB&quot;</span><span class="hl std">,</span> <span class="hl num">0.1</span><span class="hl std">),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Early-burst model&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-7.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+<h4>Exercise 6: Comparing trees </h4>
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#Topological distance between two phylogenetic trees</span>
+<span class="hl kwd">dist.topo</span><span class="hl std">(tree.prun6, tree.prun7,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;PH85&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 1
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">dist.topo</span><span class="hl std">(tree.prun6, tree.prun4,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;PH85&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 8
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">dist.topo</span><span class="hl std">(tree.prun6, tree.prun4,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;score&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 19.54
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">#Do two trees represent the same phylogeny?</span>
+<span class="hl kwd">all.equal.phylo</span><span class="hl std">(tree.prun6, tree.prun7)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] FALSE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">all.equal.phylo</span><span class="hl std">(trees[[</span><span class="hl num">3</span><span class="hl std">]], trees[[</span><span class="hl num">78</span><span class="hl std">]],</span> <span class="hl kwc">use.edge.lenght</span><span class="hl std">=F)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] FALSE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">#Scanning a list of trees and removing duplicates</span>
+<span class="hl std">trees</span><span class="hl kwb">=</span><span class="hl kwd">unique</span><span class="hl std">(trees)</span>
+<span class="hl std">trees[[</span><span class="hl num">101</span><span class="hl std">]]</span><span class="hl kwb">=</span><span class="hl std">trees[[</span><span class="hl num">1</span><span class="hl std">]]</span>
+<span class="hl std">trees</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 101 phylogenetic trees
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">unique</span><span class="hl std">(trees)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 100 phylogenetic trees
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">trees</span><span class="hl kwb">=</span><span class="hl kwd">unique</span><span class="hl std">(trees)</span>
+
+<span class="hl com">#Comparing two trees for matching nodes</span>
+<span class="hl kwd">matchNodes</span><span class="hl std">(tree.prun6, tree.prun4,</span> <span class="hl str">&quot;descendants&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##       tr1 tr2
+##  [1,]  15  NA
+##  [2,]  16  NA
+##  [3,]  17  NA
+##  [4,]  18  NA
+##  [5,]  19  18
+##  [6,]  20  NA
+##  [7,]  21  20
+##  [8,]  22  21
+##  [9,]  23  22
+## [10,]  24  23
+## [11,]  25  24
+## [12,]  26  25
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">matchNodes</span><span class="hl std">(trees[[</span><span class="hl num">1</span><span class="hl std">]], trees[[</span><span class="hl num">2</span><span class="hl std">]],</span> <span class="hl str">&quot;descendants&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##        tr1 tr2
+##   [1,] 149 149
+##   [2,] 150 150
+##   [3,] 151 151
+##   [4,] 152 152
+##   [5,] 153 153
+##   [6,] 154 154
+##   [7,] 155 155
+##   [8,] 156 156
+##   [9,] 157 158
+##  [10,] 158 157
+##  [11,] 159 159
+##  [12,] 160 283
+##  [13,] 161 284
+##  [14,] 162 287
+##  [15,] 163 288
+##  [16,] 164 289
+##  [17,] 165 290
+##  [18,] 166 291
+##  [19,] 167 292
+##  [20,] 168 293
+##  [21,] 169 294
+##  [22,] 170 295
+##  [23,] 171 285
+##  [24,] 172 286
+##  [25,] 173 160
+##  [26,] 174 161
+##  [27,] 175 162
+##  [28,] 176 163
+##  [29,] 177 164
+##  [30,] 178 165
+##  [31,] 179 166
+##  [32,] 180  NA
+##  [33,] 181 168
+##  [34,] 182 169
+##  [35,] 183 171
+##  [36,] 184 172
+##  [37,] 185  NA
+##  [38,] 186 173
+##  [39,] 187 174
+##  [40,] 188 175
+##  [41,] 189 177
+##  [42,] 190 178
+##  [43,] 191 179
+##  [44,] 192 176
+##  [45,] 193 180
+##  [46,] 194 274
+##  [47,] 195 275
+##  [48,] 196 276
+##  [49,] 197 277
+##  [50,] 198 278
+##  [51,] 199 279
+##  [52,] 200 280
+##  [53,] 201 281
+##  [54,] 202 282
+##  [55,] 203 181
+##  [56,] 204 182
+##  [57,] 205 183
+##  [58,] 206 184
+##  [59,] 207 187
+##  [60,] 208 188
+##  [61,] 209 189
+##  [62,] 210 190
+##  [63,] 211 191
+##  [64,] 212 192
+##  [65,] 213 185
+##  [66,] 214 186
+##  [67,] 215 193
+##  [68,] 216 194
+##  [69,] 217 195
+##  [70,] 218 196
+##  [71,] 219 197
+##  [72,] 220 198
+##  [73,] 221 199
+##  [74,] 222 200
+##  [75,] 223 201
+##  [76,] 224  NA
+##  [77,] 225  NA
+##  [78,] 226 203
+##  [79,] 227 205
+##  [80,] 228 206
+##  [81,] 229 204
+##  [82,] 230 215
+##  [83,] 231 216
+##  [84,] 232 217
+##  [85,] 233 218
+##  [86,] 234  NA
+##  [87,] 235 220
+##  [88,] 236 221
+##  [89,] 237 207
+##  [90,] 238 212
+##  [91,] 239 213
+##  [92,] 240 208
+##  [93,] 241 209
+##  [94,] 242 210
+##  [95,] 243 211
+##  [96,] 244 222
+##  [97,] 245 223
+##  [98,] 246 224
+##  [99,] 247 225
+## [100,] 248 226
+## [101,] 249 227
+## [102,] 250 245
+## [103,] 251 246
+## [104,] 252 247
+## [105,] 253 228
+## [106,] 254 229
+## [107,] 255 230
+## [108,] 256 231
+## [109,] 257 232
+## [110,] 258  NA
+## [111,] 259 234
+## [112,] 260 235
+## [113,] 261 236
+## [114,] 262 237
+## [115,] 263 239
+## [116,] 264 240
+## [117,] 265 244
+## [118,] 266 241
+## [119,] 267 242
+## [120,] 268 243
+## [121,] 269 238
+## [122,] 270 248
+## [123,] 271 249
+## [124,] 272 250
+## [125,] 273 253
+## [126,] 274 269
+## [127,] 275 270
+## [128,] 276 271
+## [129,] 277 272
+## [130,] 278 273
+## [131,] 279 254
+## [132,] 280 255
+## [133,] 281 256
+## [134,] 282 257
+## [135,] 283  NA
+## [136,] 284 259
+## [137,] 285 260
+## [138,] 286 261
+## [139,] 287 262
+## [140,] 288 263
+## [141,] 289 264
+## [142,] 290 265
+## [143,] 291 266
+## [144,] 292 267
+## [145,] 293 268
+## [146,] 294 251
+## [147,] 295 252
+</pre></div>
+</div></div>
+
+<h4>Exercise 7: Creating an ultrametric tree from an additive tree</h4>
+<p>For this exercise we will use non-parametric rate smoothing. The lambda parameter (not to be confused with lambda for branch length scaling) in this function defines the degree to which rates are allowed to vary across branches. Note that we do not advocate use of such transformations without any calibration points (either fossils or other information) if at all available these should be included!</p>
+<div class="chunk" id="unnamed-chunk-9"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">is.ultrametric</span><span class="hl std">(trees[[</span><span class="hl num">1</span><span class="hl std">]])</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] TRUE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">is.ultrametric</span><span class="hl std">(tree.prun6.bl1)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] FALSE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">tree.prun6.ultr</span><span class="hl kwb">=</span><span class="hl kwd">chronopl</span><span class="hl std">(tree.prun6.bl1,</span> <span class="hl kwc">lambda</span><span class="hl std">=</span><span class="hl num">0.1</span><span class="hl std">)</span>
+<span class="hl kwd">is.ultrametric</span><span class="hl std">(tree.prun6.ultr)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] TRUE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">2</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl num">2</span><span class="hl std">))</span>
+<span class="hl kwd">plot</span><span class="hl std">(tree.prun6.bl1,</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Non-ultrametric tree&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(tree.prun6.ultr,</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;ultrametric tree&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-9.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+
+<h4>Exercise 8: Rooting an unrooted tree </h4>
+<div class="chunk" id="unnamed-chunk-10"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">is.rooted</span><span class="hl std">(tree.prun6)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] TRUE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">is.rooted</span><span class="hl std">(</span><span class="hl kwd">unroot</span><span class="hl std">(tree.prun6))</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] FALSE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">tree.prun6.rerooted</span><span class="hl kwb">=</span><span class="hl kwd">root</span><span class="hl std">(</span><span class="hl kwd">unroot</span><span class="hl std">(tree.prun6),</span> <span class="hl str">&quot;Callithrix_jacchus&quot;</span><span class="hl std">,</span> <span class="hl kwc">resolve.root</span><span class="hl std">=T)</span>
+<span class="hl kwd">is.rooted</span><span class="hl std">(tree.prun6.rerooted)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] TRUE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl kwd">matrix</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl opt">:</span><span class="hl num">3</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl num">3</span><span class="hl std">))</span>
+<span class="hl kwd">plot</span><span class="hl std">(tree.prun6,</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Original tree tree&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">unroot</span><span class="hl std">(tree.prun6),</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Unrooted tree&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(tree.prun6.rerooted,</span> <span class="hl kwc">edge.width</span><span class="hl std">=</span><span class="hl num">1.5</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;Re-rooted tree&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-10.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">layout</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+<h4>Exercise 9: Creating alternative resolutions </h4>
+<p>Use the combinations of the functions in Exercise 3 (e.g. remove all species but 1 from a genus then add them back randomly)!</p>
+<div class="chunk" id="unnamed-chunk-11"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#define a group to randomize</span>
+<span class="hl std">rnd.group</span><span class="hl kwb">=</span><span class="hl str">&quot;Ateles&quot;</span>
+<span class="hl com">#species affected</span>
+<span class="hl std">rnd.sp</span><span class="hl kwb">=</span><span class="hl std">tree.prun7</span><span class="hl opt">$</span><span class="hl std">tip.label[</span><span class="hl kwd">agrep</span><span class="hl std">(rnd.group, tree.prun7</span><span class="hl opt">$</span><span class="hl std">tip.label,</span><span class="hl kwc">max.distance</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">)]</span>
+<span class="hl com">#remove all but 1 species and make the remaining tree as receptor</span>
+<span class="hl std">receptor2</span><span class="hl kwb">=</span> <span class="hl kwd">drop.tip</span><span class="hl std">(tree.prun7, rnd.sp[</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl std">])</span>
+<span class="hl std">receptor2</span><span class="hl opt">$</span><span class="hl std">tip.label[</span><span class="hl kwd">which</span><span class="hl std">(receptor2</span><span class="hl opt">$</span><span class="hl std">tip.label</span> <span class="hl opt">%in%</span> <span class="hl std">rnd.sp[</span><span class="hl num">1</span><span class="hl std">]</span><span class="hl opt">==</span><span class="hl std">T)]</span><span class="hl kwb">=</span><span class="hl str">&quot;NA&quot;</span> <span class="hl com">#this is the random clade we want to add</span>
+<span class="hl std">donor2</span><span class="hl kwb">=</span><span class="hl kwd">rtree</span><span class="hl std">(</span><span class="hl kwd">length</span><span class="hl std">(rnd.sp),</span> <span class="hl kwc">tip.label</span> <span class="hl std">= rnd.sp)</span>
+<span class="hl std">donor2</span><span class="hl opt">$</span><span class="hl std">root.edge</span><span class="hl kwb">=</span><span class="hl num">0</span>
+<span class="hl std">tree.prun7.rnd</span><span class="hl kwb">=</span><span class="hl kwd">paste.tree</span><span class="hl std">(receptor2, donor2)</span>
+<span class="hl kwd">plot</span><span class="hl std">(tree.prun7.rnd)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-11.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" class="plot" /></div></div>
+<p>Alternative solutions are possible!</p>
+	
+<h4>Exercise 10: Resolving polytomies</h4>	
+<div class="chunk" id="unnamed-chunk-12"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">is.binary.tree</span><span class="hl std">(tree.prun6)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] FALSE
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">tree.prun6.bi</span><span class="hl kwb">=</span><span class="hl kwd">multi2di</span><span class="hl std">(tree.prun6,</span> <span class="hl kwc">random</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span> <span class="hl com">#Random resolution of polytomies</span>
+<span class="hl kwd">is.binary.tree</span><span class="hl std">(tree.prun6.bi)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] TRUE
+</pre></div>
+</div></div>
+
+<h4>Exercise 11: Comparing tip labels with the list of species in the dataset </h4>
+<p> The function <code>name.check()</code> is now being deprecated in <code>"geiger"</code>. <code>treedata()</code> lists unmatched tip labels and row names as a warning message (row names should be species' names)</p>
+
+<p>As an alternative one can compare two lists, one with the tip.labels of the tree and the other with the names of species in the data file</p>
+<div class="chunk" id="unnamed-chunk-13"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">tree.species</span><span class="hl kwb">&lt;-</span><span class="hl kwd">as.character</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip.label)</span>
+<span class="hl std">data.species</span><span class="hl kwb">&lt;-</span><span class="hl std">xdata</span><span class="hl opt">$</span><span class="hl std">species</span>
+<span class="hl com">#listing the species in the tree not found in the data</span>
+<span class="hl std">tree.species[</span><span class="hl kwd">which</span><span class="hl std">((tree.species</span> <span class="hl opt">%in%</span> <span class="hl std">data.species)</span><span class="hl opt">==</span><span class="hl num">FALSE</span><span class="hl std">)]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## character(0)
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">#listing the species in the database not found in the tree</span>
+<span class="hl std">data.species[</span><span class="hl kwd">which</span><span class="hl std">((data.species</span> <span class="hl opt">%in%</span> <span class="hl std">tree.species)</span><span class="hl opt">==</span><span class="hl num">FALSE</span><span class="hl std">)]</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## factor(0)
+## 86 Levels: Allenopithecus_nigroviridis Alouatta_caraya ... Varecia_variegata_variegata
+</pre></div>
+</div></div>
+
+<p>A simpler solution</p>
+<div class="chunk" id="unnamed-chunk-14"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">setdiff</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip.label,</span><span class="hl kwd">as.character</span><span class="hl std">(xdata</span><span class="hl opt">$</span><span class="hl std">species))</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## character(0)
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">#or if species' names are row names</span>
+<span class="hl kwd">setdiff</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip.label,</span><span class="hl kwd">row.names</span><span class="hl std">(xdata))</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## character(0)
+</pre></div>
+</div></div>
+
+<p>The above vectors are empty indicating a perfect match between the tree and the data. However, if we intentionally create a mismatch by inducing a spelling error in a species' name, it will be detected. </p>
+<div class="chunk" id="unnamed-chunk-15"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">xdata</span><span class="hl opt">$</span><span class="hl std">species_mispelled</span><span class="hl kwb">&lt;-</span> <span class="hl kwd">gsub</span><span class="hl std">(</span><span class="hl str">&quot;Eulemur&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;Lemur&quot;</span><span class="hl std">, xdata</span><span class="hl opt">$</span><span class="hl std">species)</span>
+<span class="hl kwd">setdiff</span><span class="hl std">(tree</span><span class="hl opt">$</span><span class="hl std">tip.label,</span><span class="hl kwd">as.character</span><span class="hl std">(xdata</span><span class="hl opt">$</span><span class="hl std">species_mispelled))</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] "Eulemur_fulvus_fulvus" "Eulemur_mongoz"        "Eulemur_macaco_macaco"
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">setdiff</span><span class="hl std">(</span><span class="hl kwd">as.character</span><span class="hl std">(xdata</span><span class="hl opt">$</span><span class="hl std">species_mispelled), tree</span><span class="hl opt">$</span><span class="hl std">tip.label)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] "Lemur_fulvus_fulvus" "Lemur_macaco_macaco" "Lemur_mongoz"
+</pre></div>
+</div></div>
+
+<p>Note that the mismatch is often caused by spaces in the binary names in the datafile. This can be corrected as:</p>
+<div class="chunk" id="unnamed-chunk-16"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">xdata</span><span class="hl opt">$</span><span class="hl std">species</span><span class="hl kwb">&lt;-</span> <span class="hl kwd">gsub</span><span class="hl std">(</span><span class="hl str">&quot; &quot;</span><span class="hl std">,</span> <span class="hl str">&quot;_&quot;</span><span class="hl std">, xdata</span><span class="hl opt">$</span><span class="hl std">species)</span> <span class="hl com">#replaces spaces</span>
+</pre></div>
+</div></div>
+
+<h4>Exercise 12: Basic tree visualization </h4>
+<p>See also Online Practical Material for Chapter 4! </p>
+<div class="chunk" id="unnamed-chunk-17"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#rotating at nodes</span>
+<span class="hl kwd">par</span><span class="hl std">(</span><span class="hl kwc">mfrow</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl num">2</span><span class="hl std">))</span>
+<span class="hl kwd">plot</span><span class="hl std">(tree.prun6)</span>
+<span class="hl kwd">nodelabels</span><span class="hl std">()</span>
+<span class="hl kwd">plot</span><span class="hl std">(</span><span class="hl kwd">rotate</span><span class="hl std">(tree.prun6,</span> <span class="hl num">15</span><span class="hl std">))</span>
+<span class="hl kwd">nodelabels</span><span class="hl std">()</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-17.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" class="plot" /></div></div>
+
+<h4>Exercise 13: Plotting trait values on phylogeny</h4>
+<p>See also Online Practical Material for Chapter 4! </p>
+
+<div class="chunk" id="unnamed-chunk-18"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#Simulate some data to plot</span>
+<span class="hl com">#For discrete traits the transition matrix defines the evolutionary transitions between different states of the trait.</span>
+<span class="hl std">q</span><span class="hl kwb">&lt;-</span><span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwd">rbind</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">),</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">),</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">,</span><span class="hl opt">-</span><span class="hl num">2</span><span class="hl std">)))</span>
+<span class="hl com">#Simulate evolution of the characters on the tree</span>
+<span class="hl std">chars</span><span class="hl kwb">&lt;-</span><span class="hl kwd">sim.char</span><span class="hl std">(tree.prun8, q,</span> <span class="hl kwc">nsim</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">model</span><span class="hl std">=</span><span class="hl str">&quot;discrete&quot;</span><span class="hl std">)</span>
+
+<span class="hl com">#Plot the trait values on the tree</span>
+<span class="hl kwd">plot</span><span class="hl std">(tree.prun8,</span> <span class="hl kwc">label.offset</span><span class="hl std">=</span><span class="hl num">4</span><span class="hl std">)</span>
+<span class="hl kwd">tiplabels</span><span class="hl std">(chars,</span> <span class="hl kwc">frame</span><span class="hl std">=</span><span class="hl str">&quot;none&quot;</span><span class="hl std">,</span> <span class="hl kwc">bg</span><span class="hl std">=</span><span class="hl str">&quot;white&quot;</span><span class="hl std">,</span> <span class="hl kwc">adj</span><span class="hl std">=</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-181.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl com">#Or use different colors for the trait states</span>
+<span class="hl kwd">plot</span><span class="hl std">(tree.prun8,</span> <span class="hl kwc">label.offset</span><span class="hl std">=</span><span class="hl num">4</span><span class="hl std">)</span>
+<span class="hl std">co</span><span class="hl kwb">&lt;-</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;red&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;blue&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;magenta&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">tiplabels</span><span class="hl std">(</span><span class="hl kwc">pch</span><span class="hl std">=</span><span class="hl num">22</span><span class="hl std">,</span> <span class="hl kwc">bg</span><span class="hl std">=co[</span><span class="hl kwd">as.numeric</span><span class="hl std">(chars)],</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">1.2</span><span class="hl std">,</span> <span class="hl kwc">adj</span><span class="hl std">=</span><span class="hl num">2.5</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-182.png" title="plot of chunk unnamed-chunk-18" alt="plot of chunk unnamed-chunk-18" class="plot" /></div></div>
+
+<h4>Exercise 14: Handling a large number of trees</h4>
+<div class="chunk" id="unnamed-chunk-19"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#Can read a file with multiple trees </span>
+<span class="hl std">trees</span><span class="hl kwb">&lt;-</span><span class="hl kwd">read.nexus</span><span class="hl std">(</span><span class="hl str">&quot;bird_trees.tre&quot;</span><span class="hl std">)</span>
+<span class="hl com">#To select a particular tree</span>
+<span class="hl std">fifth.tree</span><span class="hl kwb">&lt;-</span><span class="hl std">trees[[</span><span class="hl num">5</span><span class="hl std">]]</span>
+</pre></div>
+</div></div>
+
+<h4>Exercise 15: Estimating consensus tree</h4>
+<div class="chunk" id="unnamed-chunk-20"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#Strict consensus</span>
+<span class="hl std">consensus.tree</span><span class="hl kwb">&lt;-</span><span class="hl kwd">consensus</span><span class="hl std">(trees,</span> <span class="hl kwc">p</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">check.labels</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(consensus.tree)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-20.png" title="plot of chunk unnamed-chunk-20" alt="plot of chunk unnamed-chunk-20" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">str</span><span class="hl std">(consensus.tree)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## List of 3
+##  $ edge     : int [1:270, 1:2] 149 150 151 152 153 154 155 156 157 158 ...
+##  $ tip.label: chr [1:148] "Phasianus_colchicus" "Perdix_perdix" "Alectoris_rufa" "Cygnus_columbianus" ...
+##  $ Nnode    : int 123
+##  - attr(*, "class")= chr "phylo"
+</pre></div>
+</div></div>
+<p>Note the absence of branch lengths. For more details see discussion on this issue in r-sig.phylo: https://stat.ethz.ch/pipermail/r-sig-phylo/2012-November/002432.html</p>
+
+<h4>Exercise 16: Saving/exporting trees in different formats</h4>
+<p>To write a nexus file with a particular tree; in this case one tree from the list of bird trees from Jetz et al. (2012)</p>
+<div class="chunk" id="unnamed-chunk-21"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">write.nexus</span><span class="hl std">(trees[[</span><span class="hl num">5</span><span class="hl std">]],</span> <span class="hl kwc">file</span><span class="hl std">=</span><span class="hl str">&quot;Bird_tree5.nex&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">write.tree</span><span class="hl std">(trees[[</span><span class="hl num">7</span><span class="hl std">]],</span> <span class="hl kwc">file</span><span class="hl std">=</span><span class="hl str">&quot;Bird_tree7.tre&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+<h4>Exercise 17: Simulating trees </h4>
+<div class="chunk" id="unnamed-chunk-22"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">#With branching times determined by a coalescent process</span>
+<span class="hl std">tr_coal</span><span class="hl kwb">&lt;-</span><span class="hl kwd">rcoal</span><span class="hl std">(</span><span class="hl num">20</span><span class="hl std">,</span> <span class="hl kwc">br</span><span class="hl std">=</span><span class="hl str">&quot;coalescent&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(tr_coal)</span>
+<span class="hl kwd">title</span><span class="hl std">(</span><span class="hl str">&quot;Random coalescent tree&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-221.png" title="plot of chunk unnamed-chunk-22" alt="plot of chunk unnamed-chunk-22" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl com">#With branching times determined by a time-dependent birth-death process</span>
+<span class="hl std">tr_bd</span><span class="hl kwb">&lt;-</span><span class="hl kwd">sim.bdtree</span><span class="hl std">(</span><span class="hl kwc">b</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">,</span> <span class="hl kwc">d</span><span class="hl std">=</span><span class="hl num">0.1</span><span class="hl std">,</span> <span class="hl kwc">stop</span><span class="hl std">=</span><span class="hl str">&quot;taxa&quot;</span><span class="hl std">,</span> <span class="hl kwc">n</span><span class="hl std">=</span><span class="hl num">30</span><span class="hl std">,</span> <span class="hl kwc">extinct</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(tr_bd)</span>
+<span class="hl kwd">title</span><span class="hl std">(</span><span class="hl str">&quot;Random Birth-death tree extinct included&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-222.png" title="plot of chunk unnamed-chunk-22" alt="plot of chunk unnamed-chunk-22" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl com">#With branching times determined by a time-dependent birth-death process</span>
+<span class="hl com">#eliminating the extinct lineages</span>
+<span class="hl std">tr_bd2</span><span class="hl kwb">&lt;-</span><span class="hl kwd">sim.bdtree</span><span class="hl std">(</span><span class="hl kwc">b</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">,</span> <span class="hl kwc">d</span><span class="hl std">=</span><span class="hl num">0.1</span><span class="hl std">,</span> <span class="hl kwc">stop</span><span class="hl std">=</span><span class="hl str">&quot;taxa&quot;</span><span class="hl std">,</span> <span class="hl kwc">n</span><span class="hl std">=</span><span class="hl num">30</span><span class="hl std">,</span> <span class="hl kwc">extinct</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">tr_bd3</span><span class="hl kwb">&lt;-</span><span class="hl kwd">drop.extinct</span><span class="hl std">(tr_bd2)</span>
+<span class="hl kwd">plot</span><span class="hl std">(tr_bd3)</span>
+<span class="hl kwd">title</span><span class="hl std">(</span><span class="hl str">&quot;Random Birth-death tree no extinct lineages&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-223.png" title="plot of chunk unnamed-chunk-22" alt="plot of chunk unnamed-chunk-22" class="plot" /></div></div>
+
+<h4>Exercise 18: Calculating variance-covariance matrix </h4>
+<div class="chunk" id="unnamed-chunk-23"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">V</span><span class="hl kwb">&lt;-</span><span class="hl kwd">vcv.phylo</span><span class="hl std">(tree.prun8)</span>
+</pre></div>
+</div></div>
+	
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+	<ul>
+	<li>Arnold C, Matthews LJ, Nunn CL (2010) The 10kTrees website: a new online resource for primate hylogeny. Evol Anthropol 19:114-118.</li>
+<li>Harmon LJ, Weir J, Brock C, Glor RE, Challenger W (2008) GEIGER: Investigating evolutionary radiations. Bioinformatics 24:129-131.</li>
+<li>Jetz W, Thomas GH, Joy JB, Hartmann K, Mooers AO (2012) The global diversity of birds in space and time. Nature 491 (7424):444-448. doi:10.1038/nature11631. </li>
+<li>Orme D, Freckleton R, Thomas G, Petzoldt T, Fritz S, Isaac N, Pearse W (2012) caper: Comparative Analyses of Phylogenetics and Evolution in R. R package version 3.1-104. </li>
+<li>Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20:289-290. </li>
+<li>Revell LJ (2012) Phytools: an R package for phylogenetic comparative biology (and other things). Methods Ecol Evol 3:217-223. </li>
+	</ul>
+
+</body>
+</html>

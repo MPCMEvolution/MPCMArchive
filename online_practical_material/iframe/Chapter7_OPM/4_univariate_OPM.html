@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+	<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+		<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+		<p style="padding-left: 30px;"><code>"phytools"</code> (Revell 2012) </p>
+	
+		<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>brain size and body size on primates</strong> (<code>"primate_ind.txt"</code>, a tab separated text file), with more than one observation for the majority of species, individual-specific data</p>
+		<p style="padding-left: 30px;"><strong>brain size and body size on primates</strong> (<code>"primate_spec.txt"</code>, a tab separated text file), species-specific data obtained from the exercises above, includes information on within-species sampling (sample sizes, variances and standard errors<p>
+		<p style="padding-left: 30px;"><strong>phylogeny</strong> (<code>"primate_tree.phy"</code>, in phylip format) is taken from 10kTrees (Arnold et al 2010) and tailored to the data at hand</p>
+	
+	<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+		<h4>Estimating species-specific means and variances, ancestral states and evolutionary rates by using Bayesian MCMC</h4>
+		<p>Model assuming common variance</p>
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">data.ind</span> <span class="hl kwb">=</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;primate_ind.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl kwd">library</span><span class="hl std">(ape)</span>
+<span class="hl std">tree</span> <span class="hl kwb">=</span> <span class="hl kwd">read.tree</span><span class="hl std">(</span><span class="hl str">&quot;primate_tree.phy&quot;</span><span class="hl std">)</span>
+<span class="hl std">brain</span> <span class="hl kwb">=</span> <span class="hl kwd">c</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">brain)</span>
+<span class="hl kwd">names</span><span class="hl std">(brain)</span> <span class="hl kwb">=</span> <span class="hl std">data.ind</span><span class="hl opt">$</span><span class="hl std">species</span>
+<span class="hl kwd">library</span><span class="hl std">(phytools,</span> <span class="hl kwc">quietly</span> <span class="hl std">= T)</span>
+<span class="hl std">fittedB</span> <span class="hl kwb">=</span> <span class="hl kwd">fitBayes</span><span class="hl std">(tree, brain,</span> <span class="hl kwc">ngen</span> <span class="hl std">=</span> <span class="hl num">10000</span><span class="hl std">,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;reduced&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## Control parameters (set by user or default):
+</pre></div>
+<div class="output"><pre class="knitr r">## List of 8
+##  $ sig2   : num 1249
+##  $ a      : num 93.7
+##  $ xbar   : Named num [1:86] 57 55.7 69.1 64.1 57.5 ...
+##   ..- attr(*, "names")= chr [1:86] "Allenopithecus_nigroviridis" "Cercopithecus_albogularis" "Cercopithecus_mitis" "Cercopithecus_ascanius" ...
+##  $ intV   : num 455
+##  $ pr.mean: num [1:89] 1000 0 0 0 0 0 0 0 0 0 ...
+##  $ pr.var : num [1:89] 1e+06 1e+03 1e+03 1e+03 1e+03 1e+03 1e+03 1e+03 1e+03 1e+03 ...
+##  $ prop   : num [1:89] 12.5 12.5 912 912 912 ...
+##  $ sample : num 100
+</pre></div>
+<div class="message"><pre class="knitr r">## Starting MCMC...
+## Done MCMC.
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">est.means</span> <span class="hl kwb">=</span> <span class="hl kwd">colMeans</span><span class="hl std">(fittedB[</span><span class="hl num">21</span><span class="hl opt">:</span><span class="hl num">101</span><span class="hl std">,</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl opt">-</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl opt">-</span><span class="hl num">2</span><span class="hl std">,</span> <span class="hl opt">-</span><span class="hl num">3</span><span class="hl std">,</span> <span class="hl opt">-</span><span class="hl std">(</span><span class="hl kwd">dim</span><span class="hl std">(fittedB)[</span><span class="hl num">2</span><span class="hl std">]</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl std">),</span> <span class="hl opt">-</span><span class="hl kwd">dim</span><span class="hl std">(fittedB)[</span><span class="hl num">2</span><span class="hl std">])])</span>
+<span class="hl std">art.means</span> <span class="hl kwb">=</span> <span class="hl kwd">tapply</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">brain, data.ind</span><span class="hl opt">$</span><span class="hl std">species, mean)</span>
+<span class="hl kwd">plot</span><span class="hl std">(art.means, est.means[</span><span class="hl kwd">names</span><span class="hl std">(art.means)],</span> <span class="hl kwc">xlab</span> <span class="hl std">=</span> <span class="hl str">&quot;Arithmetic means&quot;</span><span class="hl std">,</span> <span class="hl kwc">ylab</span> <span class="hl std">=</span> <span class="hl str">&quot;Bayesian estimates of means&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(</span><span class="hl kwc">a</span> <span class="hl std">=</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwc">b</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;red&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">legend</span><span class="hl std">(</span><span class="hl kwc">x</span> <span class="hl std">=</span> <span class="hl str">&quot;bottomright&quot;</span><span class="hl std">,</span> <span class="hl kwc">legend</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;var = &quot;</span><span class="hl std">,</span> <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">mean</span><span class="hl std">(fittedB[</span><span class="hl num">21</span><span class="hl opt">:</span><span class="hl num">101</span><span class="hl std">,</span>
+    <span class="hl std">(</span><span class="hl kwd">dim</span><span class="hl std">(fittedB)[</span><span class="hl num">2</span><span class="hl std">]</span> <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl std">)]),</span> <span class="hl num">2</span><span class="hl std">)),</span> <span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;MCRA = &quot;</span><span class="hl std">,</span> <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">mean</span><span class="hl std">(fittedB[</span><span class="hl num">21</span><span class="hl opt">:</span><span class="hl num">101</span><span class="hl std">,</span>
+    <span class="hl num">3</span><span class="hl std">]),</span> <span class="hl num">2</span><span class="hl std">)),</span> <span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;sigma^2 = &quot;</span><span class="hl std">,</span> <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">mean</span><span class="hl std">(fittedB[</span><span class="hl num">21</span><span class="hl opt">:</span><span class="hl num">101</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">]),</span> <span class="hl num">2</span><span class="hl std">))))</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-1.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" class="plot" /></div></div>
+
+		<p>The cicles are species-specific means as can be calculated from the raw individual-specific data by using their arithemtic means or Bayesian MCMC-based estimates that incorporate phylogenetic constraints. Legend on the bottom right shows the assumed common intraspecific variance, trait value at the root of the phylogeny and evolutionary rate.</p>
+		<p></p>
+		
+		<p>Model assuming heterogeneous variance</p>
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">fittedB</span> <span class="hl kwb">=</span> <span class="hl kwd">fitBayes</span><span class="hl std">(tree, brain,</span> <span class="hl kwc">ngen</span> <span class="hl std">=</span> <span class="hl num">10000</span><span class="hl std">,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;full&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="message"><pre class="knitr r">## Control parameters (set by user or default):
+</pre></div>
+<div class="output"><pre class="knitr r">## List of 8
+##  $ sig2   : num 1249
+##  $ a      : num 93.7
+##  $ xbar   : Named num [1:86] 57 55.7 69.1 64.1 57.5 ...
+##   ..- attr(*, "names")= chr [1:86] "Allenopithecus_nigroviridis" "Cercopithecus_albogularis" "Cercopithecus_mitis" "Cercopithecus_ascanius" ...
+##  $ v      : Named num [1:86] 455 455 455 455 455 ...
+##   ..- attr(*, "names")= chr [1:86] "Allenopithecus_nigroviridis" "Cercopithecus_albogularis" "Cercopithecus_mitis" "Cercopithecus_ascanius" ...
+##  $ pr.mean: num [1:174] 1000 0 0 0 0 0 0 0 0 0 ...
+##  $ pr.var : num [1:174] 1e+06 1e+03 1e+03 1e+03 1e+03 1e+03 1e+03 1e+03 1e+03 1e+03 ...
+##  $ prop   : Named num [1:174] 12.5 12.5 912 912 912 ...
+##   ..- attr(*, "names")= chr [1:174] "" "" "" "" ...
+##  $ sample : num 100
+</pre></div>
+<div class="message"><pre class="knitr r">## Starting MCMC...
+## Done MCMC.
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">est.means</span> <span class="hl kwb">=</span> <span class="hl kwd">colMeans</span><span class="hl std">(fittedB[</span><span class="hl num">21</span><span class="hl opt">:</span><span class="hl num">101</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl opt">:</span><span class="hl std">((</span><span class="hl kwd">dim</span><span class="hl std">(fittedB)[</span><span class="hl num">2</span><span class="hl std">]</span> <span class="hl opt">-</span> <span class="hl num">4</span><span class="hl std">)</span><span class="hl opt">/</span><span class="hl num">2</span> <span class="hl opt">+</span> <span class="hl num">3</span><span class="hl std">)])</span>
+<span class="hl kwd">plot</span><span class="hl std">(art.means, est.means[</span><span class="hl kwd">names</span><span class="hl std">(art.means)],</span> <span class="hl kwc">xlab</span> <span class="hl std">=</span> <span class="hl str">&quot;Arithmetic means&quot;</span><span class="hl std">,</span> <span class="hl kwc">ylab</span> <span class="hl std">=</span> <span class="hl str">&quot;Bayesian estimates of means&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(</span><span class="hl kwc">a</span> <span class="hl std">=</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwc">b</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;red&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">legend</span><span class="hl std">(</span><span class="hl kwc">x</span> <span class="hl std">=</span> <span class="hl str">&quot;bottomright&quot;</span><span class="hl std">,</span> <span class="hl kwc">legend</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;MCRA = &quot;</span><span class="hl std">,</span> <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">mean</span><span class="hl std">(fittedB[</span><span class="hl num">21</span><span class="hl opt">:</span><span class="hl num">101</span><span class="hl std">,</span>
+    <span class="hl num">3</span><span class="hl std">]),</span> <span class="hl num">2</span><span class="hl std">)),</span> <span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;sigma^2 = &quot;</span><span class="hl std">,</span> <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">mean</span><span class="hl std">(fittedB[</span><span class="hl num">21</span><span class="hl opt">:</span><span class="hl num">101</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">]),</span> <span class="hl num">2</span><span class="hl std">))))</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" class="plot" /></div></div>
+
+		<p>The cicles are species-specific means as can be calculated from the raw individual-specific data by using their arithemtic means or Bayesian MCMC-based estimates that incorporate phylogenetic constraints. Legend on the bottom right shows trait value at the root of the phylogeny and evolutionary rate. Within-species variance is assumed to be different across species.</p>
+		
+<h4>Estimating phylogenetic signal</h4>		
+		<p>Without implementing measurement errors</p>
+		<p>Blomberg's K</p>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">data.spec</span> <span class="hl kwb">=</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;primate_spec.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl kwd">library</span><span class="hl std">(ape)</span>
+<span class="hl std">tree</span> <span class="hl kwb">=</span> <span class="hl kwd">read.tree</span><span class="hl std">(</span><span class="hl str">&quot;primate_tree.phy&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">phylosig</span><span class="hl std">(tree, brain,</span> <span class="hl kwc">test</span> <span class="hl std">= T)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $K
+## [1] 0.3145
+## 
+## $P
+## [1] 0.045
+</pre></div>
+</div></div>
+
+		
+		<p>Pagel's lambda</p>
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">phylosig</span><span class="hl std">(tree, brain,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;lambda&quot;</span><span class="hl std">,</span> <span class="hl kwc">test</span> <span class="hl std">= T)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $lambda
+## [1] 1.012
+## 
+## $logL
+## [1] -534.4
+## 
+## $logL0
+## [1] -553.3
+## 
+## $P
+## [1] 7.47e-10
+</pre></div>
+</div></div>
+
+		
+		<p>By implementing measurement errors</p>
+		<p>Blomberg' K</p>
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">brain_se</span> <span class="hl kwb">=</span> <span class="hl kwd">c</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">brain_se.adj)</span>
+<span class="hl kwd">names</span><span class="hl std">(brain_se)</span> <span class="hl kwb">=</span> <span class="hl std">data.spec</span><span class="hl opt">$</span><span class="hl std">species</span>
+<span class="hl kwd">phylosig</span><span class="hl std">(tree, brain,</span> <span class="hl kwc">test</span> <span class="hl std">= T,</span> <span class="hl kwc">se</span> <span class="hl std">= brain_se)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $K
+## [1] 0.3237
+## 
+## $P
+## [1] 0.045
+## 
+## $sig2
+## [1] 1331
+## 
+## $logL
+## [1] -536.6
+</pre></div>
+</div></div>
+
+	
+	<p>Pagel's lambda<p>
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">phylosig</span><span class="hl std">(tree, brain,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;lambda&quot;</span><span class="hl std">,</span> <span class="hl kwc">test</span> <span class="hl std">= T,</span> <span class="hl kwc">se</span> <span class="hl std">= brain_se)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $lambda
+## [1] 1.012
+## 
+## $sig2
+## [1] 1571
+## 
+## $logL
+## [1] -531.9
+## 
+## $convergence
+## [1] 0
+## 
+## $message
+## [1] "CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
+## 
+## $logL0
+## [1] -552.7
+## 
+## $P
+## [1] 1.037e-10
+</pre></div>
+</div></div>
+
+		
+		
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+	<ul>
+	<li>Arnold C, Matthews LJ, Nunn CL (2010) The 10kTrees website: a new online resource for primate hylogeny. Evol Anthropol 19: 114-118.</li>
+	<li>Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20: 289-290.</li>
+	<li>Revell LJ (2012) Phytools: an R package for phylogenetic comparative biology (and other things). Methods Ecol Evol 3: 217-223.</li>
+	</ul>		
+	
+</body>
+</html>
+
+	

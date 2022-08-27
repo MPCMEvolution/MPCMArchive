@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+
+<body>
+
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+        <h4>R packages</h4>
+                <p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+                <p style="padding-left: 30px;"><code>"geiger"</code> (Harmon et al 2008) </p>
+                                
+        <h4>Data</h4>
+                <p style="padding-left: 30px;"><strong>IMI data for primates</strong> (<code>"e.dataIMI_corrected.csv"</code>),                    Log10 Values of IMI and mass for 118 primate species.</p>
+                <p style="padding-left: 30px;"><strong>Primate Phylogenies</strong> (<code>"e.IMI.TreeBlock_10kTrees_Primates_Version3.nex"</code>),                             100 primate phylogenies sampled from 10kTrees and trimmed to species in data set.</p>
+                
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+        <h4>Setup</h4>
+                <p>Open libraries, import and check data, set variables.</p>
+                
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(ape)</span>
+<span class="hl kwd">library</span><span class="hl std">(geiger)</span>
+
+<span class="hl kwd">source</span><span class="hl std">(</span><span class="hl str">&quot;.../BayesModelS_v22.R&quot;</span><span class="hl std">)</span>  <span class="hl std">#provide a path for the location of the source file that includes the functions </span>
+
+<span class="hl std">treeDataAll</span> <span class="hl kwb">=</span> <span class="hl kwd">read.nexus</span><span class="hl std">(</span><span class="hl str">&quot;./e.IMI.TreeBlock_10kTrees_Primates_Version3.nex.txt&quot;</span><span class="hl std">)</span>
+
+<span class="hl std">data</span> <span class="hl kwb">=</span> <span class="hl kwd">read.csv</span><span class="hl std">(</span><span class="hl str">&quot;./e.dataIMI_corrected.csv&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span><span class="hl std">=T)</span>
+
+<span class="hl std">factorName</span> <span class="hl kwb">=</span> <span class="hl kwd">c</span><span class="hl std">() #enter variable names here that should be treated as factors</span>
+<span class="hl std">missingList</span> <span class="hl kwb">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;Homo_sapiens&quot;</span><span class="hl std">) #Species listed here are exluded from model fitting, and values for response are predicted</span>
+
+<span class="hl std">pathO</span> <span class="hl kwb">=</span> <span class="hl str">&quot;./&quot;</span>
+<span class="hl kwd">colnames</span><span class="hl std">(data)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] "Species"            "IMILog10"           "MassLog10"         
+## [4] "Suspensory_relQuad" "VCL_relQuad"        "RadiationHap1"
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">formula</span> <span class="hl kwb">=</span> <span class="hl str">&quot;IMILog10 ~ MassLog10&quot;</span>
+</pre></div>
+</div></div>
+
+         <h4>Analysis</h4>
+                <p>Select and check Bayesian linear model, run analysis, and predict value of unknown tip.<br>
+                   Input for blm function:<br>
+			 <i>formula, data, treeDataAll, factorName, missingList</i>: assigned in previous code<br>
+			 <i>currentValue</i>: sets the starting point for MCMC, default is 0. To specify a value, a list of variables should be provided<br>
+                   <i>nposterior</i>: the number of posterior draws you want. For the sake of time, this value was set to 20100 for this online example. Actual analysis performed 200100 draws<br>
+                   <i>burnin, thin</i>: the burnin rate and thin rate in the MCMC analysis. Both set to 100 for this example.<br>
+                   <i>varSelection</i>: estimates branch length scaling parameters lambda or kappa or both.  Can have three values:  "random" means nothing is specified and a model selection process for lambda or kappa is conducted (while simultaneously estimating the parameter selected), while "lambda" or "kappa" estimates only their respective parameters in the MCMC analysis.<br> 
+                   <i>lambdaUpperBound</i>: default to 1. <br>
+                   <i>kappaUpperBound</i>: default to 1. <br>
+                   <i>lambdaValue, kappaValue</i>: this enables the user to fix the value of lambda or kappa to use in the analysis. If a value is specified, then MCMC uses this value during the MCMC analysis, rather than estimating it.<br>
+                   <i>restriction</i>: default to "no restriction".  This would control whether the user wants to manually have one variable always included in the analysis, specified by name.<br> 
+                   <i>path</i>: the output folder.</p>
+                
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">bmselection</span> <span class="hl kwb">=</span> <span class="hl kwd">blm</span><span class="hl std">(formula, data, treeDataAll,</span> <span class="hl kwc">factorName</span> <span class="hl std">= factorName,</span> <span class="hl kwc">missingList</span> <span class="hl std">= missingList,</span> <span class="hl kwc">currentValue</span> <span class="hl std">=</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwc">nposterior</span> <span class="hl std">=</span> <span class="hl num">20100</span><span class="hl std">,</span> <span class="hl kwc">burnin</span> <span class="hl std">=</span> <span class="hl num">100</span><span class="hl std">,</span> <span class="hl kwc">thin</span> <span class="hl std">=</span> <span class="hl num">100</span><span class="hl std">,</span> <span class="hl kwc">varSelection</span> <span class="hl std">=</span> <span class="hl str">&quot;lambda&quot;</span><span class="hl std">,</span> <span class="hl kwc">lambdaValue</span> <span class="hl std">=</span> <span class="hl num">NA</span><span class="hl std">,</span> <span class="hl kwc">kappaValue</span> <span class="hl std">=</span> <span class="hl num">NA</span><span class="hl std">,</span> <span class="hl kwc">path</span> <span class="hl std">= pathO)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] "Those species are deleted from regression"
+## [1] "Homo_sapiens"
+## [1] "Those species are in missingList"
+## [1] "Homo_sapiens"
+## [1] "pre-analysis begins..."
+## [1] "pre-analysis finished, Bayesian posterior draw begins..."
+## [1] "regression finished 25%"
+## [1] "regression finished 50%"
+## [1] "regression finished 75%"
+## [1] "regression finished 100%"
+## [1] "Bayesian posterior draw finished, writing files..."
+## [1] "posterior sample is written in the file ./ result.csv"
+## [1] "dataset is written in the file ./ data.csv"
+## [1] "files writing completed..."
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">modelChecking</span><span class="hl std">(bmselection, missingList, pathO)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] "initialize analysis, predictive draw begins..."
+## [1] "predictive draw finished, model checking begins..."
+</pre></div>
+</div><div class="rimage default"><img src="figures for IMI OPM/unnamed-chunk-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" class="plot" /></div><div class="rcode">
+<div class="output"><pre class="knitr r">## [1] "model checking result finished, written in file ./ modelChecking.pdf"
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">analysis</span><span class="hl std">(bmselection,</span> <span class="hl kwc">path</span> <span class="hl std">= pathO)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] "initialize analysis and get posterior sample ends, analysis begins..."
+## [1] "model indicator written in file ./ modelIndicator.csv"
+## [1] "initial analysis completed, plot the results..."
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] "plot ploted in the file ./ outputBayesianModel.pdf"
+## [1] "plot completed, analysis finished..."
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">predict</span><span class="hl std">(bmselection, missingList,</span> <span class="hl kwc">path</span> <span class="hl std">= pathO) #this predicts response in "missingList" species</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] "initialize analysis, predictive draw begins..."
+## [1] "predictive draw end, begin for missing data analysis"
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] "missing data analysis end, begin printing out the result"
+</pre></div>
+<div class="output"><pre class="knitr r">##                min 2.5%q 25%q median  mean  75%q 97.5%q   max
+## Homo_sapiens 1.969 1.995 2.03  2.049 2.049 2.068  2.108 2.122
+</pre></div>
+</div></div>
+
+         <h4>Display results</h4>
+                <p>After importing the results from analysis, any number of methods can be used to display them. This example includes several possibilities</p>
+                
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">outputPosterior</span> <span class="hl kwb">=</span> <span class="hl kwd">read.csv</span><span class="hl std">(</span><span class="hl str">&quot;./ result.csv&quot;</span><span class="hl std">)</span>
+
+<span class="hl com"># example output for posterior sample</span>
+<span class="hl kwd">plot</span><span class="hl std">(outputPosterior</span><span class="hl opt">$</span><span class="hl std">lkhoodSample,</span> <span class="hl kwc">xlab</span><span class="hl std">=</span><span class="hl str">&quot;Iteration&quot;</span><span class="hl std">,</span> <span class="hl kwc">ylab</span><span class="hl std">=</span><span class="hl str">&quot;Likelihood&quot;</span><span class="hl std">,</span> <span class="hl kwc">cex</span><span class="hl std">=</span><span class="hl num">0.8</span><span class="hl std">,</span> <span class="hl kwc">pch</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">)</span> <span class="hl com"></span>
+</pre></div>
+</div><div class="rimage default"><img src="figures for IMI OPM/unnamed-chunk-31.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">hist</span><span class="hl std">(outputPosterior</span><span class="hl opt">$</span><span class="hl std">lkhoodSample,</span> <span class="hl kwc">n</span><span class="hl std">=</span><span class="hl num">25</span><span class="hl std">,</span> <span class="hl kwc">xlab</span><span class="hl std">=</span><span class="hl str">&quot;Likelihood&quot;</span><span class="hl std">,</span> <span class="hl kwc">main</span><span class="hl std">=</span><span class="hl str">&quot;&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figures for IMI OPM/unnamed-chunk-32.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">hist</span><span class="hl std">(outputPosterior</span><span class="hl opt">$</span><span class="hl std">coef.MassLog10,</span> <span class="hl kwc">xlab</span><span class="hl std">=</span><span class="hl str">&quot;Regression Coefficient&quot;</span><span class="hl std">,</span> <span class="hl kwc">main</span><span class="hl std">=</span><span class="hl str">&quot;&quot;</span><span class="hl std">,</span> <span class="hl kwc">n</span><span class="hl std">=</span><span class="hl num">25</span><span class="hl std">)</span> <span class="hl com"></span>
+</pre></div>
+</div><div class="rimage default"><img src="figures for IMI OPM/unnamed-chunk-33.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">sum</span><span class="hl std">(outputPosterior</span><span class="hl opt">$</span><span class="hl std">MassLog10)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 199
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">mean</span><span class="hl std">(</span><span class="hl kwd">subset</span><span class="hl std">(outputPosterior</span><span class="hl opt">$</span><span class="hl std">coef.MassLog10,</span><span class="hl kwd">abs</span><span class="hl std">(outputPosterior</span><span class="hl opt">$</span><span class="hl std">coef.MassLog10)</span><span class="hl opt">&gt;</span><span class="hl num">0</span><span class="hl std">) ) #mean coefficient</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.05232
+</pre></div>
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl kwd">hist</span><span class="hl std">(outputPosterior</span><span class="hl opt">$</span><span class="hl std">lambdaSample,</span> <span class="hl kwc">n</span><span class="hl std">=</span><span class="hl num">20</span><span class="hl std">,</span> <span class="hl kwc">xlab</span><span class="hl std">=</span><span class="hl str">&quot;lambda&quot;</span><span class="hl std">,</span> <span class="hl kwc">main</span><span class="hl std">=</span><span class="hl str">&quot;&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figures for IMI OPM/unnamed-chunk-34.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" class="plot" /></div><div class="rcode">
+<div class="source"><pre class="knitr r"><span class="hl kwd">mean</span><span class="hl std">(outputPosterior</span><span class="hl opt">$</span><span class="hl std">lambda)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.9936
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">outputPosteriorHsapeiens</span> <span class="hl kwb">=</span> <span class="hl kwd">read.csv</span><span class="hl std">(</span><span class="hl str">&quot;./predictions.csv&quot;</span><span class="hl std">)</span>
+
+<span class="hl com">#example output for prediction distribution of value on missing tip</span>
+<span class="hl kwd">par</span><span class="hl std">(</span><span class="hl kwc">mfrow</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">2</span><span class="hl std">,</span><span class="hl num">1</span><span class="hl std">))</span>
+<span class="hl kwd">hist</span><span class="hl std">(outputPosteriorHsapeiens</span><span class="hl opt">$</span><span class="hl std">Homo_sapiens,</span> <span class="hl kwc">xlab</span><span class="hl std">=</span><span class="hl str">&quot;Predicting IMI in humans&quot;</span><span class="hl std">,</span> <span class="hl kwc">main</span><span class="hl std">=</span><span class="hl str">&quot;&quot;</span><span class="hl std">,</span> <span class="hl kwc">xlim</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl kwd">min</span><span class="hl std">(data[,</span><span class="hl num">2</span><span class="hl std">],</span> <span class="hl kwc">na.rm</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">),</span> <span class="hl kwd">max</span><span class="hl std">(data[,</span><span class="hl num">2</span><span class="hl std">],</span> <span class="hl kwc">na.rm</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)))</span>
+<span class="hl kwd">abline</span><span class="hl std">(</span><span class="hl kwc">v</span><span class="hl std">= data[</span><span class="hl num">51</span><span class="hl std">,</span><span class="hl num">2</span><span class="hl std">],</span> <span class="hl kwc">col</span><span class="hl std">=</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">lwd</span><span class="hl std">=</span><span class="hl num">3</span><span class="hl std">,</span> <span class="hl kwc">lty</span><span class="hl std">=</span><span class="hl num">3</span><span class="hl std">)</span>
+
+<span class="hl kwd">hist</span><span class="hl std">(data[,</span><span class="hl num">2</span><span class="hl std">],</span> <span class="hl kwc">xlab</span><span class="hl std">=</span><span class="hl str">&quot;Observed variation in IMI across primates&quot;</span><span class="hl std">,</span> <span class="hl kwc">main</span><span class="hl std">=</span><span class="hl str">&quot;&quot;</span><span class="hl std">,</span> <span class="hl kwc">xlim</span><span class="hl std">=</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl kwd">min</span><span class="hl std">(data[,</span><span class="hl num">2</span><span class="hl std">],</span> <span class="hl kwc">na.rm</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">),</span> <span class="hl kwd">max</span><span class="hl std">(data[,</span><span class="hl num">2</span><span class="hl std">],</span> <span class="hl kwc">na.rm</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)),</span> <span class="hl kwc">n</span><span class="hl std">=</span><span class="hl num">20</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figures for IMI OPM/unnamed-chunk-35.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" class="plot" /></div></div>
+    
+    
+
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+        <ul>
+        <li>Paradis E., Claude J. & Strimmer K. 2004. APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20: 289-290.</li>
+        <li>Harmon Luke J, Jason T Weir, Chad D Brock, Richard E Glor, and Wendell Challenger. 2008. GEIGER: investigating evolutionary radiations. Bioinformatics 24:129-131.</li>
+        <li>David Orme, Rob Freckleton, Gavin Thomas, Thomas Petzoldt, Susanne Fritz, Nick Isaac and Will Pearse (2013). caper: Comparative
+  Analyses of Phylogenetics and Evolution in R. R package version 0.5.2. http://CRAN.R-project.org/package=caper</li>
+	  <li>Arnold, C., L. J. Matthews, and C. L. Nunn. 2010. The 10kTrees Website: A New Online Resource for Primate Phylogeny. Evolutionary Anthropology 19:114-118</li>
+        </ul>
+
+</body>
+</html>

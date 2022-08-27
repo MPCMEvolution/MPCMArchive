@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+
+<body>
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al. 2004) </p>
+		<p style="padding-left: 30px;"><code>"nlme"</code> (Pinheiro et al. 2014) </p>
+		<p style="padding-left: 30px;"><code>"AICcmodavg"</code> (Mazerolle 2013) </p>
+		<p style="padding-left: 30px;"><code>"geiger"</code> (Harmon et al. 2008) </p>
+	
+	<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>Species-specific trait data</strong> (<code>"primate_spec.txt"</code>), a tab separated text file, species-specific data on brain size and body size in primates, include within-species sample sizes</p>
+		<p style="padding-left: 30px;"><strong>Phylogeny</strong> (<code>"consensusTre_Primates.nex"</code>), the consenus phylogenetic tree for 1000 phylogenetic hypotheses from Arnold et al. (2010), nexus format</p>
+		
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+<h4>To get started</h4>
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># activate libraries</span>
+<span class="hl kwd">library</span><span class="hl std">(ape)</span>
+<span class="hl kwd">library</span><span class="hl std">(nlme)</span>
+<span class="hl kwd">library</span><span class="hl std">(AICcmodavg)</span>
+<span class="hl kwd">library</span><span class="hl std">(geiger)</span>
+
+<span class="hl com"># import data and tree</span>
+<span class="hl std">xdata</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl kwc">file</span> <span class="hl std">=</span> <span class="hl str">&quot;primate_spec.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">= T,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">dec</span> <span class="hl std">=</span> <span class="hl str">&quot;.&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">row.names</span><span class="hl std">(xdata)</span> <span class="hl kwb">=</span> <span class="hl std">xdata</span><span class="hl opt">$</span><span class="hl std">species</span>
+<span class="hl std">tree</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">read.nexus</span><span class="hl std">(</span><span class="hl str">&quot;consensusTre_Primates.nex&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+
+<h4>Creating different models considering different confounding effects</h4>	
+<p>Ordinary least square (OLS) regression not considering phylogeny and data heterogeneity </p>
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># star phylogeny</span>
+<span class="hl std">tree0</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">rescale</span><span class="hl std">(tree,</span> <span class="hl kwc">"lambda"</span> <span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">)</span>
+<span class="hl std">bm.tree0</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">corBrownian</span><span class="hl std">(</span><span class="hl kwc">phy</span> <span class="hl std">= tree0)</span>
+<span class="hl com"># same weight for all species</span>
+<span class="hl std">xdata</span><span class="hl opt">$</span><span class="hl std">constant</span> <span class="hl kwb">=</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwd">length</span><span class="hl std">(xdata</span><span class="hl opt">$</span><span class="hl std">brain_N))</span>
+
+<span class="hl com"># these are all equivalent models</span>
+<span class="hl std">ols</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, xdata,</span> <span class="hl kwc">correlation</span> <span class="hl std">= bm.tree0,</span> <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl std">constant,</span>
+    <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+<span class="hl std">ols.1</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, xdata,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+<span class="hl std">ols.2</span> <span class="hl kwb">=</span> <span class="hl kwd">lm</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, xdata)</span>
+</pre></div>
+</div></div>
+
+
+<p>Weighted OLS considering heterogeneity in data quality by using unequal weights</p>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># these are all equivalent models</span>
+<span class="hl std">w.ols</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, xdata,</span> <span class="hl kwc">correlation</span> <span class="hl std">= bm.tree0,</span> <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl num">1</span><span class="hl opt">/</span><span class="hl std">brain_N,</span>
+    <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+<span class="hl std">w.ols.1</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, xdata,</span> <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl num">1</span><span class="hl opt">/</span><span class="hl std">brain_N,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+<span class="hl std">w.ols.2</span> <span class="hl kwb">=</span> <span class="hl kwd">lm</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, xdata,</span> <span class="hl kwc">weights</span> <span class="hl std">= brain_N)</span>
+</pre></div>
+</div></div>
+
+
+<p>Phylogenetic OLS considering phylogenetic relationships of species</p>
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># we can consider different models for trait evolution</span>
+<span class="hl std">pgls.bm</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, xdata,</span> <span class="hl kwc">correlation</span> <span class="hl std">=</span> <span class="hl kwd">corBrownian</span><span class="hl std">(</span><span class="hl kwc">phy</span> <span class="hl std">= tree),</span>
+    <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl std">constant,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+<span class="hl std">pgls.pa</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, xdata,</span> <span class="hl kwc">correlation</span> <span class="hl std">=</span> <span class="hl kwd">corPagel</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">phy</span> <span class="hl std">= tree),</span>
+    <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl std">constant,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+
+<p>Weighted PGLS considering both phylogeny and data heterogeneity</p>
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">w.pgls.bm</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, xdata,</span> <span class="hl kwc">correlation</span> <span class="hl std">=</span> <span class="hl kwd">corBrownian</span><span class="hl std">(</span><span class="hl kwc">phy</span> <span class="hl std">= tree),</span>
+    <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl num">1</span><span class="hl opt">/</span><span class="hl std">brain_N,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+<span class="hl std">w.pgls.pa</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, xdata,</span> <span class="hl kwc">correlation</span> <span class="hl std">=</span> <span class="hl kwd">corPagel</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">phy</span> <span class="hl std">= tree),</span>
+    <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl num">1</span><span class="hl opt">/</span><span class="hl std">brain_N,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+
+<h4>Selecting the model that offers the best fit relative to model complexity</h4>
+<p>Models are only comparable if are fitted by Maximum Likelihood!</p>
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">Cand.models</span> <span class="hl kwb">=</span> <span class="hl kwd">list</span><span class="hl std">()</span>
+<span class="hl std">Cand.models[[</span><span class="hl num">1</span><span class="hl std">]]</span> <span class="hl kwb">=</span> <span class="hl std">ols</span>
+<span class="hl std">Cand.models[[</span><span class="hl num">2</span><span class="hl std">]]</span> <span class="hl kwb">=</span> <span class="hl std">w.ols</span>
+<span class="hl std">Cand.models[[</span><span class="hl num">3</span><span class="hl std">]]</span> <span class="hl kwb">=</span> <span class="hl std">pgls.bm</span>
+<span class="hl std">Cand.models[[</span><span class="hl num">4</span><span class="hl std">]]</span> <span class="hl kwb">=</span> <span class="hl std">pgls.pa</span>
+<span class="hl std">Cand.models[[</span><span class="hl num">5</span><span class="hl std">]]</span> <span class="hl kwb">=</span> <span class="hl std">w.pgls.bm</span>
+<span class="hl std">Cand.models[[</span><span class="hl num">6</span><span class="hl std">]]</span> <span class="hl kwb">=</span> <span class="hl std">w.pgls.pa</span>
+<span class="hl std">Modnames</span> <span class="hl kwb">=</span> <span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;ols&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;w.ols&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;pgls.bm&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;pgls.pa&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;w.pgls.bm&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;w.pgls.pa&quot;</span><span class="hl std">),</span>
+    <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot; &quot;</span><span class="hl std">)</span>
+<span class="hl kwd">aictab</span><span class="hl std">(</span><span class="hl kwc">cand.set</span> <span class="hl std">= Cand.models,</span> <span class="hl kwc">modnames</span> <span class="hl std">= Modnames,</span> <span class="hl kwc">sort</span> <span class="hl std">= T)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Model selection based on AICc :
+## 
+##           K   AICc Delta_AICc AICcWt Cum.Wt     LL
+## pgls.pa   4  55.07       0.00   0.65   0.65 -23.29
+## pgls.bm   3  56.33       1.26   0.35   1.00 -25.02
+## ols       3 133.20      78.13   0.00   1.00 -63.45
+## w.pgls.pa 4 158.35     103.29   0.00   1.00 -74.93
+## w.ols     3 173.95     118.89   0.00   1.00 -83.83
+## w.pgls.bm 3 176.66     121.60   0.00   1.00 -85.19
+</pre></div>
+</div></div>
+
+<p>The best models are the PGLS models, weighting only worsens model fit (probably because of the high repeatability of traits).</p>
+
+<h4>Plotting the results</h4>
+<div class="chunk" id="unnamed-chunk-7"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">plot</span><span class="hl std">(xdata</span><span class="hl opt">$</span><span class="hl std">lg.body, xdata</span><span class="hl opt">$</span><span class="hl std">lg.brain,</span> <span class="hl kwc">pch</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">cex</span> <span class="hl std">=</span> <span class="hl num">0.5</span> <span class="hl opt">*</span> <span class="hl kwd">sqrt</span><span class="hl std">(xdata</span><span class="hl opt">$</span><span class="hl std">brain_N),</span>
+    <span class="hl kwc">xlab</span> <span class="hl std">=</span> <span class="hl str">&quot;log(body size)&quot;</span><span class="hl std">,</span> <span class="hl kwc">ylab</span> <span class="hl std">=</span> <span class="hl str">&quot;log(brain size)&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(ols,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;red&quot;</span><span class="hl std">,</span> <span class="hl kwc">lty</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(w.ols,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;blue&quot;</span><span class="hl std">,</span> <span class="hl kwc">lty</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(pgls.bm,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;darkgreen&quot;</span><span class="hl std">,</span> <span class="hl kwc">lty</span> <span class="hl std">=</span> <span class="hl num">3</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(pgls.pa,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;darkgreen&quot;</span><span class="hl std">,</span> <span class="hl kwc">lty</span> <span class="hl std">=</span> <span class="hl num">4</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(w.pgls.bm,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;gold4&quot;</span><span class="hl std">,</span> <span class="hl kwc">lty</span> <span class="hl std">=</span> <span class="hl num">3</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(w.pgls.pa,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;gold4&quot;</span><span class="hl std">,</span> <span class="hl kwc">lty</span> <span class="hl std">=</span> <span class="hl num">4</span><span class="hl std">)</span>
+<span class="hl kwd">legend</span><span class="hl std">(</span><span class="hl kwc">x</span> <span class="hl std">=</span> <span class="hl str">&quot;bottomright&quot;</span><span class="hl std">,</span> <span class="hl kwc">legend</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;ols&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;w.ols&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;pgls.bm&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;pgls.pa&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;w.pgls.bm&quot;</span><span class="hl std">,</span>
+    <span class="hl str">&quot;w.pgls.pa&quot;</span><span class="hl std">),</span> <span class="hl kwc">lty</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">3</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">,</span> <span class="hl num">3</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">),</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;red&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;blue&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;darkgreen&quot;</span><span class="hl std">,</span>
+    <span class="hl str">&quot;darkgreen&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;gold4&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;gold4&quot;</span><span class="hl std">),</span> <span class="hl kwc">bty</span> <span class="hl std">=</span> <span class="hl str">&quot;n&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-7.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" class="plot" /></div></div>
+
+
+<h4>The "weights of weights": the "omega" scaling factor</h4>
+<p>In the above models, we used the untransformed species-specific (within-species) sample sizes as statistical weights. However, as we argued in our chapter, this option may irrealistically overemphasize the influence of intensively studied species with large sample sizes. To downweight such unwanted effects one can apply transformations on the species-specific sample sizes. In chapter 12, we introduced the parameter "omega" that defines the function for such transformation. Omega is simply an elevation factor that ranges from 1 to 1/100 and characterises the exponent of the within-species sample sizes (i.e. if omega is 1, the original sample sizes are used as weights, if it is 1/2=0.5, the square-root-transformed values serve as weights, if omega is 1/100 it approximates to 0 thus represents the scenario in which all species are considered with equal weight (n^0 = 1). In the example below, we demonstrate how one can obtain parameter estimates by averaging across different models relying on different omegas by considering their fit to the data. </p>
+
+<div class="chunk" id="unnamed-chunk-8"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># all models from omega=1 to omega=0</span>
+<span class="hl std">Cand.models.w</span> <span class="hl kwb">=</span> <span class="hl kwd">list</span><span class="hl std">()</span>
+<span class="hl std">xweights</span> <span class="hl kwb">=</span> <span class="hl kwd">seq</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwc">length.out</span> <span class="hl std">=</span> <span class="hl num">101</span><span class="hl std">)</span>
+<span class="hl kwa">for</span> <span class="hl std">(w</span> <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">:</span><span class="hl kwd">length</span><span class="hl std">(xweights)) {</span>
+    <span class="hl std">omega</span> <span class="hl kwb">=</span> <span class="hl std">xdata</span><span class="hl opt">$</span><span class="hl std">brain_N</span><span class="hl opt">^</span><span class="hl std">xweights[w]</span>
+    <span class="hl std">Cand.models.w[[w]]</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body,</span> <span class="hl kwc">data</span> <span class="hl std">= xdata,</span> <span class="hl kwc">correlation</span> <span class="hl std">=</span> <span class="hl kwd">corPagel</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span>
+        <span class="hl kwc">phy</span> <span class="hl std">= tree),</span> <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl num">1</span><span class="hl opt">/</span><span class="hl std">omega,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+<span class="hl std">}</span>
+<span class="hl std">modnames.w</span> <span class="hl kwb">=</span> <span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;omega =&quot;</span><span class="hl std">,</span> <span class="hl kwd">round</span><span class="hl std">(xweights,</span> <span class="hl num">2</span><span class="hl std">),</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot; &quot;</span><span class="hl std">)</span>
+
+<span class="hl com"># model averaged inetercept</span>
+<span class="hl std">Int_av</span> <span class="hl kwb">=</span> <span class="hl kwd">modavg</span><span class="hl std">(</span><span class="hl kwc">parm</span> <span class="hl std">=</span> <span class="hl str">&quot;(Intercept)&quot;</span><span class="hl std">,</span> <span class="hl kwc">cand.set</span> <span class="hl std">= Cand.models.w,</span> <span class="hl kwc">modnames</span> <span class="hl std">= modnames.w)</span>
+<span class="hl std">Int_av</span><span class="hl opt">$</span><span class="hl std">Mod.avg.beta</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 1.228
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">Int_av</span><span class="hl opt">$</span><span class="hl std">Uncond.SE</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.5486
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># model averaged slope</span>
+<span class="hl std">beta_av</span> <span class="hl kwb">=</span> <span class="hl kwd">modavg</span><span class="hl std">(</span><span class="hl kwc">parm</span> <span class="hl std">=</span> <span class="hl str">&quot;lg.body&quot;</span><span class="hl std">,</span> <span class="hl kwc">cand.set</span> <span class="hl std">= Cand.models.w,</span> <span class="hl kwc">modnames</span> <span class="hl std">= modnames.w)</span>
+<span class="hl std">beta_av</span><span class="hl opt">$</span><span class="hl std">Mod.avg.beta</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.273
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">beta_av</span><span class="hl opt">$</span><span class="hl std">Uncond.SE</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.03777
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># if you want to see the particular models</span>
+<span class="hl kwd">head</span><span class="hl std">(</span><span class="hl kwd">aictab</span><span class="hl std">(</span><span class="hl kwc">cand.set</span> <span class="hl std">= Cand.models.w,</span> <span class="hl kwc">modnames</span> <span class="hl std">= modnames.w,</span> <span class="hl kwc">sort</span> <span class="hl std">= F),</span> <span class="hl num">100</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+## Model selection based on AICc :
+## 
+##              K   AICc Delta_AICc AICcWt     LL
+## omega = 1    4 158.35     103.29   0.00 -74.93
+## omega = 0.99 4 157.23     102.16   0.00 -74.37
+## omega = 0.98 4 156.11     101.04   0.00 -73.81
+## omega = 0.97 4 155.00      99.93   0.00 -73.25
+## omega = 0.96 4 153.89      98.82   0.00 -72.70
+## omega = 0.95 4 152.79      97.72   0.00 -72.15
+## omega = 0.94 4 151.69      96.63   0.00 -71.60
+## omega = 0.93 4 150.60      95.54   0.00 -71.05
+## omega = 0.92 4 149.52      94.45   0.00 -70.51
+## omega = 0.91 4 148.44      93.37   0.00 -69.97
+## omega = 0.9  4 147.36      92.30   0.00 -69.44
+## omega = 0.89 4 146.30      91.23   0.00 -68.90
+## omega = 0.88 4 145.24      90.17   0.00 -68.37
+## omega = 0.87 4 144.18      89.11   0.00 -67.84
+## omega = 0.86 4 143.13      88.06   0.00 -67.32
+## omega = 0.85 4 142.09      87.02   0.00 -66.80
+## omega = 0.84 4 141.05      85.98   0.00 -66.28
+## omega = 0.83 4 140.01      84.95   0.00 -65.76
+## omega = 0.82 4 138.99      83.92   0.00 -65.25
+## omega = 0.81 4 137.97      82.90   0.00 -64.74
+## omega = 0.8  4 136.95      81.89   0.00 -64.23
+## omega = 0.79 4 135.94      80.88   0.00 -63.72
+## omega = 0.78 4 134.94      79.87   0.00 -63.22
+## omega = 0.77 4 133.94      78.87   0.00 -62.72
+## omega = 0.76 4 132.95      77.88   0.00 -62.23
+## omega = 0.75 4 131.96      76.89   0.00 -61.73
+## omega = 0.74 4 130.98      75.91   0.00 -61.24
+## omega = 0.73 4 130.00      74.94   0.00 -60.75
+## omega = 0.72 4 129.03      73.96   0.00 -60.27
+## omega = 0.71 4 128.06      73.00   0.00 -59.78
+## omega = 0.7  4 127.10      72.04   0.00 -59.30
+## omega = 0.69 4 126.15      71.08   0.00 -58.83
+## omega = 0.68 4 125.20      70.13   0.00 -58.35
+## omega = 0.67 4 124.25      69.18   0.00 -57.88
+## omega = 0.66 4 123.31      68.24   0.00 -57.41
+## omega = 0.65 4 122.37      67.30   0.00 -56.94
+## omega = 0.64 4 121.43      66.37   0.00 -56.47
+## omega = 0.63 4 120.50      65.44   0.00 -56.01
+## omega = 0.62 4 119.58      64.51   0.00 -55.54
+## omega = 0.61 4 118.66      63.59   0.00 -55.08
+## omega = 0.6  4 117.73      62.67   0.00 -54.62
+## omega = 0.59 4 116.82      61.75   0.00 -54.16
+## omega = 0.58 4 115.90      60.84   0.00 -53.70
+## omega = 0.57 4 114.99      59.92   0.00 -53.25
+## omega = 0.56 4 114.08      59.01   0.00 -52.79
+## omega = 0.55 4 113.17      58.10   0.00 -52.34
+## omega = 0.54 4 112.25      57.19   0.00 -51.88
+## omega = 0.53 4 111.34      56.28   0.00 -51.42
+## omega = 0.52 4 110.43      55.36   0.00 -50.97
+## omega = 0.51 4 109.52      54.45   0.00 -50.51
+## omega = 0.5  4 108.60      53.53   0.00 -50.05
+## omega = 0.49 4 107.68      52.61   0.00 -49.59
+## omega = 0.48 4 106.75      51.69   0.00 -49.13
+## omega = 0.47 4 105.82      50.76   0.00 -48.66
+## omega = 0.46 4 104.88      49.82   0.00 -48.19
+## omega = 0.45 4 103.94      48.87   0.00 -47.72
+## omega = 0.44 4 102.98      47.92   0.00 -47.24
+## omega = 0.43 4 102.02      46.95   0.00 -46.76
+## omega = 0.42 4 101.05      45.98   0.00 -46.28
+## omega = 0.41 4 100.06      44.99   0.00 -45.78
+## omega = 0.4  4  99.06      44.00   0.00 -45.28
+## omega = 0.39 4  98.06      42.99   0.00 -44.78
+## omega = 0.38 4  97.04      41.97   0.00 -44.27
+## omega = 0.37 4  96.00      40.94   0.00 -43.75
+## omega = 0.36 4  94.96      39.89   0.00 -43.23
+## omega = 0.35 4  93.90      38.84   0.00 -42.71
+## omega = 0.34 4  92.84      37.77   0.00 -42.17
+## omega = 0.33 4  91.76      36.69   0.00 -41.63
+## omega = 0.32 4  90.67      35.60   0.00 -41.09
+## omega = 0.31 4  89.57      34.50   0.00 -40.54
+## omega = 0.3  4  88.45      33.39   0.00 -39.98
+## omega = 0.29 4  87.33      32.26   0.00 -39.42
+## omega = 0.28 4  86.19      31.12   0.00 -38.85
+## omega = 0.27 4  85.04      29.97   0.00 -38.27
+## omega = 0.26 4  83.88      28.82   0.00 -37.69
+## omega = 0.25 4  82.71      27.64   0.00 -37.11
+## omega = 0.24 4  81.53      26.46   0.00 -36.52
+## omega = 0.23 4  80.33      25.27   0.00 -35.92
+## omega = 0.22 4  79.13      24.06   0.00 -35.32
+## omega = 0.21 4  77.91      22.84   0.00 -34.71
+## omega = 0.2  4  76.68      21.62   0.00 -34.09
+## omega = 0.19 4  75.44      20.38   0.00 -33.48
+## omega = 0.18 4  74.20      19.13   0.00 -32.85
+## omega = 0.17 4  72.94      17.87   0.00 -32.22
+## omega = 0.16 4  71.67      16.60   0.00 -31.59
+## omega = 0.15 4  70.40      15.33   0.00 -30.95
+## omega = 0.14 4  69.12      14.05   0.00 -30.31
+## omega = 0.13 4  67.83      12.77   0.00 -29.67
+## omega = 0.12 4  66.55      11.48   0.00 -29.03
+## omega = 0.11 4  65.27      10.21   0.00 -28.39
+## omega = 0.1  4  64.01       8.94   0.00 -27.76
+## omega = 0.09 4  62.76       7.70   0.01 -27.13
+## omega = 0.08 4  61.55       6.49   0.01 -26.53
+## omega = 0.07 4  60.39       5.33   0.02 -25.95
+## omega = 0.06 4  59.30       4.23   0.03 -25.40
+## omega = 0.05 4  58.30       3.23   0.05 -24.90
+## omega = 0.04 4  57.41       2.34   0.08 -24.46
+## omega = 0.03 4  56.65       1.58   0.12 -24.08
+## omega = 0.02 4  56.02       0.95   0.17 -23.76
+## omega = 0.01 4  55.50       0.44   0.22 -23.51
+</pre></div>
+</div></div>
+
+<p>From this, it is also clear that in the current case, weighting only worsens model fit (probably because of the high repeatability of traits).</p>
+
+<p>Let us make a figure to summarize model fit and parameter estimates at different omegas.</p>
+<div class="chunk" id="unnamed-chunk-9"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">ll</span> <span class="hl kwb">=</span> <span class="hl kwd">unlist</span><span class="hl std">(</span><span class="hl kwd">lapply</span><span class="hl std">(Cand.models.w,</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">) {</span>
+    <span class="hl std">x</span><span class="hl opt">$</span><span class="hl std">logLik[</span><span class="hl num">1</span><span class="hl std">]</span>
+<span class="hl std">}))</span>
+<span class="hl kwd">par</span><span class="hl std">(</span><span class="hl kwc">mar</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">5</span><span class="hl std">,</span> <span class="hl num">4</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">5</span><span class="hl std">)</span> <span class="hl opt">+</span> <span class="hl num">0.1</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(xweights, ll,</span> <span class="hl kwc">type</span> <span class="hl std">=</span> <span class="hl str">&quot;l&quot;</span><span class="hl std">,</span> <span class="hl kwc">xlab</span> <span class="hl std">=</span> <span class="hl str">&quot;omega&quot;</span><span class="hl std">,</span> <span class="hl kwc">ylab</span> <span class="hl std">=</span> <span class="hl str">&quot;Maximum likelihood&quot;</span><span class="hl std">,</span>
+    <span class="hl kwc">las</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">)</span>
+<span class="hl kwd">par</span><span class="hl std">(</span><span class="hl kwc">new</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl kwd">plot</span><span class="hl std">(xweights,</span> <span class="hl kwd">unlist</span><span class="hl std">(</span><span class="hl kwd">lapply</span><span class="hl std">(Cand.models.w, coefficients))[</span><span class="hl kwd">seq</span><span class="hl std">(</span><span class="hl num">2</span><span class="hl std">,</span> <span class="hl num">202</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">)],</span>
+    <span class="hl kwc">type</span> <span class="hl std">=</span> <span class="hl str">&quot;l&quot;</span><span class="hl std">,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;red&quot;</span><span class="hl std">,</span> <span class="hl kwc">lty</span> <span class="hl std">=</span> <span class="hl num">2</span><span class="hl std">,</span> <span class="hl kwc">xaxt</span> <span class="hl std">=</span> <span class="hl str">&quot;n&quot;</span><span class="hl std">,</span> <span class="hl kwc">yaxt</span> <span class="hl std">=</span> <span class="hl str">&quot;n&quot;</span><span class="hl std">,</span> <span class="hl kwc">xlab</span> <span class="hl std">=</span> <span class="hl str">&quot;&quot;</span><span class="hl std">,</span> <span class="hl kwc">ylab</span> <span class="hl std">=</span> <span class="hl str">&quot;&quot;</span><span class="hl std">,</span>
+    <span class="hl kwc">ylim</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">))</span>
+<span class="hl kwd">axis</span><span class="hl std">(</span><span class="hl num">4</span><span class="hl std">,</span> <span class="hl kwc">las</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">)</span>
+<span class="hl kwd">mtext</span><span class="hl std">(</span><span class="hl str">&quot;slope&quot;</span><span class="hl std">,</span> <span class="hl kwc">side</span> <span class="hl std">=</span> <span class="hl num">4</span><span class="hl std">,</span> <span class="hl kwc">line</span> <span class="hl std">=</span> <span class="hl num">3</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-9.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" class="plot" /></div></div>
+
+<p> The highest Maximum Likelihood (solid black line) corresponds to omega = 0, which considers all species with equal weight and gives a slope estimate of 0.27. Different transformations on the within-species sample sizes (different omegas) would provide considerably different -but highly unrealistic- slope estimates (dashed red line). </p> 
+
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+	<ul>
+<li>Arnold C, Matthews LJ, Nunn CL (2010) The 10kTrees website: a new online resource for primate hylogeny. Evol Anthropol 19:114-118.</li>
+<li>Harmon LJ, Weir J, Brock C, Glor RE, Challenger W (2008) GEIGER: Investigating evolutionary radiations. Bioinformatics 24:129-131.</li>
+<li>Mazerolle MJ (2013) AICcmodavg: Model selection and multimodel inference based on (Q)AIC(c). R package version 1.28.</li>
+<li>Orme D, Freckleton R, Thomas G, Petzoldt T, Fritz S, Isaac N, Pearse W (2012) caper: Comparative Analyses of Phylogenetics and Evolution in R. R package version 3.1-104.</li>
+<li>Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20:289-290.</li>
+<li>Pinheiro J, Bates D, DebRoy S, Sarkar D, R Development Core Team (2012) nlme: Linear and Nonlinear Mixed Effects Models. R package version 3.1-104, 
+	</ul>
+
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+</HEAD>
+
+<BODY >
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+		<p style="padding-left: 30px;"><code>"MCMCglmm"</code> (Hadfield, 2010a) </p>
+
+	<h4>Data</h4>
+	<p style="padding-left: 30px;"><strong>Meta-analysis data</strong> (<code>"data_effect.txt"</code>), Data frame containing the effect sizes</p>
+	<p style="padding-left: 30px;"><strong>Phylogeny</strong> (<code>"phylo.nex"</code>), Phylogeny file (NEXUS file)</p>
+
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+<P>
+Let's use the same phylogeny as 
+in the OPM section <A HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html">11.1</A>. We have an effect size in Fisher's 
+z-transformation of correlation coefficient <SPAN CLASS="MATH"><IMG
+ WIDTH="21" HEIGHT="13" ALIGN="BOTTOM" BORDER="0"
+ SRC="img1.png"
+ ALT="$ Zr$"></SPAN> per species 
+along with corresponding sample sizes (e.g. correlations between male coloration and reproductive success):
+<div class="chunk" id="unnamed-chunk-16"><div class="rcode"><div class="source"><pre class="knitr r"> <span class="hl kwd">library</span><span class="hl std">(ape)</span>
+ <span class="hl kwd">library</span><span class="hl std">(MCMCglmm)</span>
+ <span class="hl std">phylo</span><span class="hl kwb">&lt;-</span><span class="hl kwd">read.nexus</span><span class="hl std">(</span><span class="hl str">&quot;phylo.nex&quot;</span><span class="hl std">)</span>
+ <span class="hl std">data</span><span class="hl kwb">&lt;-</span><span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;data_effect.txt&quot;</span><span class="hl std">,</span><span class="hl kwc">header</span><span class="hl std">=</span><span class="hl num">TRUE</span><span class="hl std">)</span>
+ <span class="hl kwd">head</span><span class="hl std">(data)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">##        Zr  N phylo
+## 1 0.28918 13  sp_1
+## 2 0.02416 40  sp_2
+## 3 0.19514 39  sp_3
+## 4 0.09831 40  sp_4
+## 5 0.13780 66  sp_5
+## 6 0.13711 41  sp_6
+</pre></div>
+</div></div>
+It is straightforward to fit a meta-analytic model in MCMCglmm. 
+Let's see how the syntax looks like:
+<PRE>
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">inv.phylo</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">inverseA</span><span class="hl std">(phylo,</span> <span class="hl kwc">nodes</span> <span class="hl std">=</span> <span class="hl str">&quot;ALL&quot;</span><span class="hl std">,</span> <span class="hl kwc">scale</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<div class="source"><pre class="knitr r"><span class="hl std">prior</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">G1</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">nu</span> <span class="hl std">=</span> <span class="hl num">0.02</span><span class="hl std">)),</span> <span class="hl kwc">R</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">V</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">nu</span> <span class="hl std">=</span> <span class="hl num">0.02</span><span class="hl std">))</span>
+<span class="hl std">model_effect</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">MCMCglmm</span><span class="hl std">(Zr</span> <span class="hl opt">~</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">random</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl std">phylo,</span> <span class="hl kwc">family</span> <span class="hl std">=</span> <span class="hl str">&quot;gaussian&quot;</span><span class="hl std">,</span> <span class="hl kwc">mev</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl opt">/</span><span class="hl std">(data</span><span class="hl opt">$</span><span class="hl std">N</span> <span class="hl opt">-</span>
+    <span class="hl num">3</span><span class="hl std">),</span> <span class="hl kwc">ginverse</span> <span class="hl std">=</span> <span class="hl kwd">list</span><span class="hl std">(</span><span class="hl kwc">phylo</span> <span class="hl std">= inv.phylo</span><span class="hl opt">$</span><span class="hl std">Ainv),</span> <span class="hl kwc">prior</span> <span class="hl std">= prior,</span> <span class="hl kwc">data</span> <span class="hl std">= data,</span>
+    <span class="hl kwc">nitt</span> <span class="hl std">=</span> <span class="hl num">5e+06</span><span class="hl std">,</span> <span class="hl kwc">burnin</span> <span class="hl std">=</span> <span class="hl num">1000</span><span class="hl std">,</span> <span class="hl kwc">thin</span> <span class="hl std">=</span> <span class="hl num">500</span><span class="hl std">)</span>
+</div></div>
+</PRE> 
+In recent versions of MCMCglmm, this command might fail and require that you install and load the library
+"orthopolynom". As you may have noticed the syntax is pretty much the same as in the OPM section 
+<A HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_simple.html#opm:simple_model">11.1</A>,
+including the same <TT>prior</TT> specification. A notable difference is that we 
+now
+use the argument <TT>mev</TT>, which stands for measurement error variance. 
+We can pass vector of sampling variances to <TT>mev</TT>. We do not need a prior 
+for sampling error variances 
+because we assume they are known (remember for <SPAN CLASS="MATH"><IMG
+ WIDTH="21" HEIGHT="13" ALIGN="BOTTOM" BORDER="0"
+ SRC="img1.png"
+ ALT="$ Zr$"></SPAN>, it is <!-- MATH
+ $\frac{1}{n-3}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="29" HEIGHT="38" ALIGN="MIDDLE" BORDER="0"
+ SRC="img10.png"
+ ALT="$ \frac{1}{n-3}$"></SPAN>), 
+thus not to be estimated. 
+Also, for a quicker computation, we used
+<TT>nodes="ALL"</TT> in the <TT>inverseA</TT> function this time<A NAME="tex2html8"
+  HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/3_fisher.html#foot303"><SUP><SPAN CLASS="arabic">1</SPAN></SUP></A> in the main text. The result looks like 
+this:
+<div class="chunk" id="unnamed-chunk-18"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">summary</span><span class="hl std">(model_effect)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## 
+##  Iterations = 1001:4999501
+##  Thinning interval  = 500
+##  Sample size  = 9998 
+## 
+##  DIC: -320.3 
+## 
+##  G-structure:  ~animal
+## 
+##        post.mean l-95% CI u-95% CI eff.samp
+## animal   0.00902  0.00175   0.0193    10423
+## 
+##  R-structure:  ~units
+## 
+##       post.mean l-95% CI u-95% CI eff.samp
+## units   0.00608  0.00167   0.0111     9998
+## 
+##  Location effects: Zr ~ 1 
+## 
+##             post.mean l-95% CI u-95% CI eff.samp  pMCMC   
+## (Intercept)    0.1589   0.0601   0.2538     9147 0.0038 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+</pre></div>
+</div></div>
+
+<DIV ALIGN="CENTER"><A NAME="fig_funnel"></A><A NAME="213"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figure 11.2:</STRONG>
+Funnel plot for effect sizes (<SPAN CLASS="MATH"><IMG
+ WIDTH="21" HEIGHT="13" ALIGN="BOTTOM" BORDER="0"
+ SRC="img1.png"
+ ALT="$ Zr$"></SPAN>) with the meta analytic mean 
+(dashed line).</CAPTION>
+<TR><TD>
+<DIV ALIGN="CENTER">
+<IMG src="funnel.png">
+</DIV> </TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+The meta-analytic mean is <!-- MATH
+ $Zr=\mathtt{0.15887}$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="95" HEIGHT="14" ALIGN="BOTTOM" BORDER="0"
+ SRC="img12.png"
+ ALT="$ Zr=\mathtt{0.15887}$"></SPAN> and is significantly larger than 
+zero. 
+In meta-analysis, it is common to plot what is called a funnel plot 
+where effect sizes are plotted with the inverse of the squared root of
+sampling error variance, called `precision' (Fig.&nbsp;<A HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/1_fisher.html#fig_funnel">11.2</A>). 
+As you see, effect sizes funnel down around the meta-analytic mean. 
+This is what we exactly expect because effect sizes with low precisions 
+(low sample sizes) should have larger sampling errors. 
+Here, we do not go any further with phylogenetic meta-analysis. But to follow up 
+on this topic, 
+you may want to see recent examples of phylogenetic meta-regression models using 
+MCMCglmm 
+in <A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/biblio.html#horvathova_strategic_2012">Horv&#225;thov&#225; et&nbsp;al (2012)</A> and <A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/biblio.html#prokop_meta-analysis_2012">Prokop et&nbsp;al (2012)</A>.
+Other important issues in meta-analysis include statistical heterogeneity and publication bias 
+(for further information, 
+see <A NAME="tex2html62" target="contents"
+  HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/biblio.html#koricheva_handbook_2013">Koricheva et&nbsp;al, 2013</A>; <A NAME="tex2html63" target="contents"
+  HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/biblio.html#nakagawa_methodological_2012">Nakagawa and Santos, 2012</A>).
+
+
+<hr>
+<h3><span style="text-decoration: underline;"><strong> Footnotes </strong></span></h3>
+
+<DT><A NAME="foot303">... time</A><A
+ HREF="http://www.mpcm-evolution.org/OPM/Chapter11_OPM/3_fisher.html#tex2html8"><SUP><SPAN CLASS="arabic">1</SPAN></SUP></A></DT>
+<DD>In most analyses, this
+default option will be fine. 
+As mentioned before, <TT>"TIPS"</TT> option could reduce auto-correlation and 
+will improve the chain ``mixing''. Note that you will get a warning message, 
+saying some
+missing records are generated. This is because MCMCglmm is using ancestral nodes 
+and trait values of such nodes are treated as missing values.
+See more on this in section 11.3.2 in the main text.
+
+</BODY>
+</HTML>

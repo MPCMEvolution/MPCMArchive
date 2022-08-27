@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+
+
+<body>
+<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+	<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al. 2004) </p>
+		<p style="padding-left: 30px;"><code>"nlme"</code> (Pinheiro et al. 2014) </p>
+		<p style="padding-left: 30px;"><code>"AICcmodavg"</code> (Mazerolle 2013) </p>
+		<p style="padding-left: 30px;"><code>"scatterplot3d"</code> (Ligges & Machler 2003) </p>
+	
+	<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>Species-specific trait data</strong> (<code>"primate_spec.txt"</code>), a tab separated text file, species-specific data on brain size and body size in primates, include within-species sample sizes</p>
+		<p style="padding-left: 30px;"><strong>Phylogeny</strong> (<code>"consensusTre_Primates.nex"</code>), the consenus phylogenetic tree for 1000 phylogenetic hypotheses from Arnold et al. (2010), nexus format</p>
+		
+<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+<h4>To get started</h4>
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># activate libraries</span>
+<span class="hl kwd">library</span><span class="hl std">(ape)</span>
+<span class="hl kwd">library</span><span class="hl std">(nlme)</span>
+<span class="hl kwd">library</span><span class="hl std">(AICcmodavg)</span>
+<span class="hl kwd">library</span><span class="hl std">(scatterplot3d)</span>
+
+<span class="hl com"># import data and tree</span>
+<span class="hl std">xdata</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl kwc">file</span> <span class="hl std">=</span> <span class="hl str">&quot;primate_spec.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">= T,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">dec</span> <span class="hl std">=</span> <span class="hl str">&quot;.&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">row.names</span><span class="hl std">(xdata)</span> <span class="hl kwb">=</span> <span class="hl std">xdata</span><span class="hl opt">$</span><span class="hl std">species</span>
+<span class="hl std">tree</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">read.nexus</span><span class="hl std">(</span><span class="hl str">&quot;consensusTre_Primates.nex&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+
+<h4>Creating different models by simultaneously varying omega (weight scaling factor) and lambda (phylogeny scaling factor)</h4>
+<p>Here we will apply multimodel inference from models relying on different lambdas and omegas. Hereafter, you are assumed to be familiar with exercises 2) and 3) within the content of this OPM. </p>
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com"># To make all models in two loops through different omegas and lambdas</span>
+<span class="hl std">xweights</span> <span class="hl kwb">=</span> <span class="hl kwd">seq</span><span class="hl std">(</span><span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">0</span><span class="hl std">,</span> <span class="hl kwc">length.out</span> <span class="hl std">=</span> <span class="hl num">101</span><span class="hl std">)</span>
+<span class="hl std">Cand.models</span> <span class="hl kwb">=</span> <span class="hl kwd">list</span><span class="hl std">()</span>
+<span class="hl std">modnames</span> <span class="hl kwb">=</span> <span class="hl kwd">c</span><span class="hl std">()</span>
+<span class="hl kwa">for</span> <span class="hl std">(l</span> <span class="hl kwa">in</span> <span class="hl num">0</span><span class="hl opt">:</span><span class="hl num">100</span><span class="hl std">) {</span>
+    <span class="hl kwa">for</span> <span class="hl std">(w</span> <span class="hl kwa">in</span> <span class="hl num">1</span><span class="hl opt">:</span><span class="hl kwd">length</span><span class="hl std">(xweights)) {</span>
+        <span class="hl std">omega</span> <span class="hl kwb">=</span> <span class="hl std">xdata</span><span class="hl opt">$</span><span class="hl std">brain_N</span><span class="hl opt">^</span><span class="hl std">xweights[w]</span>
+        <span class="hl std">Cand.models[[l</span> <span class="hl opt">*</span> <span class="hl num">101</span> <span class="hl opt">+</span> <span class="hl std">w]]</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body,</span> <span class="hl kwc">data</span> <span class="hl std">= xdata,</span> <span class="hl kwc">correlation</span> <span class="hl std">=</span> <span class="hl kwd">corPagel</span><span class="hl std">(</span><span class="hl kwc">value</span> <span class="hl std">= l</span><span class="hl opt">/</span><span class="hl num">100</span><span class="hl std">,</span>
+            <span class="hl std">tree,</span> <span class="hl kwc">fixed</span> <span class="hl std">= T),</span> <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl num">1</span><span class="hl opt">/</span><span class="hl std">omega,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+        <span class="hl std">modnames[l</span> <span class="hl opt">*</span> <span class="hl num">101</span> <span class="hl opt">+</span> <span class="hl std">w]</span> <span class="hl kwb">=</span> <span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;lambda =&quot;</span><span class="hl std">,</span> <span class="hl kwd">round</span><span class="hl std">(l</span><span class="hl opt">/</span><span class="hl num">100</span><span class="hl std">,</span> <span class="hl num">2</span><span class="hl std">),</span> <span class="hl str">&quot;, omega =&quot;</span><span class="hl std">,</span>
+            <span class="hl kwd">round</span><span class="hl std">(xweights[w],</span> <span class="hl num">2</span><span class="hl std">))</span>
+    <span class="hl std">}</span>
+<span class="hl std">}</span>
+
+<span class="hl com"># To get model averaged estimate for the regression intercept</span>
+<span class="hl std">Int_av</span> <span class="hl kwb">=</span> <span class="hl kwd">modavg</span><span class="hl std">(</span><span class="hl kwc">parm</span> <span class="hl std">=</span> <span class="hl str">&quot;(Intercept)&quot;</span><span class="hl std">,</span> <span class="hl kwc">cand.set</span> <span class="hl std">= Cand.models,</span> <span class="hl kwc">modnames</span> <span class="hl std">= modnames)</span>
+<span class="hl std">Int_av</span><span class="hl opt">$</span><span class="hl std">Mod.avg.beta</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 1.087
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">Int_av</span><span class="hl opt">$</span><span class="hl std">Uncond.SE</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.5398
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># To get model averaged estimate for the regression slope</span>
+<span class="hl std">beta_av</span> <span class="hl kwb">=</span> <span class="hl kwd">modavg</span><span class="hl std">(</span><span class="hl kwc">parm</span> <span class="hl std">=</span> <span class="hl str">&quot;lg.body&quot;</span><span class="hl std">,</span> <span class="hl kwc">cand.set</span> <span class="hl std">= Cand.models,</span> <span class="hl kwc">modnames</span> <span class="hl std">= modnames)</span>
+<span class="hl std">beta_av</span><span class="hl opt">$</span><span class="hl std">Mod.avg.beta</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.3033
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">beta_av</span><span class="hl opt">$</span><span class="hl std">Uncond.SE</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] 0.04442
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com"># To make figure</span>
+<span class="hl std">lambda</span> <span class="hl kwb">=</span> <span class="hl kwd">rep</span><span class="hl std">(</span><span class="hl kwd">seq</span><span class="hl std">(</span><span class="hl num">0</span><span class="hl std">,</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl num">0.01</span><span class="hl std">),</span> <span class="hl kwc">each</span> <span class="hl std">=</span> <span class="hl kwd">length</span><span class="hl std">(xweights))</span>
+<span class="hl std">omega</span> <span class="hl kwb">=</span> <span class="hl kwd">rep</span><span class="hl std">(xweights,</span> <span class="hl num">101</span><span class="hl std">)</span>
+<span class="hl std">ML</span> <span class="hl kwb">=</span> <span class="hl kwd">aictab</span><span class="hl std">(</span><span class="hl kwc">cand.set</span> <span class="hl std">= Cand.models,</span> <span class="hl kwc">modnames</span> <span class="hl std">= modnames,</span> <span class="hl kwc">sort</span> <span class="hl std">= F)[,</span> <span class="hl num">7</span><span class="hl std">]</span>
+<span class="hl kwd">scatterplot3d</span><span class="hl std">(lambda, omega, ML,</span> <span class="hl kwc">type</span> <span class="hl std">=</span> <span class="hl str">&quot;l&quot;</span><span class="hl std">,</span> <span class="hl kwc">color</span> <span class="hl std">=</span> <span class="hl str">&quot;red&quot;</span><span class="hl std">)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" class="plot" /></div></div>
+
+<p> The highest Maximum Likelihood can be found at lambda=1 and omega=0 (strong phylogenetic effect and no need to balance for differences in within-species sample sizes). </p>
+
+
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+	<ul>
+<li>Arnold C, Matthews LJ, Nunn CL (2010) The 10kTrees website: a new online resource for primate hylogeny. Evol Anthropol 19:114-118.</li>
+<li>Ligges U, Machler M (2003) Scatterplot3d: an R package for visualizing multivariate data. J Stat Softw 8:1-20.</li>
+<li>Mazerolle MJ (2013) AICcmodavg: Model selection and multimodel inference based on (Q)AIC(c). R package version 1.28.</li>
+<li>Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20:289-290.</li>
+<li>Pinheiro J, Bates D, DebRoy S, Sarkar D, R Development Core Team (2012) nlme: Linear and Nonlinear Mixed Effects Models. R package version 3.1-104, 
+	</ul>
+
+</body>
+</html>

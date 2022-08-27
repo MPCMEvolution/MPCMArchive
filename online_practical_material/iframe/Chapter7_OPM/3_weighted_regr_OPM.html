@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+	<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>		
+		<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+		<p style="padding-left: 30px;"><code>"nlme"</code> (Pinheiro et al 2012) </p>
+		
+		<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>brain size and body size on primates</strong> (<code>"primate_spec.txt"</code>, a tab separated text file), species-specific data obtained from the exercises above, includes information on within-species sampling (sample sizes, variances and standard errors</p>
+		<p style="padding-left: 30px;"><strong>phylogeny</strong> (<code>"primate_tree.phy"</code>, in phylip format) is taken from 10kTrees (Arnold et al 2010) and tailored to the data at hand<p>
+		
+		<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>		
+		
+		<h4>Ordinary least-square models without accounting for phylogeny</h4>
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">data.spec</span> <span class="hl kwb">=</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;primate_spec.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">w.ols</span> <span class="hl kwb">=</span> <span class="hl kwd">lm</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body, data.spec,</span> <span class="hl kwc">weights</span> <span class="hl std">= brain_N)</span>
+</pre></div>
+</div></div>
+
+		<p>or<p>
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(nlme,</span> <span class="hl kwc">quietly</span> <span class="hl std">= T)</span>
+<span class="hl std">w.ols</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body,</span> <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl num">1</span><span class="hl opt">/</span><span class="hl std">brain_N, data.spec,</span> <span class="hl kwc">method</span> <span class="hl std">=</span> <span class="hl str">&quot;ML&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">summary</span><span class="hl std">(w.ols)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## Generalized least squares fit by maximum likelihood
+##   Model: lg.brain ~ lg.body 
+##   Data: data.spec 
+##     AIC BIC logLik
+##   173.7 181 -83.83
+## 
+## Variance function:
+##  Structure: fixed weights
+##  Formula: ~1/brain_N 
+## 
+## Coefficients:
+##               Value Std.Error t-value p-value
+## (Intercept) -2.0730   0.27967  -7.412       0
+## lg.body      0.7868   0.03262  24.119       0
+## 
+##  Correlation: 
+##         (Intr)
+## lg.body -0.985
+## 
+## Standardized residuals:
+##     Min      Q1     Med      Q3     Max 
+## -2.5473 -0.6364 -0.2264  0.3108  3.3693 
+## 
+## Residual standard error: 1.429 
+## Degrees of freedom: 86 total; 84 residual
+</pre></div>
+</div></div>
+
+		
+		<h4>Phylogenetic least-square models with weights</h4>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(ape)</span>
+<span class="hl std">tree</span> <span class="hl kwb">=</span> <span class="hl kwd">read.tree</span><span class="hl std">(</span><span class="hl str">&quot;primate_tree.phy&quot;</span><span class="hl std">)</span>
+<span class="hl std">bm.tree</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">corBrownian</span><span class="hl std">(</span><span class="hl kwc">phy</span> <span class="hl std">= tree)</span>
+<span class="hl com"># need species as row names:</span>
+<span class="hl kwd">row.names</span><span class="hl std">(data.spec)</span> <span class="hl kwb">=</span> <span class="hl std">data.spec</span><span class="hl opt">$</span><span class="hl std">species</span>
+<span class="hl com"># pgls without weight:</span>
+<span class="hl std">pgls</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body,</span> <span class="hl kwc">correlation</span> <span class="hl std">= bm.tree, data.spec)</span>
+<span class="hl com"># pgls with weight:</span>
+<span class="hl std">w.pgls</span> <span class="hl kwb">=</span> <span class="hl kwd">gls</span><span class="hl std">(lg.brain</span> <span class="hl opt">~</span> <span class="hl std">lg.body,</span> <span class="hl kwc">weights</span> <span class="hl std">=</span> <span class="hl opt">~</span><span class="hl num">1</span><span class="hl opt">/</span><span class="hl std">brain_N,</span> <span class="hl kwc">correlation</span> <span class="hl std">= bm.tree,</span>
+    <span class="hl std">data.spec)</span>
+<span class="hl kwd">summary</span><span class="hl std">(w.pgls)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## Generalized least squares fit by REML
+##   Model: lg.brain ~ lg.body 
+##   Data: data.spec 
+##     AIC   BIC logLik
+##   184.1 191.4 -89.05
+## 
+## Correlation Structure: corBrownian
+##  Formula: ~1 
+##  Parameter estimate(s):
+## numeric(0)
+## Variance function:
+##  Structure: fixed weights
+##  Formula: ~1/brain_N 
+## 
+## Coefficients:
+##               Value Std.Error t-value p-value
+## (Intercept) -1.3387    0.3839  -3.487   8e-04
+## lg.body      0.7095    0.0482  14.734   0e+00
+## 
+##  Correlation: 
+##         (Intr)
+## lg.body -0.983
+## 
+## Standardized residuals:
+##      Min       Q1      Med       Q3      Max 
+## -0.94340 -0.35254 -0.13766  0.05078  1.53642 
+## 
+## Residual standard error: 3.727 
+## Degrees of freedom: 86 total; 84 residual
+</pre></div>
+</div></div>
+
+		
+		<h4>Plotting the results</h4>
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">plot</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">lg.body, data.spec</span><span class="hl opt">$</span><span class="hl std">lg.brain,</span> <span class="hl kwc">pch</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">cex</span> <span class="hl std">=</span> <span class="hl num">0.6</span> <span class="hl opt">*</span> <span class="hl kwd">sqrt</span><span class="hl std">(data.spec</span><span class="hl opt">$</span><span class="hl std">brain_N),</span>
+    <span class="hl kwc">xlab</span> <span class="hl std">=</span> <span class="hl str">&quot;log(body size)&quot;</span><span class="hl std">,</span> <span class="hl kwc">ylab</span> <span class="hl std">=</span> <span class="hl str">&quot;log(brain size)&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(w.ols,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;red&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(pgls,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;blue&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">abline</span><span class="hl std">(w.pgls,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl str">&quot;green&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">legend</span><span class="hl std">(</span><span class="hl kwc">x</span> <span class="hl std">=</span> <span class="hl str">&quot;bottomright&quot;</span><span class="hl std">,</span> <span class="hl kwc">legend</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;w.ols, AIC = &quot;</span><span class="hl std">,</span> <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">AIC</span><span class="hl std">(w.ols),</span>
+    <span class="hl num">2</span><span class="hl std">)),</span> <span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;pgls, AIC = &quot;</span><span class="hl std">,</span> <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">AIC</span><span class="hl std">(pgls),</span> <span class="hl num">2</span><span class="hl std">)),</span> <span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;w.pgls, AIC = &quot;</span><span class="hl std">,</span>
+    <span class="hl kwd">round</span><span class="hl std">(</span><span class="hl kwd">AIC</span><span class="hl std">(w.pgls),</span> <span class="hl num">2</span><span class="hl std">))),</span> <span class="hl kwc">lty</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl std">,</span> <span class="hl kwc">col</span> <span class="hl std">=</span> <span class="hl kwd">c</span><span class="hl std">(</span><span class="hl str">&quot;red&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;blue&quot;</span><span class="hl std">,</span> <span class="hl str">&quot;green&quot;</span><span class="hl std">))</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-4.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" class="plot" /></div></div>
+
+		
+		<p> The best model is the phylogenetic model that does not consider weights. The weighted model overemphasizes the influence of the difference in sample sizes. Note the high repeatability of both traits, which already indicate that adjusting for unequal sampling is not important.</p>
+		
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+	<ul>
+	<li>Arnold C, Matthews LJ, Nunn CL (2010) The 10kTrees website: a new online resource for primate hylogeny. Evol Anthropol 19: 114-118.</li>
+	<li>Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20: 289-290.</li>
+	<li>Pinheiro J, Bates D, DebRoy S, Sarkar D, R Development Core Team (2012) nlme: Linear and Nonlinear Mixed Effects Models. R package version 3.1-104.</li>
+	</ul>
+
+	
+</body>
+</html>
+
+	

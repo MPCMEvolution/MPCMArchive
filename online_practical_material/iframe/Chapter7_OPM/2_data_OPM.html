@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+.knitr.inline {
+  background-color: #f7f7f7;
+  border:solid 1px #B0B0B0;
+}
+.error {
+	font-weight: bold;
+	color: #FF0000;
+},
+.warning {
+	font-weight: bold;
+}
+.message {
+	font-style: italic;
+}
+.source, .output, .warning, .error, .message {
+	padding: 0em 1em;
+  border:solid 1px #F7F7F7;
+}
+.source {
+  background-color: #f5f5f5;
+}
+.rimage.left {
+  text-align: left;
+}
+.rimage.right {
+  text-align: right;
+}
+.rimage.center {
+  text-align: center;
+}
+.hl.num {
+  color: #AF0F91;
+}
+.hl.str {
+  color: #317ECC;
+}
+.hl.com {
+  color: #AD95AF;
+  font-style: italic;
+}
+.hl.opt {
+  color: #000000;
+}
+.hl.std {
+  color: #585858;
+}
+.hl.kwa {
+  color: #295F94;
+  font-weight: bold;
+}
+.hl.kwb {
+  color: #B05A65;
+}
+.hl.kwc {
+  color: #55aa55;
+}
+.hl.kwd {
+  color: #BC5A65;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+	<h3><span style="text-decoration: underline;"><strong>Sources</strong></span></h3>
+		<h4>R packages</h4>
+		<p style="padding-left: 30px;"><code>"ape"</code> (Paradis et al 2004) </p>
+				
+		<h4>Data</h4>
+		<p style="padding-left: 30px;"><strong>brain size and body size on primates</strong> 					(<code>"primate_ind.txt"</code>, a tab separated text file), with more than one observation for the majority of species, individual-specific data </p>
+		<p style="padding-left: 30px;"><strong>phylogeny</strong> (<code>"primate_tree.phy"</code>, in phylip format) is taken from 10kTrees (Arnold et al 2010) and tailored to the data at hand</p>
+		
+	<h3><span style="text-decoration: underline;"><strong>Codes</strong></span></h3>
+		<p>To obtain species-specific data (means and variances) from individual-specific data</p>
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">data.ind</span> <span class="hl kwb">=</span> <span class="hl kwd">read.table</span><span class="hl std">(</span><span class="hl str">&quot;primate_ind.txt&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;\t&quot;</span><span class="hl std">,</span> <span class="hl kwc">header</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+<span class="hl std">body_mean</span> <span class="hl kwb">=</span> <span class="hl kwd">tapply</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">body, data.ind</span><span class="hl opt">$</span><span class="hl std">species, mean)</span>
+<span class="hl std">brain_mean</span> <span class="hl kwb">=</span> <span class="hl kwd">tapply</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">brain, data.ind</span><span class="hl opt">$</span><span class="hl std">species, mean)</span>
+<span class="hl std">body_N</span> <span class="hl kwb">=</span> <span class="hl kwd">tapply</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">body, data.ind</span><span class="hl opt">$</span><span class="hl std">species, length)</span>
+<span class="hl std">brain_N</span> <span class="hl kwb">=</span> <span class="hl kwd">tapply</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">brain, data.ind</span><span class="hl opt">$</span><span class="hl std">species, length)</span>
+<span class="hl std">body_var</span> <span class="hl kwb">=</span> <span class="hl kwd">tapply</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">body, data.ind</span><span class="hl opt">$</span><span class="hl std">species, var)</span>
+<span class="hl std">brain_var</span> <span class="hl kwb">=</span> <span class="hl kwd">tapply</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">brain, data.ind</span><span class="hl opt">$</span><span class="hl std">species, var)</span>
+<span class="hl std">se</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">)</span> <span class="hl kwd">sqrt</span><span class="hl std">(</span><span class="hl kwd">var</span><span class="hl std">(x)</span><span class="hl opt">/</span><span class="hl kwd">length</span><span class="hl std">(x))</span>
+<span class="hl std">body_se</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">tapply</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">body, data.ind</span><span class="hl opt">$</span><span class="hl std">species, se)</span>
+<span class="hl std">brain_se</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">tapply</span><span class="hl std">(data.ind</span><span class="hl opt">$</span><span class="hl std">brain, data.ind</span><span class="hl opt">$</span><span class="hl std">species, se)</span>
+</pre></div>
+</div></div>
+
+		
+		<p>To calculate measurement errors based on pooled CV</p>
+<div class="chunk" id="unnamed-chunk-2"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">body_cv</span> <span class="hl kwb">=</span> <span class="hl kwd">sqrt</span><span class="hl std">(body_var)</span><span class="hl opt">/</span><span class="hl std">body_mean</span>
+<span class="hl std">body_cv.pool</span> <span class="hl kwb">=</span> <span class="hl kwd">sum</span><span class="hl std">(body_cv</span> <span class="hl opt">*</span> <span class="hl std">body_N,</span> <span class="hl kwc">na.rm</span> <span class="hl std">= T)</span><span class="hl opt">/</span><span class="hl kwd">sum</span><span class="hl std">(body_N,</span> <span class="hl kwc">na.rm</span> <span class="hl std">= T)</span>
+<span class="hl std">body_se.adj</span> <span class="hl kwb">=</span> <span class="hl std">(body_cv.pool</span> <span class="hl opt">*</span> <span class="hl std">body_mean)</span><span class="hl opt">/</span><span class="hl kwd">sqrt</span><span class="hl std">(body_N)</span>
+<span class="hl std">body_var.adj</span> <span class="hl kwb">=</span> <span class="hl std">(body_cv.pool</span> <span class="hl opt">*</span> <span class="hl std">body_mean)</span><span class="hl opt">^</span><span class="hl num">2</span>
+<span class="hl std">brain_cv</span> <span class="hl kwb">=</span> <span class="hl kwd">sqrt</span><span class="hl std">(brain_var)</span><span class="hl opt">/</span><span class="hl std">brain_mean</span>
+<span class="hl std">brain_cv.pool</span> <span class="hl kwb">=</span> <span class="hl kwd">sum</span><span class="hl std">(brain_cv</span> <span class="hl opt">*</span> <span class="hl std">brain_N,</span> <span class="hl kwc">na.rm</span> <span class="hl std">= T)</span><span class="hl opt">/</span><span class="hl kwd">sum</span><span class="hl std">(brain_N,</span> <span class="hl kwc">na.rm</span> <span class="hl std">= T)</span>
+<span class="hl std">brain_se.adj</span> <span class="hl kwb">=</span> <span class="hl std">(brain_cv.pool</span> <span class="hl opt">*</span> <span class="hl std">brain_mean)</span><span class="hl opt">/</span><span class="hl kwd">sqrt</span><span class="hl std">(brain_N)</span>
+<span class="hl std">brain_var.adj</span> <span class="hl kwb">=</span> <span class="hl std">(brain_cv.pool</span> <span class="hl opt">*</span> <span class="hl std">brain_mean)</span><span class="hl opt">^</span><span class="hl num">2</span>
+</pre></div>
+</div></div>
+
+		
+		<p>To log-transform data</p>
+<div class="chunk" id="unnamed-chunk-3"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">lg.body_var.adj</span> <span class="hl kwb">=</span> <span class="hl kwd">log</span><span class="hl std">(body_var.adj</span><span class="hl opt">/</span><span class="hl std">(body_mean</span><span class="hl opt">^</span><span class="hl num">2</span><span class="hl std">)</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl std">)</span>
+<span class="hl com"># note that this gives the same value for all species use the following</span>
+<span class="hl com"># instead:</span>
+<span class="hl std">lg.body_var.adj</span> <span class="hl kwb">=</span> <span class="hl kwd">log</span><span class="hl std">(body_se.adj</span><span class="hl opt">^</span><span class="hl num">2</span><span class="hl opt">/</span><span class="hl std">(body_mean</span><span class="hl opt">^</span><span class="hl num">2</span><span class="hl std">)</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl std">)</span>
+<span class="hl std">lg.body</span> <span class="hl kwb">=</span> <span class="hl kwd">log</span><span class="hl std">(body_mean)</span> <span class="hl opt">-</span> <span class="hl num">0.5</span> <span class="hl opt">*</span> <span class="hl std">lg.body_var.adj</span>
+<span class="hl std">lg.brain_var.adj</span> <span class="hl kwb">=</span> <span class="hl kwd">log</span><span class="hl std">(brain_se.adj</span><span class="hl opt">^</span><span class="hl num">2</span><span class="hl opt">/</span><span class="hl std">(brain_mean</span><span class="hl opt">^</span><span class="hl num">2</span><span class="hl std">)</span> <span class="hl opt">+</span> <span class="hl num">1</span><span class="hl std">)</span>
+<span class="hl std">lg.brain</span> <span class="hl kwb">=</span> <span class="hl kwd">log</span><span class="hl std">(brain_mean)</span> <span class="hl opt">-</span> <span class="hl num">0.5</span> <span class="hl opt">*</span> <span class="hl std">lg.brain_var.adj</span>
+</pre></div>
+</div></div>
+
+		
+		<p>To create data frame at the species level</p>
+<div class="chunk" id="unnamed-chunk-4"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl std">data.spec</span> <span class="hl kwb">=</span> <span class="hl kwd">data.frame</span><span class="hl std">(</span><span class="hl kwc">row.names</span> <span class="hl std">=</span> <span class="hl num">1</span><span class="hl opt">:</span><span class="hl kwd">length</span><span class="hl std">(body_mean),</span> <span class="hl kwc">species</span> <span class="hl std">=</span> <span class="hl kwd">row.names</span><span class="hl std">(body_mean),</span>
+    <span class="hl kwd">cbind</span><span class="hl std">(body_mean, body_N, body_var, lg.body, lg.body_var.adj, brain_mean,</span>
+        <span class="hl std">brain_N, brain_var, lg.brain, lg.brain_var.adj),</span> <span class="hl kwc">check.rows</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">,</span>
+    <span class="hl kwc">check.names</span> <span class="hl std">=</span> <span class="hl num">TRUE</span><span class="hl std">)</span>
+</pre></div>
+</div></div>
+
+					
+		<p>To import and check phylogeny:</p>
+<div class="chunk" id="unnamed-chunk-5"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">library</span><span class="hl std">(ape)</span>
+<span class="hl std">tree</span> <span class="hl kwb">=</span> <span class="hl kwd">read.tree</span><span class="hl std">(</span><span class="hl str">&quot;primate_tree.phy&quot;</span><span class="hl std">)</span>
+<span class="hl kwd">str</span><span class="hl std">(tree)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## List of 4
+##  $ edge       : int [1:170, 1:2] 87 88 89 90 91 92 92 93 94 95 ...
+##  $ Nnode      : int 85
+##  $ tip.label  : chr [1:86] "Allenopithecus_nigroviridis" "Cercopithecus_albogularis" "Cercopithecus_mitis" "Cercopithecus_ascanius" ...
+##  $ edge.length: num [1:170] 26.19 16.81 8.59 6.54 2.98 ...
+##  - attr(*, "class")= chr "phylo"
+##  - attr(*, "order")= chr "cladewise"
+</pre></div>
+</div></div>
+
+	
+		<p>To plot phylogeny:</p>
+<div class="chunk" id="unnamed-chunk-6"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl kwd">plot</span><span class="hl std">(tree,</span> <span class="hl kwc">cex</span> <span class="hl std">=</span> <span class="hl num">0.6</span><span class="hl std">,</span> <span class="hl kwc">no.margin</span> <span class="hl std">= T)</span>
+</pre></div>
+</div><div class="rimage default"><img src="figure/unnamed-chunk-6.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" class="plot" /></div></div>
+
+
+<h3><span style="text-decoration: underline;"><strong>References</strong></span></h3>
+	<ul>
+	<li>Arnold C, Matthews LJ, Nunn CL (2010) The 10kTrees website: a new online resource for primate hylogeny. Evol Anthropol 19: 114-118.</li>
+	<li>Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20: 289-290.</li>
+	</ul>
+
+	
+</body>
+</html>
+
+	
