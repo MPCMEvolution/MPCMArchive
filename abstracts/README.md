@@ -1,22 +1,3 @@
-# MPCMArchive
-This is the archive repository for the 'Online Practical Materials' for the book of 'Modern Phylogenetic Comparative Methods' (ed. Garamszegi, 2014). <i>The available content here is a usable copy of the material at</i> http://www.mpcm-evolution.com.
-
-<b>How to use MPCMArchive?</b><br>
-The explanations for the online practical materials divided into sections corresponding to the chapters of the book are listed on the Wiki page:<br>
-<a href="https://github.com/MPCMEvolution/MPCMArchive/wiki/0.-Overview" target="_blank">GitHub Wiki</a>
-
-Files referred during the exercises are available in the 'data_files' folder, in the above repository.<br>
-<a href="https://github.com/MPCMEvolution/MPCMArchive/tree/master/data_files" target="_blank">Data files</a>
-
-Please feel free to let us know if you find any missing information or mistake. 
-
-E-mail: mpcm.evolution@gmail.com
-
-<a href="https://www.facebook.com/mpcm.evolution" target="_blank">Facebook</a><br>
-<a href="https://twitter.com/MPCMevol" target="_blank">Twitter</a>
-
-<hr>
-
 ## Why MPCM?
 
 Phylogenetic comparative approaches are powerful analytical tools for making evolutionary inferences from interspecific data and phylogenies. The phylogenetic toolkit available to evolutionary biologists is currently growing at an incredible speed, but most methodological papers are published in the specialized statistical literature and many are incomprehensible for the user community. This textbook provides an overview of several newly developed phylogenetic comparative methods that allow to investigate a broad array of questions on how phenotypic characters evolve along the branches of phylogeny and how such mechanisms shape complex animal communities and interspecific interactions. The individual chapters were written by the leading experts in the field and using a language that is accessible for practicing evolutionary biologists. The authors carefully explain the philosophy behind different methodologies and provide pointers – mostly using a dynamically developing online interface – on how these methods can be implemented in practice. These “conceptual” and “practical” materials are essential for expanding the qualification of both students and scientists, but also offer a valuable resource for educators.
