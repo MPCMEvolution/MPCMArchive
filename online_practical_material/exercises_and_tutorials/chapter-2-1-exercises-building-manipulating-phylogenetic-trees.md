@@ -728,4 +728,4 @@ To write a nexus file with a particular tree; in this case one tree from the lis
 *   Paradis E, Claude J, Strimmer K (2004) APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20:289-290.
 *   Revell LJ (2012) Phytools: an R package for phylogenetic comparative biology (and other things). Methods Ecol Evol 3:217-223.
 
-← [back to the list of Chapter 2 OPMs](../README.md "Chapter 2 – Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets")
+← [back to the list of Chapter 2 OPMs](../02-chapter.md "Chapter 2 – Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets")
