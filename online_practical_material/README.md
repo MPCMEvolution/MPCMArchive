@@ -1,6 +1,6 @@
 # Online Practical Material
 
-1. [**Chapter 2 – Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets**](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-2 "Chapter 2 – Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets")
+1. [**Chapter 2 – Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets**](02-chapter.md "Chapter 2 – Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets")
 2. [**Chapter 4 – Graphical Methods for Visualizing Comparative Data on Phylogenies**](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-4 "Chapter 4 – Graphical Methods for Visualizing Comparative Data on Phylogenies") 
 3. [**Chapter 5  – A Primer on Phylogenetic Generalised Least Squares**](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-5 "Chapter 5  – A Primer on Phylogenetic Generalised Least Squares")
 4. [**Chapter 6 – Statistical Issues and Assumptions of Phylogenetic Generalized Least Squares**](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-6 "Chapter 6 – Statistical Issues and Assumptions of Phylogenetic Generalized Least Squares")
