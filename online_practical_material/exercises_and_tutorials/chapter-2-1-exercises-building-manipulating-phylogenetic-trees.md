@@ -68,7 +68,7 @@
 	title("Star phylogeny")
 	
 
-!(https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-3.png)
+!(https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-3.png)
 
 	#some checks
 	is.ultrametric(rnd.tree)
@@ -130,12 +130,12 @@
 	plot(ladderize(tree.prun7), cex=0.8)
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-41.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-41.png!
 
 	plot(ladderize(tree.prun8), cex=0.8)
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-42.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-42.png!
 
 #### Exercise 4: Moving branches
 
@@ -160,7 +160,7 @@
 	plot(compute.brlen(tree.prun6, power=0.1), main=expression(rho==0.1), cex=0.8)
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-61.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-61.png!
 
 	layout(1)
 	
@@ -175,7 +175,7 @@
 	mtext("Lambda = 1 (default)")
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-62.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-62.png!
 
 	layout(1)
 	
@@ -188,7 +188,7 @@
 	mtext("Kappa = 2")
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-63.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-63.png!
 
 	layout(1)
 	
@@ -201,7 +201,7 @@
 	mtext("Delta = 2")
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-64.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-64.png!
 
 	layout(1)
 	
@@ -218,7 +218,7 @@ Tree transformations are now available in the function `rescale()`!
 	mtext("Early-burst model")
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-7.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-7.png!
 
 	layout(1)
 	
@@ -476,7 +476,7 @@ For this exercise we will use non-parametric rate smoothing. The lambda paramete
 	mtext("ultrametric tree")
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-9.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-9.png!
 
 	layout(1)
 	
@@ -511,7 +511,7 @@ For this exercise we will use non-parametric rate smoothing. The lambda paramete
 	mtext("Re-rooted tree")
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-10.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-10.png!
 
 	layout(1)
 	
@@ -533,7 +533,7 @@ Use the combinations of the functions in Exercise 3 (e.g. remove all species but
 	plot(tree.prun7.rnd)
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-11.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-11.png!
 
 Alternative solutions are possible!
 
@@ -622,7 +622,7 @@ See also Online Practical Material for Chapter 4!
 	nodelabels()
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-17.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-17.png!
 
 #### Exercise 13: Plotting trait values on phylogeny
 
@@ -639,7 +639,7 @@ See also Online Practical Material for Chapter 4!
 	tiplabels(chars, frame="none", bg="white", adj=-1)
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-181.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-181.png!
 
 	#Or use different colors for the trait states
 	plot(tree.prun8, label.offset=4)
@@ -647,7 +647,7 @@ See also Online Practical Material for Chapter 4!
 	tiplabels(pch=22, bg=co[as.numeric(chars)], cex=1.2, adj=2.5)
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-182.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-182.png!
 
 #### Exercise 14: Handling a large number of trees
 
@@ -664,7 +664,7 @@ See also Online Practical Material for Chapter 4!
 	plot(consensus.tree)
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-20.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-20.png!
 
 	str(consensus.tree)
 	
@@ -694,7 +694,7 @@ To write a nexus file with a particular tree; in this case one tree from the lis
 	title("Random coalescent tree")
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-221.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-221.png!
 
 	#With branching times determined by a time-dependent birth-death process
 	tr_bd<-sim.bdtree(b=0.8, d=0.1, stop="taxa", n=30, extinct=TRUE)
@@ -702,7 +702,7 @@ To write a nexus file with a particular tree; in this case one tree from the lis
 	title("Random Birth-death tree extinct included")
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-222.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-222.png!
 
 	#With branching times determined by a time-dependent birth-death process
 	#eliminating the extinct lineages
@@ -712,7 +712,7 @@ To write a nexus file with a particular tree; in this case one tree from the lis
 	title("Random Birth-death tree no extinct lineages")
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-223.png!
+!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional_files/ch2/unnamed-chunk-223.png!
 
 #### Exercise 18: Calculating variance-covariance matrix
 
