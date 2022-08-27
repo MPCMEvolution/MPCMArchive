@@ -68,7 +68,7 @@
 	title("Star phylogeny")
 	
 
-!https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-3.png!
+!(https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/additional\_files/ch2/unnamed-chunk-3.png)
 
 	#some checks
 	is.ultrametric(rnd.tree)
