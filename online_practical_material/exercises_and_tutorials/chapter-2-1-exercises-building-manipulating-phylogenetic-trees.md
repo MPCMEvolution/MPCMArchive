@@ -22,11 +22,11 @@
 
 #### Data
 
-**Primate phylogeny** (`"primate_tree.phy"`), phylogeny in phylip format, phylogeny of primates from Arnold et al. (2010) "\[download\]":https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/data\_files/ch2/primate\_tree.phy _\- right click, Save as..._
+**Primate phylogeny** (`"primate_tree.phy"`), phylogeny in phylip format, phylogeny of primates from Arnold et al. (2010) "\[download\]":https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/data_files/ch2/primate\_tree.phy _\- right click, Save as..._
 
-**Species-specific trait data** (`"primate_spec.txt"`), a tab separated text file, species-specific data for brain size and body size in primates "\[download\]":https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/data\_files/ch2/primate\_spec.txt _\- right click, Save as..._
+**Species-specific trait data** (`"primate_spec.txt"`), a tab separated text file, species-specific data for brain size and body size in primates "\[download\]":https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/data_files/ch2/primate\_spec.txt _\- right click, Save as..._
 
-**Sample of phylogenetic trees** (`"bird_trees.tre"`), a block of phylogenies for birds from Jetz et al. (2012) in nexus format "\[download\]":https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/data\_files/ch2/bird\_trees.tre _\- right click, Save as..._
+**Sample of phylogenetic trees** (`"bird_trees.tre"`), a block of phylogenies for birds from Jetz et al. (2012) in nexus format "\[download\]":https://raw.githubusercontent.com/MPCMEvolution/MPCMArchive/master/online_practical_material/data_files/ch2/bird\_trees.tre _\- right click, Save as..._
 
 ### **Codes**
 
