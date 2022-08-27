@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 19:</strong> Metrics and Models of Community Phylogenetics"
-date: "2014-06-12"
----
+# <strong>Chapter 19:</strong> Metrics and Models of Community Phylogenetics
 
 by **William D. Pearse**, **Andy Purvis**, **Jeannine Cavender-Bares** and **Matthew R. Helmus**
 

@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 13:</strong> Simulation of Phylogenetic Data"
-date: "2014-06-12"
----
+# <strong>Chapter 13:</strong> Simulation of Phylogenetic Data
 
 by **Emmanuel Paradis**
 

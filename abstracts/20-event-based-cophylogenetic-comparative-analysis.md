@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 20:</strong> Event-Based Cophylogenetic Comparative Analysis"
-date: "2014-06-12"
----
+<strong>Chapter 20:</strong> Event-Based Cophylogenetic Comparative Analysis
 
 by **Michael Charleston** and **Ran Libeskind-Hadas**
 

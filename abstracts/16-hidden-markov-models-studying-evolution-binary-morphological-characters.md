@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 16:</strong> Hidden Markov Models for Studying the Evolution of Binary Morphological Characters"
-date: "2014-06-12"
----
+# <strong>Chapter 16:</strong> Hidden Markov Models for Studying the Evolution of Binary Morphological Characters
 
 by **Jeremy M. Beaulieu** and **Brian C. O’Meara**
 

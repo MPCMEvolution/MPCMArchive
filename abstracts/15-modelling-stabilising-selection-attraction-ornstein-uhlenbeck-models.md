@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 15:</strong> Modelling Stabilising Selection: the Attraction of Ornstein-Uhlenbeck Models"
-date: "2014-06-12"
----
+# <strong>Chapter 15:</strong> Modelling Stabilising Selection: the Attraction of Ornstein-Uhlenbeck Models
 
 by **Brian C. O’Meara** and **Jeremy M. Beaulieu**
 

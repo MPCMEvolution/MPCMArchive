@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 17:</strong> Detecting Phenotypic Selection by Approximate Bayesian Computation (ABC) in Phylogenetic Comparative Methods"
-date: "2014-06-12"
----
+# <strong>Chapter 17:</strong> Detecting Phenotypic Selection by Approximate Bayesian Computation (ABC) in Phylogenetic Comparative Methods
 
 by **Nobuyuki Kutsukake** and **Hideki Innan**
 

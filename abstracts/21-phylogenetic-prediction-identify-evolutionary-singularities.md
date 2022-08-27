@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 21:</strong> Phylogenetic Prediction to Identify “Evolutionary Singularities”"
-date: "2014-06-12"
----
+# <strong>Chapter 21:</strong> Phylogenetic Prediction to Identify “Evolutionary Singularities”
 
 by **Charles L. Nunn** and **Li Zhu**
 

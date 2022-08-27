@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 14:</strong> Use and Misuse of Comparative Methods in the Study of Adaptation"
-date: "2014-06-12"
----
+# <strong>Chapter 14:</strong> Use and Misuse of Comparative Methods in the Study of Adaptation
 
 by **Thomas F. Hansen**
 

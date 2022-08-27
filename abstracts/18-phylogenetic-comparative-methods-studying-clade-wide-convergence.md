@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 18:</strong> Phylogenetic Comparative Methods for Studying Clade-Wide Convergence"
-date: "2014-06-12"
----
+# <strong>Chapter 18:</strong> Phylogenetic Comparative Methods for Studying Clade-Wide Convergence
 
 by **D. Luke Mahler** and **Travis Ingram**
 

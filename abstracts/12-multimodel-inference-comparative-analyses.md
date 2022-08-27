@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 12:</strong> Multimodel-Inference in Comparative Analyses"
-date: "2014-06-12"
----
+# <strong>Chapter 12:</strong> Multimodel-Inference in Comparative Analyses
 
 by **László Zsolt Garamszegi** and **Roger Mundry**
 

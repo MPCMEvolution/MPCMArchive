@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 11:</strong> General Quantitative Genetic Methods for Comparative Biology"
-date: "2014-06-12"
----
+# <strong>Chapter 11:</strong> General Quantitative Genetic Methods for Comparative Biology
 
 by **Pierre de Villemereuil** and **Shinichi Nakagawa**
 
