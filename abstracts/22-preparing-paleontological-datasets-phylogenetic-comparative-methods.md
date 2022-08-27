@@ -1,4 +1,4 @@
-# strong>Chapter 22:</strong> Preparing Paleontological Datasets for Phylogenetic Comparative Methods
+# <strong>Chapter 22:</strong> Preparing Paleontological Datasets for Phylogenetic Comparative Methods
 
 by **David W. Bapst**
 
