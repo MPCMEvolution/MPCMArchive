@@ -23,7 +23,8 @@ Phylogenetic comparative approaches are powerful analytical tools for making evo
 
 # Table of contents
 
-**Foreword** by Mark Pagel **Preface** by László Zsolt Garamszegi
+**Foreword** by Mark Pagel<br>
+**Preface** by László Zsolt Garamszegi
 
 ### Part I Introduction
 
