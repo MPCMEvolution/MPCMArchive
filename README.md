@@ -28,7 +28,7 @@ Phylogenetic comparative approaches are powerful analytical tools for making evo
 
 ### Part I Introduction
 
-**1.- [An Introduction to the Phylogenetic Comparative Method](http://www.mpcm-evolution.com/book-sections/part-introduction/1-introduction-phylogenetic-comparative-method "1.- An Introduction to the Phylogenetic Comparative Method").**<br>
+**1.- [An Introduction to the Phylogenetic Comparative Method](abstracts/01-introduction-phylogenetic-comparative-method.md "1.- An Introduction to the Phylogenetic Comparative Method").**<br>
 **2.- [Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets](http://www.mpcm-evolution.com/book-sections/part-introduction/2-working-tree-life-comparative-studies-build-tailor-phylogenies-interspecific-datasets "2.- Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets").**<br>
 **3.- [An Introduction to Supertree Construction (and Partitioned Phylogenetic Analyses) with a View toward the Distinction between - Gene Trees and Species Trees](http://www.mpcm-evolution.com/book-sections/part-introduction/3-introduction-supertree-construction-partitioned-phylogenetic-analyses-view-toward-distinction-gene-trees-species-trees "3.- An Introduction to Supertree Construction (and Partitioned Phylogenetic Analyses) with a View toward the Distinction between – Gene Trees and Species Trees").**<br>
 **4.- [Graphical Methods for Visualizing Comparative Data on Phylogenies](http://www.mpcm-evolution.com/book-sections/part-introduction/4-graphical-methods-visualizing-comparative-data-phylogenies "4.-Graphical Methods for Visualizing Comparative Data on Phylogenies").**<br>
