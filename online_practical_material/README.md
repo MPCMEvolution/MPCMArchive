@@ -1,10 +1,7 @@
----
-title: "Online Practical Material"
-date: "2014-08-20"
----
+# Online Practical Material
 
-1. **[Chapter 2 – Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-2 "Chapter 2 – Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets")**
-2. **[Chapter 4 – Graphical Methods for Visualizing Comparative Data on Phylogenies](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-4 "Chapter 4 – Graphical Methods for Visualizing Comparative Data on Phylogenies")** 
+1. [**Chapter 2 – Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets**](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-2 "Chapter 2 – Working with the Tree of Life in Comparative Studies: How to Build and Tailor Phylogenies to Interspecific Datasets")
+2. [**Chapter 4 – Graphical Methods for Visualizing Comparative Data on Phylogenies**](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-4 "Chapter 4 – Graphical Methods for Visualizing Comparative Data on Phylogenies") 
 3. [**Chapter 5  – A Primer on Phylogenetic Generalised Least Squares**](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-5 "Chapter 5  – A Primer on Phylogenetic Generalised Least Squares")
 4. [**Chapter 6 – Statistical Issues and Assumptions of Phylogenetic Generalized Least Squares**](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-6 "Chapter 6 – Statistical Issues and Assumptions of Phylogenetic Generalized Least Squares")
 5. **[Chapter 7](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-7 "Chapter 7 – Uncertainties Due to Within-Species Variation in Comparative Studies: Measurement Errors and Statistical Weights")** **[–](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-6 "Chapter 6 – Statistical Issues and Assumptions of Phylogenetic Generalized Least Squares")** **[Uncertainties due to Within-Species Variation in Comparative Studies: Measurement Errors and Statistical Weights.](http://www.mpcm-evolution.com/practice/online-practical-material-chapter-7 "Chapter 7 – Uncertainties Due to Within-Species Variation in Comparative Studies: Measurement Errors and Statistical Weights")** 
