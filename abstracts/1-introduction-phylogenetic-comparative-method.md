@@ -1,7 +1,4 @@
----
-title: "<strong>Chapter 1:</strong>  An Introduction to the Phylogenetic Comparative Method"
-date: "2014-06-12"
----
+# <strong>Chapter 1:</strong>  An Introduction to the Phylogenetic Comparative Method"
 
 by **Emmanuel Paradis**
 
