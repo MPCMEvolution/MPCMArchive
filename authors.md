@@ -1,7 +1,4 @@
----
-title: "Authors"
-date: "2014-06-05"
----
+# Authors
 
 ### David W. Bapst
 
