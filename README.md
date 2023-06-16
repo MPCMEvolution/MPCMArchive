@@ -11,7 +11,7 @@ Files referred during the exercises are available in the 'data_files' folder, in
 Please feel free to let us know if you find any missing information or mistake. 
 
 <b>Access to the Online Practical Materials</b><br>
-<a href="https://github.com/MPCMEvolution/MPCMArchive/wiki"</a>
+<a href="https://github.com/MPCMEvolution/MPCMArchive/wiki" target="_blank">Online Practical Materials</a>
 
 
 E-mail: mpcm.evolution@gmail.com
