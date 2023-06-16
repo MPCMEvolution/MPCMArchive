@@ -1,5 +1,5 @@
 # MPCMArchive
-This is the archive repository for the 'Online Practical Materials' for the book of 'Modern Phylogenetic Comparative Methods' (ed. Garamszegi, 2014). <i>The available content here is a usable copy of the material that were originally published at</i> http://www.mpcm-evolution.com.
+This is the archive repository for the 'Online Practical Materials' for the book of 'Modern Phylogenetic Comparative Methods' (ed. Garamszegi, 2014). The available content here is a usable copy of the material that were originally published at http://www.mpcm-evolution.com.
 
 <b>How to use MPCMArchive?</b><br>
 The explanations for the online practical materials divided into sections corresponding to the chapters of the book are listed on the Wiki page:<br>
@@ -11,6 +11,8 @@ Files referred during the exercises are available in the 'data_files' folder, in
 Please feel free to let us know if you find any missing information or mistake. 
 
 <b>Access to the Online Practical Materials</b><br>
+<a href="https://github.com/MPCMEvolution/MPCMArchive/wiki"</a>
+
 
 E-mail: mpcm.evolution@gmail.com
 
