@@ -3,14 +3,12 @@ This is the archive repository for the 'Online Practical Materials' for the book
 
 <b>How to use MPCMArchive?</b><br>
 The explanations for the online practical materials divided into sections corresponding to the chapters of the book are listed on the Wiki page:<br>
-<a href="https://github.com/MPCMEvolution/MPCMArchive/wiki" target="_blank">GitHub Wiki</a>
+<a href="https://github.com/MPCMEvolution/MPCMArchive/wiki" target="_blank">Online Practical Materials</a>
 
 Files referred during the exercises are available in the 'data_files' folder, in the above repository.<br>
 <a href="https://github.com/MPCMEvolution/MPCMArchive/tree/master/data_files" target="_blank">Data files</a>
 
 Please feel free to let us know if you find any missing information or mistake. 
-
-<a href="https://github.com/MPCMEvolution/MPCMArchive/wiki" target="_blank">Online Practical Materials</a>
 
 E-mail: mpcm.evolution@gmail.com
 
